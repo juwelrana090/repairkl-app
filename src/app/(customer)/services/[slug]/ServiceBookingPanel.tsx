@@ -1,86 +1,74 @@
 "use client";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { showToast } from "@/components/ui";
-import { twMerge } from "tailwind-merge";
 
-interface Pkg { id: string; name: string; price: number; isPopular: boolean }
-
-export default function ServiceBookingPanel({
-  serviceId, serviceName, basePrice, priceUnit, packages,
-}: {
-  serviceId: string;
-  serviceName: string;
+interface Service {
+  id: string;
+  name: string;
+  slug: string;
   basePrice: number;
-  priceUnit: string;
-  packages: Pkg[];
-}) {
+  packages: { id: string; name: string; price: number }[];
+}
+
+export default function ServiceBookingPanel({ service }: { service: Service }) {
   const router = useRouter();
-  const [selectedPkg, setSelectedPkg] = useState<Pkg | null>(packages.find(p => p.isPopular) ?? packages[0] ?? null);
-  const price = selectedPkg ? selectedPkg.price : basePrice;
+  const [selectedPackage, setSelectedPackage] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const handleBook = () => {
-    const q = new URLSearchParams({ serviceId, serviceName });
-    if (selectedPkg) q.set("packageId", selectedPkg.id);
-    router.push(`/booking?${q.toString()}`);
+    setLoading(true);
+    const packageId = selectedPackage || service.packages[0]?.id;
+    if (packageId) {
+      router.push(
+        `/booking?serviceId=${service.id}&packageId=${packageId}`
+      );
+    } else {
+      showToast("Please select a package", "error");
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="sticky top-24 bg-white rounded-[24px] border border-[#e8e6ea] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.08)]">
-      <h2 className="text-lg font-bold text-[#1b1d21] tracking-[-0.4px] mb-4">Book This Service</h2>
+    <div className="bg-white rounded-2xl p-6 shadow-sm sticky top-6">
+      <h3 className="text-lg font-bold text-[#1b1d21] mb-4">Book Service</h3>
 
-      {/* Price */}
-      <div className="bg-[#fff0e8] rounded-[16px] p-4 mb-4 text-center">
-        <p className="text-3xl font-bold text-[#fd6b22]">৳{price.toLocaleString()}</p>
-        <p className="text-sm text-[#fd6b22]/70 mt-1">/{priceUnit === "fixed" ? "job" : priceUnit}</p>
-      </div>
-
-      {/* Package selector */}
-      {packages.length > 0 && (
+      {service.packages.length > 0 && (
         <div className="mb-4">
-          <p className="text-sm font-bold text-[#1b1d21] mb-2">Select Package</p>
-          <div className="flex flex-col gap-2">
-            {packages.map((pkg) => (
-              <button
-                key={pkg.id}
-                onClick={() => setSelectedPkg(pkg)}
-                className={twMerge(
-                  "flex items-center justify-between p-3 rounded-[12px] border-2 text-sm transition-all",
-                  selectedPkg?.id === pkg.id ? "border-[#fd6b22] bg-[#fff0e8]" : "border-[#e6e8ec]"
-                )}
-              >
-                <div className="flex items-center gap-2">
-                  <div className={twMerge("w-4 h-4 rounded-full border-2", selectedPkg?.id === pkg.id ? "border-[#fd6b22] bg-[#fd6b22]" : "border-[#d9d9d9]")} />
-                  <span className="font-medium text-[#1b1d21]">{pkg.name}</span>
-                  {pkg.isPopular && <span className="text-[9px] bg-[#fd6b22] text-white px-1.5 py-0.5 rounded-full font-bold">Popular</span>}
-                </div>
-                <span className="font-bold text-[#fd6b22]">৳{pkg.price.toLocaleString()}</span>
-              </button>
+          <label className="block text-sm font-medium text-[#1b1d21] mb-2">
+            Select Package
+          </label>
+          <select
+            value={selectedPackage || ""}
+            onChange={(e) => setSelectedPackage(e.target.value)}
+            className="w-full p-3 border border-[#e8e6ea] rounded-xl focus:outline-none focus:border-[#fd6b22]"
+          >
+            <option value="">Choose a package...</option>
+            {service.packages.map((pkg) => (
+              <option key={pkg.id} value={pkg.id}>
+                {pkg.name} - RM{Number(pkg.price).toLocaleString()}
+              </option>
             ))}
-          </div>
+          </select>
         </div>
       )}
 
-      {/* Key info */}
-      <div className="space-y-2 mb-6">
-        {[
-          { icon: "✅", text: "Verified professionals" },
-          { icon: "🔒", text: "Secure payment" },
-          { icon: "📞", text: "24/7 support" },
-          { icon: "⭐", text: "Satisfaction guaranteed" },
-        ].map((item) => (
-          <div key={item.text} className="flex items-center gap-2 text-sm text-[#8f92a1]">
-            <span>{item.icon}</span>
-            <span>{item.text}</span>
-          </div>
-        ))}
+      <div className="flex items-center justify-between mb-4 p-3 bg-[#f9fafb] rounded-xl">
+        <span className="text-sm text-[#8f92a1]">Starting from</span>
+        <span className="text-xl font-bold text-[#fd6b22]">
+          RM{Number(service.basePrice).toLocaleString()}
+        </span>
       </div>
 
-      <Button onClick={handleBook} fullWidth>
-        Book Now
+      <Button
+        onClick={handleBook}
+        disabled={loading}
+        className="w-full"
+      >
+        {loading ? "Processing..." : "Book Now"}
       </Button>
-      <p className="text-xs text-center text-[#8f92a1] mt-3">Free cancellation up to 24h before</p>
     </div>
   );
 }

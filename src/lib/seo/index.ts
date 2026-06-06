@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://shifty.com";
-const SITE_NAME = "Shifty";
-const TAGLINE = "Your Trusted Home Service Platform";
+const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://repairkl.com";
+const SITE_NAME = "RepairKL";
+const TAGLINE = "Your Trusted Home Appliance Repair Service in KL";
 
 // ─── generateMeta ─────────────────────────────────────────────────────────────
 export function generateMeta(options: {
@@ -27,7 +27,7 @@ export function generateMeta(options: {
       title: options.title,
       description: options.description,
       siteName: SITE_NAME,
-      locale: "en_BD",
+      locale: "en_MY",
       images: [{ url: image, width: 1200, height: 630, alt: options.title }],
     },
     twitter: {
@@ -35,7 +35,7 @@ export function generateMeta(options: {
       title: options.title,
       description: options.description,
       images: [image],
-      site: "@shiftyapp",
+      site: "@repairkl",
     },
     robots: options.noIndex
       ? { index: false, follow: false }
@@ -50,32 +50,32 @@ export function localBusinessSchema() {
     "@type": "LocalBusiness",
     "@id": `${BASE_URL}/#business`,
     name: SITE_NAME,
-    description: `${SITE_NAME} — ${TAGLINE}. Book professional house shifting, cleaning, plumbing, electrical and more home services.`,
+    description: `${SITE_NAME} — ${TAGLINE}. Book professional fridge, washing machine, dryer and air-conditioner repair in Kuala Lumpur.`,
     url: BASE_URL,
     logo: `${BASE_URL}/logo.png`,
     image: `${BASE_URL}/og-image.png`,
-    telephone: "+8801711000000",
-    email: "hello@shifty.com",
+    telephone: "+601127272745",
+    email: "hello@repairkl.com",
     address: {
       "@type": "PostalAddress",
-      streetAddress: "45 Gulshan Avenue",
-      addressLocality: "Dhaka",
-      addressRegion: "Dhaka",
-      postalCode: "1212",
-      addressCountry: "BD",
+      streetAddress: "Kuala Lumpur",
+      addressLocality: "Kuala Lumpur",
+      addressRegion: "Wilayah Persekutuan",
+      postalCode: "50000",
+      addressCountry: "MY",
     },
-    geo: { "@type": "GeoCoordinates", latitude: 23.7937, longitude: 90.4066 },
+    geo: { "@type": "GeoCoordinates", latitude: 3.1390, longitude: 101.6869 },
     openingHoursSpecification: {
       "@type": "OpeningHoursSpecification",
-      dayOfWeek: ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"],
+      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
       opens: "08:00",
-      closes: "22:00",
+      closes: "20:00",
     },
     sameAs: [
-      "https://facebook.com/shiftyapp",
-      "https://instagram.com/shiftyapp",
+      "https://facebook.com/repairkl",
+      "https://instagram.com/repairkl",
     ],
-    priceRange: "৳৳",
+    priceRange: "RM",
     aggregateRating: {
       "@type": "AggregateRating",
       ratingValue: "4.9",
@@ -96,7 +96,7 @@ export function serviceSchema(service: { name: string; description: string; url:
       name: SITE_NAME,
       url: BASE_URL,
     },
-    areaServed: { "@type": "City", name: "Dhaka" },
+    areaServed: { "@type": "City", name: "Kuala Lumpur" },
     url: service.url,
   };
 }

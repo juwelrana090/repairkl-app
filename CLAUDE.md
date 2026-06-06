@@ -1,13 +1,14 @@
-# CLAUDE.md – Shifty Next.js App
+# CLAUDE.md – RepairKL Next.js App
 
 ## Project Overview
-Full-stack Next.js 15 + Prisma 6 home service booking platform.
+Full-stack Next.js 16 + Prisma 6 appliance repair booking platform.
 Multi-role: CUSTOMER, WORKER, SUPPORT, ADMIN
+Focus: Home appliance repair in Malaysia (fridge, washing machine, dryer, AC)
 
 ## Architecture
 
 ```
-shifty-app/
+repairkl-app/
 ├── prisma/schema.prisma        ← Database schema
 ├── src/
 │   ├── app/
@@ -17,6 +18,7 @@ shifty-app/
 │   │   ├── (worker)/           ← Worker panel (WORKER role)
 │   │   ├── (support)/          ← Support panel (SUPPORT role)
 │   │   ├── (admin)/            ← Admin panel (ADMIN role)
+│   │   ├── (marketing)/        ← Public marketing pages
 │   │   └── api/                ← API routes
 │   ├── components/
 │   │   ├── ui/                 ← Button, Input, Badge, Modal, etc.
@@ -87,9 +89,22 @@ import { prisma } from "@/lib/prisma";
 | SUPPORT | /support/dashboard |
 | ADMIN | /admin/dashboard |
 
-## Currency
-- Use ৳ (Bangladeshi Taka) for all prices
-- Format: `৳${Number(price).toLocaleString()}`
+## Services (5 only)
+- Fridge Repair (from RM60)
+- Washing Machine Repair (from RM60)
+- Dryer Repair (from RM60)
+- Air-Conditioner Service (from RM80)
+- Air-Conditioner Installation (from RM350)
+
+## Business Info
+- **Name**: RepairKL
+- **Purpose**: Home appliance repair booking in Malaysia
+- **Contact**: +601127272745 | hello@repairkl.com
+- **Domain**: repairkl.com
+- **Currency**: RM (Malaysian Ringgit)
+- **Cookie**: repairkl_token
+- **Country**: Malaysia (Kuala Lumpur)
+- **Timezone**: Asia/Kuala_Lumpur
 
 ## Environment Variables
 See `.env.example` for required variables

@@ -3,8 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
 // ─── Enums ─────────────────────────────────────────────────────────────────────
@@ -69,7 +70,7 @@ enum TicketPriority {
 // ─── Users ──────────────────────────────────────────────────────────────────────
 
 model User {
-  id              String    @id @default(cuid())
+  id              String    @id @default(cuid()) @db.VarChar(36)
   fullName        String
   email           String    @unique
   phone           String    @unique
@@ -97,7 +98,7 @@ model User {
 }
 
 model UserAddress {
-  id      String  @id @default(cuid())
+  id      String  @id @default(cuid()) @db.VarChar(36)
   userId  String  @unique
   street  String
   city    String
@@ -112,7 +113,7 @@ model UserAddress {
 }
 
 model OtpCode {
-  id        String    @id @default(cuid())
+  id        String    @id @default(cuid()) @db.VarChar(36)
   userId    String
   code      String
   type      OtpType
@@ -127,7 +128,7 @@ model OtpCode {
 // ─── Workers ───────────────────────────────────────────────────────────────────
 
 model Worker {
-  id          String          @id @default(cuid())
+  id          String          @id @default(cuid()) @db.VarChar(36)
   userId      String          @unique
   speciality  String
   bio         String?
@@ -151,7 +152,7 @@ model Worker {
 }
 
 model WorkerSchedule {
-  id        String   @id @default(cuid())
+  id        String   @id @default(cuid()) @db.VarChar(36)
   workerId  String
   dayOfWeek Int      // 0=Sun, 6=Sat
   startTime String   // "08:00"
@@ -164,7 +165,7 @@ model WorkerSchedule {
 }
 
 model WorkerEarning {
-  id        String   @id @default(cuid())
+  id        String   @id @default(cuid()) @db.VarChar(36)
   workerId  String
   bookingId String
   amount    Decimal  @db.Decimal(10, 2)
@@ -178,7 +179,7 @@ model WorkerEarning {
 // ─── Service Categories ────────────────────────────────────────────────────────
 
 model ServiceCategory {
-  id          String    @id @default(cuid())
+  id          String    @id @default(cuid()) @db.VarChar(36)
   name        String    @unique
   slug        String    @unique
   description String?
@@ -193,7 +194,7 @@ model ServiceCategory {
 }
 
 model Service {
-  id          String          @id @default(cuid())
+  id          String          @id @default(cuid()) @db.VarChar(36)
   categoryId  String
   name        String
   slug        String          @unique
@@ -220,12 +221,12 @@ model Service {
 }
 
 model ServicePackage {
-  id          String   @id @default(cuid())
+  id          String   @id @default(cuid()) @db.VarChar(36)
   serviceId   String
   name        String
   description String?
   price       Decimal  @db.Decimal(10, 2)
-  includes    String[]
+  includes    Json
   isPopular   Boolean  @default(false)
   service     Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
 
@@ -235,7 +236,7 @@ model ServicePackage {
 // ─── Bookings ──────────────────────────────────────────────────────────────────
 
 model Booking {
-  id            String        @id @default(cuid())
+  id            String        @id @default(cuid()) @db.VarChar(36)
   bookingCode   String        @unique
   customerId    String
   serviceId     String
@@ -266,7 +267,7 @@ model Booking {
 }
 
 model BookingDetail {
-  id           String   @id @default(cuid())
+  id           String   @id @default(cuid()) @db.VarChar(36)
   bookingId    String   @unique
   houseSize    String?
   furnitures   Json?
@@ -280,7 +281,7 @@ model BookingDetail {
 }
 
 model BookingWorker {
-  id         String   @id @default(cuid())
+  id         String   @id @default(cuid()) @db.VarChar(36)
   bookingId  String
   workerId   String
   assignedAt DateTime @default(now())
@@ -292,7 +293,7 @@ model BookingWorker {
 }
 
 model Payment {
-  id            String        @id @default(cuid())
+  id            String        @id @default(cuid()) @db.VarChar(36)
   bookingId     String        @unique
   amount        Decimal       @db.Decimal(10, 2)
   method        String
@@ -307,7 +308,7 @@ model Payment {
 }
 
 model Review {
-  id         String   @id @default(cuid())
+  id         String   @id @default(cuid()) @db.VarChar(36)
   customerId String
   serviceId  String
   workerId   String?
@@ -326,7 +327,7 @@ model Review {
 // ─── Support ───────────────────────────────────────────────────────────────────
 
 model SupportTicket {
-  id          String         @id @default(cuid())
+  id          String         @id @default(cuid()) @db.VarChar(36)
   customerId  String
   agentId     String?
   bookingId   String?
@@ -346,7 +347,7 @@ model SupportTicket {
 }
 
 model TicketMessage {
-  id        String        @id @default(cuid())
+  id        String        @id @default(cuid()) @db.VarChar(36)
   ticketId  String
   senderId  String
   message   String
@@ -361,7 +362,7 @@ model TicketMessage {
 // ─── Notifications & Promotions ────────────────────────────────────────────────
 
 model Notification {
-  id        String           @id @default(cuid())
+  id        String           @id @default(cuid()) @db.VarChar(36)
   userId    String
   title     String
   body      String
@@ -375,7 +376,7 @@ model Notification {
 }
 
 model SavedService {
-  id        String   @id @default(cuid())
+  id        String   @id @default(cuid()) @db.VarChar(36)
   userId    String
   serviceId String
   savedAt   DateTime @default(now())
@@ -387,7 +388,7 @@ model SavedService {
 }
 
 model Promotion {
-  id            String   @id @default(cuid())
+  id            String   @id @default(cuid()) @db.VarChar(36)
   code          String   @unique
   title         String
   description   String?
@@ -406,7 +407,7 @@ model Promotion {
 }
 
 model Banner {
-  id        String   @id @default(cuid())
+  id        String   @id @default(cuid()) @db.VarChar(36)
   title     String
   subtitle  String?
   imageUrl  String

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 60" fill="none">
+  <rect width="60" height="60" rx="14" fill="#fd6b22"/>
+  <path d="M38 18a10 10 0 0 0-10 10c0 1.4.3 2.7.8 3.9L18 43a3 3 0 1 0 4.2 4.2l10.8-10.8c1.2.5 2.5.8 3.9.8a10 10 0 0 0 0-20zm0 16a6 6 0 1 1 0-12 6 6 0 0 1 0 12z" fill="white"/>
+  <text x="70" y="38" font-family="DM Sans, Arial, sans-serif" font-weight="800"
+        font-size="24" letter-spacing="-0.8" fill="white">
+    Repair<tspan fill="#fd6b22">KL</tspan>
+  </text>
+</svg>

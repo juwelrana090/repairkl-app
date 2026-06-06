@@ -4,7 +4,7 @@ import Navbar from "@/components/layout/Navbar";
 import { prisma } from "@/lib/prisma";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Shifty" };
+export const metadata: Metadata = { title: "RepairKL" };
 
 export default async function CustomerLayout({ children }: { children: React.ReactNode }) {
   const session = await getSession();

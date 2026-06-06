@@ -191,8 +191,8 @@ function BookingWizard() {
                 <h3 className="font-bold text-[#1b1d21] mb-3">Additional</h3>
                 {[
                   { key: "packedBoxes", label: "Packed Boxes", sub: "Weight below 10kg", value: packedBoxes, set: setPackedBoxes, emoji: "📦" },
-                  { key: "workers", label: "Workers", sub: "৳500/hr each", value: workers, set: setWorkers, emoji: "👷" },
-                  { key: "electricians", label: "Electricians", sub: "৳600/hr each", value: electricians, set: setElectricians, emoji: "⚡" },
+                  { key: "workers", label: "Workers", sub: "RM500/hr each", value: workers, set: setWorkers, emoji: "👷" },
+                  { key: "electricians", label: "Electricians", sub: "RM600/hr each", value: electricians, set: setElectricians, emoji: "⚡" },
                 ].map((item) => (
                   <div key={item.key} className="flex items-center justify-between py-4 border-b border-[#e8e6ea] last:border-0">
                     <div className="flex items-center gap-3">
@@ -256,7 +256,7 @@ function BookingWizard() {
             value={address}
             onChange={(e) => { setAddress(e.target.value); setAddressError(""); }}
             error={addressError}
-            placeholder="123 Main Street, Dhaka"
+            placeholder="123 Main Street, Kuala Lumpur"
           />
           <div className="bg-[#f3f6f8] rounded-[16px] p-4 text-sm text-[#8f92a1]">
             <p className="font-bold text-[#1b1d21] mb-2">📍 Location Tips</p>

@@ -5,101 +5,98 @@ import { generateMeta, serviceSchema, breadcrumbSchema } from "@/lib/seo";
 
 export const metadata: Metadata = {
   ...generateMeta({
-    title: "Home Services – House Shifting, Cleaning, Plumbing & More | Shifty",
-    description: "Browse 50+ professional home services in Dhaka. House shifting, deep cleaning, plumbing, electrical, pest control, painting and AC service. Verified workers, upfront pricing.",
+    title: "Appliance Repair Services in KL | RepairKL",
+    description: "Professional fridge repair, washing machine repair, dryer repair, air-conditioner service and AC installation in Kuala Lumpur. All brands, same-day service available.",
     path: "/our-services",
-    keywords: ["home services Dhaka", "house shifting service", "cleaning service Dhaka", "plumbing service", "electrical repair", "pest control Dhaka"],
+    keywords: ["fridge repair Kuala Lumpur", "washing machine repair Malaysia", "dryer repair KL", "AC service Kuala Lumpur", "appliance repair Malaysia"],
   }),
 };
 
 const CATEGORIES = [
   {
-    slug: "house-shifting",
-    name: "House Shifting",
-    tagline: "Complete Residential Relocation",
-    icon: "🏠",
-    color: "#fd6b22",
-    bg: "#fff0e8",
-    desc: "Our professional movers handle everything — packing, loading, transport, unloading and unpacking — so your move is completely stress-free.",
-    features: ["Trained packing specialists", "GPS-tracked vehicles", "Furniture insurance", "Same-day & advance booking", "4-hour to full-day packages"],
-    startingPrice: 3500,
-  },
-  {
-    slug: "office-shifting",
-    name: "Office Shifting",
-    tagline: "Corporate Relocation Experts",
-    icon: "🏢",
+    slug: "fridge-repair",
+    name: "Fridge Repair",
+    tagline: "All Brands & Models",
+    icon: "❄️",
     color: "#2196f3",
     bg: "#e8f0ff",
-    desc: "Minimal disruption office moves for businesses of all sizes. Our teams work evenings and weekends to ensure zero downtime.",
-    features: ["IT equipment specialists", "Server & network safe-move", "Overnight moves available", "Dedicated project manager", "Post-move setup assistance"],
-    startingPrice: 12000,
+    desc: "Our certified technicians diagnose and repair all fridge and freezer problems. Not cooling, water leaking, ice maker issues, noisy compressor — we fix it all.",
+    features: [
+      "All brands: Samsung, LG, Panasonic, Sharp, Hisense",
+      "Same-day service available",
+      "Free diagnosis with repair",
+      "1–3 month warranty on repairs",
+      "Original and compatible parts available",
+    ],
+    startingPrice: 60,
   },
   {
-    slug: "home-cleaning",
-    name: "Deep Home Cleaning",
-    tagline: "Spotless Every Corner",
-    icon: "🧹",
+    slug: "washing-machine-repair",
+    name: "Washing Machine Repair",
+    tagline: "Top Load & Front Load",
+    icon: "🌀",
     color: "#4fbf67",
     bg: "#e8fff2",
-    desc: "Professional deep cleaning using eco-friendly products. From 1BHK to large villas, we leave your home spotless and sanitised.",
-    features: ["Eco-certified products", "Inside appliance cleaning", "Bathroom deep sanitisation", "Kitchen degreasing", "Before-move & after-move packages"],
-    startingPrice: 1500,
+    desc: "Fix all washing machine faults — not spinning, not draining, error codes, drum bearing failure, pump replacement and more.",
+    features: [
+      "Top load and front load machines",
+      "Error code diagnosis",
+      "Motor, pump and belt replacement",
+      "Same-day slots available",
+      "1 month labour warranty",
+    ],
+    startingPrice: 60,
   },
   {
-    slug: "plumbing",
-    name: "Plumbing Services",
-    tagline: "Fast & Reliable Plumbers",
-    icon: "🔧",
+    slug: "dryer-repair",
+    name: "Dryer Repair",
+    tagline: "Fast Turnaround",
+    icon: "💨",
+    color: "#fd6b22",
+    bg: "#fff0e8",
+    desc: "Dryer not heating, not tumbling, overheating or tripping the circuit breaker — our technicians carry common parts for same-visit repairs.",
+    features: [
+      "Vented and condenser dryers",
+      "Heating element replacement",
+      "Thermostat and sensor checks",
+      "Belt and drum repair",
+      "1 month labour warranty",
+    ],
+    startingPrice: 60,
+  },
+  {
+    slug: "aircond-service",
+    name: "Air-Conditioner Service",
+    tagline: "Chemical Wash Specialists",
+    icon: "🌡️",
     color: "#00bcd4",
     bg: "#e8f8ff",
-    desc: "Leaks, blockages, installations and full bathroom plumbing. Licensed plumbers available for same-day emergency service.",
-    features: ["Licensed plumbers", "Same-day emergency service", "All brands & fixtures", "Pipe replacement", "New bathroom installation"],
-    startingPrice: 800,
+    desc: "Keep your AC running efficiently with regular servicing. Filter cleaning, chemical wash, coil rinse, drain flush and gas top-up for all brands.",
+    features: [
+      "All brands: Daikin, Mitsubishi, Panasonic, York, Midea",
+      "Basic service, chemical wash, chemical overhaul",
+      "Gas top-up (R32, R410A, R22)",
+      "Condensate drain flush",
+      "Genuine parts available",
+    ],
+    startingPrice: 80,
   },
   {
-    slug: "electrical",
-    name: "Electrical Services",
-    tagline: "Certified Electricians",
-    icon: "⚡",
-    color: "#ffb800",
-    bg: "#fffde8",
-    desc: "From basic repairs to full rewiring, our licensed electricians handle all residential and light commercial electrical work.",
-    features: ["Licensed electricians", "Panel upgrades", "Light fixture installation", "EV charger installation", "Safety inspections"],
-    startingPrice: 1000,
-  },
-  {
-    slug: "painting",
-    name: "Interior Painting",
-    tagline: "Professional Finish Every Time",
-    icon: "🎨",
-    color: "#e91e63",
-    bg: "#fce8ff",
-    desc: "Transform your home with professional interior and exterior painting. We use premium, durable paints with expert preparation and finishing.",
-    features: ["Premium paint brands", "Full surface preparation", "Colour consultation", "Wall repair & filling", "Clean-up included"],
-    startingPrice: 3200,
-  },
-  {
-    slug: "pest-control",
-    name: "Pest Control",
-    tagline: "Safe & Effective",
-    icon: "🐛",
+    slug: "aircond-installation",
+    name: "AC Installation",
+    tagline: "Full Setup Included",
+    icon: "🔧",
     color: "#9c27b0",
     bg: "#f3e8ff",
-    desc: "Safe, EPA-compliant pest elimination for all common household pests. Cockroaches, ants, termites, bedbugs and more.",
-    features: ["EPA-compliant treatments", "Pet & child safe options", "Termite protection", "Annual maintenance plans", "Pre & post-treatment guidance"],
-    startingPrice: 1800,
-  },
-  {
-    slug: "ac-repair",
-    name: "AC Service & Repair",
-    tagline: "All Brands Covered",
-    icon: "❄️",
-    color: "#00bcd4",
-    bg: "#e8f8ff",
-    desc: "Complete AC services including deep cleaning, gas refilling, installation and repair for all major brands.",
-    features: ["All brands & models", "Deep coil cleaning", "Gas refill (all types)", "New AC installation", "Annual service contract"],
-    startingPrice: 1200,
+    desc: "Complete air-conditioner installation including wall mounting, copper piping, electrical wiring, drain pipe and full test run.",
+    features: [
+      "1HP to 3HP units",
+      "Up to 25ft piping included in premium",
+      "Electrical wiring and MCB",
+      "Drainage and condensate piping",
+      "Post-installation test & handover",
+    ],
+    startingPrice: 350,
   },
 ];
 
@@ -119,7 +116,7 @@ export default async function OurServicesPage() {
     serviceSchema({
       name: cat.name,
       description: cat.desc,
-      url: `${process.env.NEXT_PUBLIC_APP_URL ?? "https://shifty.com"}/our-services#${cat.slug}`,
+      url: `${process.env.NEXT_PUBLIC_APP_URL ?? "https://repairkl.com"}/our-services#${cat.slug}`,
     })
   );
   const breadcrumb = breadcrumbSchema([{ name: "Home", url: "/" }, { name: "Our Services", url: "/our-services" }]);
@@ -145,11 +142,12 @@ export default async function OurServicesPage() {
             <span className="text-white/80">Our Services</span>
           </nav>
           <h1 className="text-5xl lg:text-7xl font-black text-white tracking-[-2px] leading-tight mb-6">
-            50+ Professional <br />
-            <span className="text-[#fd6b22]">Home Services</span>
+            5 Specialist <br />
+            <span className="text-[#fd6b22]">Repair Services</span>
+            <br /> in Kuala Lumpur
           </h1>
           <p className="text-white/60 text-xl max-w-2xl mx-auto mb-8">
-            Every service you need for your home, covered by verified professionals with transparent pricing and a satisfaction guarantee.
+            Professional appliance repair for fridge, washing machine, dryer and air-conditioner. All brands, same-day service available.
           </p>
           {/* Service pills */}
           <div className="flex flex-wrap justify-center gap-2">
@@ -196,7 +194,7 @@ export default async function OurServicesPage() {
                     <span className="text-[120px] opacity-60">{cat.icon}</span>
                     <div className="absolute top-4 left-4">
                       <span className="bg-white/80 backdrop-blur-sm text-[#1b1d21] text-xs font-bold px-3 py-1.5 rounded-full">
-                        Starting from ৳{(liveData?.basePrice ?? cat.startingPrice).toLocaleString()}
+                        Starting from RM{(liveData?.basePrice ?? cat.startingPrice).toLocaleString()}
                       </span>
                     </div>
                     {liveData && (

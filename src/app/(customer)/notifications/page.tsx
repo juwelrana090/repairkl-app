@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { getSession } from "@/lib/auth/session";
 import { prisma } from "@/lib/prisma";
 
-export const metadata: Metadata = { title: "Notifications – Shifty" };
+export const metadata: Metadata = { title: "Notifications – RepairKL" };
 
 export default async function NotificationsPage() {
   const session = await getSession();
@@ -57,7 +57,7 @@ export default async function NotificationsPage() {
                   {!n.isRead && <div className="w-2 h-2 bg-[#fd6b22] rounded-full shrink-0 mt-1" />}
                 </div>
                 <p className="text-xs text-[#8f92a1] mt-0.5">{n.body}</p>
-                <p className="text-[10px] text-[#8f92a1] mt-1">{new Date(n.createdAt).toLocaleDateString("en-BD", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</p>
+                <p className="text-[10px] text-[#8f92a1] mt-1">{new Date(n.createdAt).toLocaleDateString("en-MY", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</p>
               </div>
             </div>
           ))}

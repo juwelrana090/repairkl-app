@@ -15,7 +15,7 @@ export async function PUT(req: Request) {
       phone,
       address: {
         upsert: {
-          create: { street: address, city: city || "Dhaka", state: state || "Dhaka", zipCode: zipCode || "1000" },
+          create: { street: address, city: city || "Kuala Lumpur", state: state || "Kuala Lumpur", zipCode: zipCode || "1000" },
           update: { street: address, city, state, zipCode },
         },
       },

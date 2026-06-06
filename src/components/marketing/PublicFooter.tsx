@@ -1,14 +1,11 @@
 import Link from "next/link";
 
 const SERVICES = [
-  { name: "House Shifting", href: "/our-services#house-shifting" },
-  { name: "Home Cleaning", href: "/our-services#home-cleaning" },
-  { name: "Plumbing", href: "/our-services#plumbing" },
-  { name: "Electrical", href: "/our-services#electrical" },
-  { name: "Pest Control", href: "/our-services#pest-control" },
-  { name: "AC Servicing", href: "/our-services#ac-repair" },
-  { name: "Painting", href: "/our-services#painting" },
-  { name: "Office Shifting", href: "/our-services#office-shifting" },
+  { name: "Fridge Repair", href: "/our-services#fridge-repair" },
+  { name: "Washing Machine Repair", href: "/our-services#washing-machine-repair" },
+  { name: "Dryer Repair", href: "/our-services#dryer-repair" },
+  { name: "Air-Conditioner Service", href: "/our-services#aircond-service" },
+  { name: "AC Installation", href: "/our-services#aircond-installation" },
 ];
 
 const QUICK_LINKS = [
@@ -28,8 +25,8 @@ export default function PublicFooter() {
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "radial-gradient(circle at 20% 50%, #fff 0%, transparent 60%), radial-gradient(circle at 80% 50%, #fff 0%, transparent 60%)" }} />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 relative flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
-            <h2 className="text-2xl font-black text-white tracking-[-0.6px]">Ready to book a service?</h2>
-            <p className="text-white/80 text-sm mt-1">Trusted by 10,000+ happy customers across Dhaka</p>
+            <h2 className="text-2xl font-black text-white tracking-[-0.6px]">Ready to book a repair?</h2>
+            <p className="text-white/80 text-sm mt-1">Trusted by 10,000+ happy customers across Kuala Lumpur</p>
           </div>
           <div className="flex gap-3 shrink-0">
             <Link href="/register" className="bg-white text-[#fd6b22] font-bold text-sm px-6 py-3 rounded-[10px] hover:bg-[#f9fafb] transition-colors shadow-lg">
@@ -49,19 +46,19 @@ export default function PublicFooter() {
           <div className="lg:col-span-1">
             <Link href="/" className="flex items-center gap-2.5 mb-5">
               <div className="w-10 h-10 bg-[#fd6b22] rounded-[12px] flex items-center justify-center shadow-[0_4px_12px_rgba(253,107,34,0.3)]">
-                <span className="text-white font-black text-xl">S</span>
+                <span className="text-white font-black text-xl">R</span>
               </div>
-              <span className="font-black text-2xl text-white tracking-[-0.6px]">Shifty</span>
+              <span className="font-black text-2xl text-white tracking-[-0.6px]">RepairKL</span>
             </Link>
             <p className="text-white/60 text-sm leading-relaxed mb-6">
-              Bangladesh's most trusted home service platform. Book verified professionals for house shifting, cleaning, repairs and more — in minutes.
+              Malaysia's trusted home appliance repair service. Book certified technicians for fridge, washing machine, dryer and AC repair in Kuala Lumpur.
             </p>
             {/* Contact */}
             <div className="space-y-3">
               {[
-                { icon: "📧", text: "hello@shifty.com" },
-                { icon: "📞", text: "+880 1711-000000" },
-                { icon: "📍", text: "45 Gulshan Ave, Dhaka 1212" },
+                { icon: "📧", text: "hello@repairkl.com" },
+                { icon: "📞", text: "+60 11-2727 2745" },
+                { icon: "📍", text: "Kuala Lumpur, Malaysia" },
               ].map((item) => (
                 <div key={item.text} className="flex items-center gap-3 text-sm text-white/70">
                   <span className="text-base">{item.icon}</span>
@@ -147,7 +144,7 @@ export default function PublicFooter() {
       <div className="border-t border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex flex-col sm:flex-row items-center justify-between gap-2">
           <p className="text-xs text-white/40">
-            © {new Date().getFullYear()} Shifty. All rights reserved. Built with ❤️ in Bangladesh.
+            © {new Date().getFullYear()} RepairKL. All rights reserved. Built with ❤️ in Malaysia.
           </p>
           <div className="flex gap-4">
             <Link href="/privacy" className="text-xs text-white/40 hover:text-white/70 transition-colors">Privacy Policy</Link>

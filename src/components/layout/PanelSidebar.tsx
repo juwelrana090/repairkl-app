@@ -86,7 +86,7 @@ export default function PanelSidebar({
         {!collapsed && (
           <div className="min-w-0">
             <p className="font-bold text-sm truncate">{title}</p>
-            <p className="text-xs text-white/40 truncate">Shifty Platform</p>
+            <p className="text-xs text-white/40 truncate">RepairKL Platform</p>
           </div>
         )}
         <button

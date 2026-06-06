@@ -58,7 +58,7 @@ export function ServiceCard({ service }: { service: ServiceCardData }) {
           </div>
           <div className="flex items-center justify-between">
             <div>
-              <span className="text-lg font-bold text-[#fd6b22]">৳{Number(service.basePrice).toLocaleString()}</span>
+              <span className="text-lg font-bold text-[#fd6b22]">RM{Number(service.basePrice).toLocaleString()}</span>
               <span className="text-xs text-[#8f92a1] ml-1">/{service.priceUnit === "fixed" ? "job" : service.priceUnit.replace("_", " ")}</span>
             </div>
             <span className="text-xs font-bold text-[#fd6b22] bg-[#fff0e8] px-3 py-1.5 rounded-full">Book →</span>
@@ -139,11 +139,11 @@ export function BookingCard({
           </span>
         </div>
         <div className="flex items-center gap-4 text-xs text-[#8f92a1]">
-          <span>📅 {new Date(booking.scheduledDate).toLocaleDateString("en-BD", { day: "numeric", month: "short", year: "numeric" })}</span>
+          <span>📅 {new Date(booking.scheduledDate).toLocaleDateString("en-MY", { day: "numeric", month: "short", year: "numeric" })}</span>
           <span>🕐 {booking.scheduledTime}</span>
         </div>
         <div className="flex items-center justify-between mt-3 pt-3 border-t border-[#e8e6ea]">
-          <span className="text-base font-bold text-[#fd6b22]">৳{Number(booking.totalAmount).toLocaleString()}</span>
+          <span className="text-base font-bold text-[#fd6b22]">RM{Number(booking.totalAmount).toLocaleString()}</span>
           <span className="text-xs text-[#fd6b22] font-medium">View Details →</span>
         </div>
       </div>
@@ -185,7 +185,7 @@ export function WorkerCard({
             <RatingStars rating={worker.rating} size={12} />
             <span className="text-xs text-[#8f92a1]">({worker.reviewCount})</span>
           </div>
-          <span className="text-sm font-bold text-[#fd6b22]">৳{Number(worker.hourlyRate).toLocaleString()}/hr</span>
+          <span className="text-sm font-bold text-[#fd6b22]">RM{Number(worker.hourlyRate).toLocaleString()}/hr</span>
         </div>
       </div>
     </div>

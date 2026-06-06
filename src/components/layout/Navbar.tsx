@@ -29,13 +29,18 @@ export default function Navbar({
           ? "/support/dashboard"
           : "/home";
 
+  const profileHref =
+    user?.role === "WORKER"
+      ? "/worker/profile"
+      : "/profile";
+
   return (
     <header className="sticky top-0 z-40 bg-white border-b border-[#e8e6ea]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link href={dashboardHref} className="flex items-center gap-2 font-bold text-xl text-[#1b1d21]">
           <span className="w-8 h-8 bg-[#fd6b22] rounded-lg flex items-center justify-center text-white text-sm font-bold">S</span>
-          <span className="tracking-[-0.5px]">Shifty</span>
+          <span className="tracking-[-0.5px]">RepairKL</span>
         </Link>
 
         {/* Desktop Nav */}
@@ -85,7 +90,7 @@ export default function Navbar({
                       <p className="text-sm font-bold text-[#1b1d21]">{user.fullName}</p>
                       <p className="text-xs text-[#8f92a1] mt-0.5 capitalize">{user.role.toLowerCase()} Account</p>
                     </div>
-                    <Link href="/profile" className="menu-drop-item" onClick={() => setMenuOpen(false)}>
+                    <Link href={profileHref} className="menu-drop-item" onClick={() => setMenuOpen(false)}>
                       👤 My Profile
                     </Link>
                     {user.role === "ADMIN" && (

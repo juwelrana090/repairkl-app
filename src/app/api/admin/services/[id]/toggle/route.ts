@@ -1,11 +1,35 @@
-import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth/session";
-export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
-  const session = await getSession();
-  if (!session || session.role !== "ADMIN") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  const { id } = await params;
-  const body = await req.json();
-  await prisma.service.update({ where: { id }, data: body });
-  return NextResponse.json({ message: "Updated" });
+import { prisma } from "@/lib/prisma";
+
+export async function POST(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+    const session = await getSession();
+
+    if (!session || session.role !== "ADMIN") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const service = await prisma.service.findUnique({
+      where: { id },
+    });
+
+    if (!service) {
+      return NextResponse.json({ error: "Service not found" }, { status: 404 });
+    }
+
+    const updatedService = await prisma.service.update({
+      where: { id },
+      data: { isActive: !service.isActive },
+    });
+
+    return NextResponse.json({ data: updatedService });
+  } catch (error) {
+    console.error("[ADMIN_TOGGLE_SERVICE]", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
 }

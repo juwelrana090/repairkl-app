@@ -38,9 +38,9 @@ export async function registerUser(data: RegisterInput) {
         ? {
             create: {
               street: data.address,
-              city: "Dhaka",
-              state: data.state ?? "Dhaka",
-              zipCode: data.zipCode ?? "1215",
+              city: "Kuala Lumpur",
+              state: data.state ?? "Kuala Lumpur",
+              zipCode: data.zipCode ?? "50000",
             },
           }
         : undefined,

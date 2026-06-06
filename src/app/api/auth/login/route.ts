@@ -26,9 +26,14 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
     }
 
-    const token = await createSession({ userId: user.id, role: user.role });
+    await createSession({
+      userId: user.id,
+      email: user.email,
+      role: user.role,
+      fullName: user.fullName
+    });
 
-    const res = NextResponse.json({
+    return NextResponse.json({
       user: {
         id: user.id,
         fullName: user.fullName,
@@ -40,16 +45,6 @@ export async function POST(req: Request) {
         isPhoneVerified: user.isPhoneVerified,
       },
     });
-
-    res.cookies.set("shifty_token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 30,
-      path: "/",
-    });
-
-    return res;
   } catch (error) {
     console.error("[LOGIN]", error);
     return NextResponse.json({ error: "Login failed" }, { status: 500 });

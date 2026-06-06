@@ -36,8 +36,8 @@ export default function PublicNav() {
       <div className={twMerge("border-b border-white/10 transition-all", scrolled ? "hidden" : "block")}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-10 flex items-center justify-between text-xs text-white/80">
           <div className="flex items-center gap-6">
-            <span className="flex items-center gap-1.5">📧 hello@shifty.com</span>
-            <span className="flex items-center gap-1.5">📞 +880 1711-000000</span>
+            <span className="flex items-center gap-1.5">📧 hello@repairkl.com</span>
+            <span className="flex items-center gap-1.5">📞 +60 11-2727 2745</span>
             <span className="hidden md:flex items-center gap-1.5">🕐 Sat–Thu 8AM–10PM</span>
           </div>
           <div className="flex items-center gap-3">
@@ -55,12 +55,13 @@ export default function PublicNav() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-9 h-9 bg-[#fd6b22] rounded-[10px] flex items-center justify-center shadow-[0_4px_12px_rgba(253,107,34,0.3)]">
-              <span className="text-white font-black text-lg leading-none">S</span>
-            </div>
-            <span className={twMerge("font-black text-xl tracking-[-0.6px] transition-colors", scrolled ? "text-[#1b1d21]" : "text-white")}>
-              Shifty
-            </span>
+            <img
+              src={scrolled ? "/logo.svg" : "/logo-white.svg"}
+              alt="RepairKL"
+              width={140}
+              height={36}
+              className="h-9 w-auto"
+            />
           </Link>
 
           {/* Desktop links */}

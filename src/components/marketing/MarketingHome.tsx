@@ -4,39 +4,81 @@ import { localBusinessSchema } from "@/lib/seo";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Shifty – Bangladesh's Trusted Home Service Platform",
-  description: "Book professional house shifting, home cleaning, plumbing, electrical, pest control and 50+ home services in Dhaka. Verified workers, transparent pricing, 24/7 support.",
-  keywords: ["house shifting Dhaka", "home cleaning service", "plumbing repair Dhaka", "electrical service Dhaka", "home services Bangladesh", "shifty app"],
+  title: "RepairKL – Trusted Home Appliance Repair in KL",
+  description: "Book professional fridge, washing machine, dryer and air-conditioner repair in Kuala Lumpur. Fast, reliable, affordable.",
+  keywords: ["fridge repair Kuala Lumpur", "washing machine repair Malaysia", "dryer repair KL", "AC service Kuala Lumpur", "appliance repair Malaysia", "repairkl app"],
   openGraph: {
-    title: "Shifty – Bangladesh's Trusted Home Service Platform",
-    description: "Book 50+ home services instantly. Verified professionals, guaranteed quality.",
+    title: "RepairKL – Trusted Home Appliance Repair in KL",
+    description: "Book professional appliance repair services instantly. Verified technicians, guaranteed quality.",
     type: "website",
     images: [{ url: "/og-home.png", width: 1200, height: 630 }],
   },
 };
 
 const SERVICES = [
-  { icon: "🏠", name: "House Shifting", desc: "Complete relocation with packing, transport & unpacking by expert movers.", color: "#fff0e8", href: "/our-services#house-shifting" },
-  { icon: "🏢", name: "Office Shifting", desc: "Minimal downtime corporate relocation managed by dedicated teams.", color: "#e8eeff", href: "/our-services#office-shifting" },
-  { icon: "🧹", name: "Deep Cleaning", desc: "Top-to-bottom sanitisation of your home using eco-friendly products.", color: "#e8fff2", href: "/our-services#home-cleaning" },
-  { icon: "🔧", name: "Plumbing", desc: "Pipe leaks, fixture installation, drain unclogging — fixed same day.", color: "#e8f8ff", href: "/our-services#plumbing" },
-  { icon: "⚡", name: "Electrical", desc: "Wiring, panel upgrades, fixture installation by licensed electricians.", color: "#fffde8", href: "/our-services#electrical" },
-  { icon: "🎨", name: "Painting", desc: "Interior & exterior painting with premium, durable paint options.", color: "#fce8ff", href: "/our-services#painting" },
-  { icon: "🐛", name: "Pest Control", desc: "Safe, EPA-compliant elimination of all common household pests.", color: "#fff0e8", href: "/our-services#pest-control" },
-  { icon: "❄️", name: "AC Service", desc: "Installation, deep cleaning and gas refilling for all AC brands.", color: "#e8f8ff", href: "/our-services#ac-repair" },
+  {
+    icon: "❄️",
+    name: "Fridge Repair",
+    desc: "Not cooling, leaking, noisy compressor — all fridge problems fixed fast.",
+    color: "#e8f0ff",
+    href: "/our-services#fridge-repair",
+  },
+  {
+    icon: "🌀",
+    name: "Washing Machine Repair",
+    desc: "Not spinning, not draining, error codes — all brands and models.",
+    color: "#e8fff2",
+    href: "/our-services#washing-machine-repair",
+  },
+  {
+    icon: "💨",
+    name: "Dryer Repair",
+    desc: "Dryer not heating, overheating or tripping. Same-day service available.",
+    color: "#fff0e8",
+    href: "/our-services#dryer-repair",
+  },
+  {
+    icon: "🌡️",
+    name: "AC Service",
+    desc: "Filter cleaning, chemical wash, gas top-up for all AC brands.",
+    color: "#e8f8ff",
+    href: "/our-services#aircond-service",
+  },
+  {
+    icon: "🔧",
+    name: "AC Installation",
+    desc: "Full installation with piping, wiring and testing. All HP sizes.",
+    color: "#f3e8ff",
+    href: "/our-services#aircond-installation",
+  },
 ];
 
 const HOW_IT_WORKS = [
-  { step: "01", icon: "🔍", title: "Browse & Choose", desc: "Search from 50+ professional home services. Compare packages and prices in seconds." },
-  { step: "02", icon: "📅", title: "Book Instantly", desc: "Pick your preferred date and time. No calls needed — confirm in under 2 minutes." },
-  { step: "03", icon: "🎉", title: "Sit Back & Relax", desc: "A verified professional arrives at your door and completes the job to your satisfaction." },
+  {
+    step: "01",
+    icon: "📱",
+    title: "Book Online",
+    desc: "Choose your appliance, pick a time slot. Takes under 2 minutes.",
+  },
+  {
+    step: "02",
+    icon: "👷",
+    title: "Technician Arrives",
+    desc: "Certified technician arrives at your door on time with all tools.",
+  },
+  {
+    step: "03",
+    icon: "✅",
+    title: "Problem Solved",
+    desc: "Repair completed with a warranty. Pay only when you're satisfied.",
+  },
 ];
 
 const STATS = [
-  { number: "50K+", label: "Happy Customers", icon: "😊" },
-  { number: "1,200+", label: "Services Completed", icon: "✅" },
-  { number: "500+", label: "Verified Workers", icon: "👷" },
-  { number: "4.9★", label: "Average Rating", icon: "⭐" },
+  { number: "10K+", label: "Repairs Completed", icon: "🔧" },
+  { number: "500+", label: "5-Star Reviews", icon: "⭐" },
+  { number: "50+", label: "Certified Technicians", icon: "👷" },
+  { number: "4.9★", label: "Average Rating", icon: "🏆" },
 ];
 
 const TESTIMONIALS = [
@@ -59,7 +101,7 @@ const TESTIMONIALS = [
   {
     name: "Md. Ariful Haq",
     role: "Business Owner, Motijheel",
-    text: "Used Shifty for our office relocation. The team handled our servers and sensitive equipment with utmost care. 10/10.",
+    text: "Used RepairKL for our office relocation. The team handled our servers and sensitive equipment with utmost care. 10/10.",
     rating: 5,
     avatar: "A",
     bg: "#2196f3",
@@ -72,15 +114,30 @@ const FEATURES = [
   { icon: "🛡️", title: "Service Guarantee", desc: "Not happy? We'll re-do the service free of charge or give you a full refund." },
   { icon: "📞", title: "24/7 Support", desc: "Our support team is available around the clock via chat, call or email." },
   { icon: "⚡", title: "Same-Day Booking", desc: "Book up to 1 hour in advance. Emergency services available in most areas." },
-  { icon: "🌟", title: "Rated #1 in Dhaka", desc: "Consistently 4.9★ across 50,000+ reviews on Google and Facebook." },
+  { icon: "🌟", title: "Rated #1 in Kuala Lumpur", desc: "Consistently 4.9★ across 50,000+ reviews on Google and Facebook." },
 ];
 
 const FAQS = [
-  { q: "How do I book a service?", a: "Create a free account, browse services, pick a package and time slot, then confirm. It takes under 2 minutes." },
-  { q: "Are your workers insured?", a: "Yes. All workers carry liability insurance. Any accidental damage during service is fully covered." },
-  { q: "Can I reschedule or cancel?", a: "You can cancel or reschedule for free up to 24 hours before the appointment." },
-  { q: "What payment methods do you accept?", a: "bKash, Nagad, cash on delivery, and debit/credit cards are all accepted." },
-  { q: "Do you serve outside Dhaka?", a: "Currently we operate in Dhaka, Chittagong, and Sylhet. More cities are coming soon." },
+  {
+    q: "What brands do you service?",
+    a: "We service all major brands including Samsung, LG, Panasonic, Sharp, Daikin, Mitsubishi, and more.",
+  },
+  {
+    q: "How much does a repair cost?",
+    a: "Diagnosis starts from RM60. Repairs start from RM120 depending on the fault. You'll get a full quote before any work begins.",
+  },
+  {
+    q: "Do you offer a warranty?",
+    a: "Yes. All repairs come with a minimum 1-month warranty on labour. Parts carry their own manufacturer warranty.",
+  },
+  {
+    q: "Is same-day service available?",
+    a: "Yes, for most areas in Kuala Lumpur. Book before 12pm for same-day slots.",
+  },
+  {
+    q: "What payment methods do you accept?",
+    a: "Cash, online banking (FPX), Touch 'n Go eWallet, and credit/debit cards.",
+  },
 ];
 
 export default async function MarketingHome() {
@@ -145,24 +202,24 @@ export default async function MarketingHome() {
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 bg-[#fd6b22]/10 border border-[#fd6b22]/20 rounded-full px-4 py-2 mb-8">
               <span className="w-2 h-2 bg-[#4fbf67] rounded-full animate-pulse" />
-              <span className="text-[#fd6b22] text-sm font-semibold">Bangladesh&apos;s #1 Home Service Platform</span>
+              <span className="text-[#fd6b22] text-sm font-semibold">Malaysia&apos;s #1 Home Service Platform</span>
             </div>
 
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black text-white tracking-[-2px] leading-[1.05] mb-6">
-              Every Home{" "}
+              Fast, Reliable{" "}
               <span className="relative">
-                <span className="text-[#fd6b22]">Service</span>
+                <span className="text-[#fd6b22]">Appliance Repair</span>
                 <svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 200 12" fill="none">
                   <path d="M4 8 Q 100 2 196 8" stroke="#fd6b22" strokeWidth="3" strokeLinecap="round" fill="none" opacity="0.5"/>
                 </svg>
               </span>
-              <br />You Need,<br />
-              <span className="text-white/40">One App.</span>
+              <br />in Kuala Lumpur.<br />
+              <span className="text-white/40">Same-day service available.</span>
             </h1>
 
             <p className="text-white/70 text-lg leading-relaxed max-w-xl mb-10">
-              Book verified professionals for house shifting, deep cleaning, plumbing, electrical and 50+ more services. 
-              Transparent prices. Same-day availability. 100% satisfaction guaranteed.
+              Book certified technicians for fridge, washing machine, dryer and air-conditioner repair.
+              Transparent prices. Same-day service available. All brands covered.
             </p>
 
             <div className="flex flex-wrap gap-3 mb-12">
@@ -224,7 +281,7 @@ export default async function MarketingHome() {
             {[
               { icon: "📱", title: "Book in 2 Minutes", desc: "Simple, fast mobile booking" },
               { icon: "👷", title: "Verified Professionals", desc: "Background-checked & insured" },
-              { icon: "💳", title: "Flexible Payment", desc: "bKash, Nagad, cash & card" },
+              { icon: "💳", title: "Flexible Payment", desc: "Touch 'n Go, GrabPay, cash & card" },
               { icon: "🔄", title: "Free Rescheduling", desc: "Cancel or change anytime" },
             ].map((f) => (
               <div key={f.title} className="bg-white rounded-[20px] border border-[#e8e6ea] p-5 flex items-start gap-4 hover:shadow-md transition-shadow">
@@ -240,7 +297,7 @@ export default async function MarketingHome() {
       </section>
 
       {/* ─── ABOUT / STORY ───────────────────────────────────────────────── */}
-      <section className="py-20 bg-[#f9fafb]" aria-label="About Shifty">
+      <section className="py-20 bg-[#f9fafb]" aria-label="About RepairKL">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             {/* Visual side */}
@@ -252,13 +309,13 @@ export default async function MarketingHome() {
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-8">
                   <span className="text-7xl mb-4">🏠</span>
                   <h3 className="text-white text-2xl font-black">Home is where we care</h3>
-                  <p className="text-white/60 text-sm mt-2">Serving Dhaka since 2021</p>
+                  <p className="text-white/60 text-sm mt-2">Serving Kuala Lumpur since 2021</p>
                 </div>
               </div>
               {/* Floating badge */}
               <div className="absolute -bottom-6 -right-6 bg-[#fd6b22] rounded-[20px] p-5 shadow-xl">
                 <div className="text-white font-black text-4xl">5+</div>
-                <div className="text-white/80 text-sm font-medium">Years serving<br/>Bangladesh</div>
+                <div className="text-white/80 text-sm font-medium">Years serving<br/>Malaysia</div>
               </div>
               {/* Workers badge */}
               <div className="absolute -top-4 -left-4 bg-white rounded-[16px] p-4 shadow-lg border border-[#e8e6ea]">
@@ -269,12 +326,12 @@ export default async function MarketingHome() {
 
             {/* Text side */}
             <div>
-              <span className="inline-block text-[#fd6b22] font-bold text-sm uppercase tracking-widest mb-4">About Shifty</span>
+              <span className="inline-block text-[#fd6b22] font-bold text-sm uppercase tracking-widest mb-4">About RepairKL</span>
               <h2 className="text-4xl font-black text-[#1b1d21] tracking-[-1.2px] leading-tight mb-6">
                 Your Trusted Partner <br />for Every Home Need
               </h2>
               <p className="text-[#8f92a1] leading-relaxed mb-6">
-                Shifty was founded with a simple mission: make it effortless for every family in Bangladesh to access high-quality, affordable home services. We connect you with background-checked professionals who treat your home with the same care they&apos;d treat their own.
+                RepairKL was founded with a simple mission: make it effortless for every family in Malaysia to access high-quality, affordable home services. We connect you with background-checked professionals who treat your home with the same care they&apos;d treat their own.
               </p>
               <p className="text-[#8f92a1] leading-relaxed mb-8">
                 From a single cleaner to a full house-shifting crew, our platform manages the scheduling, payments, and quality assurance so you can focus on what matters most.
@@ -322,7 +379,7 @@ export default async function MarketingHome() {
               Professional Services <br />For Every Home Need
             </h2>
             <p className="text-[#8f92a1] leading-relaxed">
-              50+ services across 8 categories. All bookable in under 2 minutes with upfront pricing and guaranteed quality.
+              5 specialist repair services for home appliances. All bookable in under 2 minutes with upfront pricing and guaranteed quality.
             </p>
           </div>
 
@@ -394,16 +451,16 @@ export default async function MarketingHome() {
       </section>
 
       {/* ─── WHY CHOOSE US ───────────────────────────────────────────────── */}
-      <section className="py-24 bg-white" aria-label="Why choose Shifty">
+      <section className="py-24 bg-white" aria-label="Why choose RepairKL">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
             <div>
-              <span className="inline-block text-[#fd6b22] font-bold text-sm uppercase tracking-widest mb-4">Why Shifty</span>
+              <span className="inline-block text-[#fd6b22] font-bold text-sm uppercase tracking-widest mb-4">Why RepairKL</span>
               <h2 className="text-4xl font-black text-[#1b1d21] tracking-[-1.2px] leading-tight mb-6">
                 We&apos;ve Thought of <br />Everything You Need
               </h2>
               <p className="text-[#8f92a1] leading-relaxed mb-10">
-                From booking to payment to after-service support, every detail of your experience has been designed to be effortless. Here&apos;s why over 50,000 families trust Shifty.
+                From booking to payment to after-service support, every detail of your experience has been designed to be effortless. Here&apos;s why over 50,000 families trust RepairKL.
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {FEATURES.map((f) => (
@@ -424,20 +481,20 @@ export default async function MarketingHome() {
                   <span className="text-white/60 text-sm ml-2">4.9/5 (50,000+ reviews)</span>
                 </div>
                 <blockquote className="text-white/90 text-xl font-medium leading-relaxed mb-8 italic">
-                  &ldquo;Shifty has completely changed how I manage home maintenance. I used to dread calling service providers — now it&apos;s actually enjoyable. The workers are professional, the prices are fair, and everything just works.&rdquo;
+                  &ldquo;RepairKL has completely changed how I manage home maintenance. I used to dread calling service providers — now it&apos;s actually enjoyable. The workers are professional, the prices are fair, and everything just works.&rdquo;
                 </blockquote>
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-full bg-[#fd6b22] flex items-center justify-center text-white font-bold text-lg">S</div>
                   <div>
                     <p className="text-white font-bold">Shadman Sakib</p>
-                    <p className="text-white/50 text-sm">Homeowner, Uttara, Dhaka</p>
+                    <p className="text-white/50 text-sm">Homeowner, Uttara, Kuala Lumpur</p>
                   </div>
                 </div>
               </div>
 
               {/* Download CTA card */}
               <div className="mt-5 bg-gradient-to-r from-[#fd6b22] to-[#ff8c50] rounded-[24px] p-7">
-                <h3 className="text-white font-black text-xl mb-2">Download the Shifty App</h3>
+                <h3 className="text-white font-black text-xl mb-2">Download the RepairKL App</h3>
                 <p className="text-white/80 text-sm mb-5">Book services, track workers, and manage everything from your phone.</p>
                 <div className="flex gap-3">
                   <a href="#" className="bg-[#1b1d21] text-white text-sm font-bold px-5 py-3 rounded-[10px] hover:bg-black transition-colors flex items-center gap-2">

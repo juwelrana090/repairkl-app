@@ -1,0 +1,6 @@
+Memory System Version: 1.0.0
+Created: 2026-06-05
+Project: shifty-app
+Stack: Next.js 15 · Prisma 6 · PostgreSQL · TanStack Query v5 · Zustand v5 · TypeScript
+Last Scan: pending — run /r-memory scan
+Last Cache Warm: pending — run /r-cache warm

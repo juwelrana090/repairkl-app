@@ -1,46 +1,39 @@
-import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth/session";
+import { prisma } from "@/lib/prisma";
 
-export async function GET(req: Request) {
-  const session = await getSession();
-  if (!session || session.role !== "WORKER") {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
+export async function GET(request: NextRequest) {
+  try {
+    const session = await getSession();
 
-  const worker = await prisma.worker.findUnique({ where: { userId: session.userId } });
-  if (!worker) return NextResponse.json({ error: "Not found" }, { status: 404 });
+    if (!session || session.role !== "WORKER") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
-  const { searchParams } = new URL(req.url);
-  const status = searchParams.get("status");
+    const worker = await prisma.worker.findUnique({
+      where: { userId: session.userId },
+    });
 
-  const assignments = await prisma.bookingWorker.findMany({
-    where: {
-      workerId: worker.id,
-      ...(status ? { booking: { status } } : {}),
-    },
-    include: {
-      booking: {
-        include: {
-          service: { select: { name: true } },
-          customer: { select: { fullName: true } },
+    if (!worker) {
+      return NextResponse.json({ error: "Worker profile not found" }, { status: 404 });
+    }
+
+    const assignments = await prisma.bookingWorker.findMany({
+      where: { workerId: worker.id },
+      include: {
+        booking: {
+          include: {
+            service: { select: { name: true } },
+            customer: { select: { fullName: true, phone: true } },
+          },
         },
       },
-    },
-    orderBy: { assignedAt: "desc" },
-    take: 30,
-  });
+      orderBy: { assignedAt: "desc" },
+    });
 
-  const jobs = assignments.map((a) => ({
-    id: a.id,
-    bookingId: a.bookingId,
-    serviceName: a.booking.service.name,
-    customerName: a.booking.customer.fullName,
-    scheduledDate: a.booking.scheduledDate,
-    scheduledTime: a.booking.scheduledTime,
-    status: a.booking.status,
-    earning: Number(a.booking.totalAmount) * 0.7,
-  }));
-
-  return NextResponse.json({ jobs });
+    return NextResponse.json({ data: assignments });
+  } catch (error) {
+    console.error("[WORKER_JOBS]", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
 }

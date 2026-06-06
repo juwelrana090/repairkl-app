@@ -8,7 +8,7 @@ import { BookingCard } from "@/components/shared/Cards";
 import HomeSearchBar from "./HomeSearchBar";
 
 export const metadata: Metadata = {
-  title: "Home – Shifty",
+  title: "Home – RepairKL",
   description: "Book trusted home services near you",
 };
 

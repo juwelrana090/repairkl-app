@@ -1,91 +1,133 @@
-# AGENTS.md – Shifty Sub-Agents
+# AGENTS.md — Universal AI Agent Protocol
 
-## Orchestration Protocol
-All agents MUST:
-1. Read `CLAUDE.md` before starting
-2. Read relevant files in `.context/` folder
-3. Follow existing patterns (don't reinvent)
-4. Update `.context/` after significant changes
+# Works with: Claude Code · Cursor · Windsurf · GitHub Copilot · Gemini CLI · Aider
 
----
+> This file is the entry point for any AI agent working on this project.
+> Read this file and all files listed in the PRE-TASK section before starting any work.
 
-## 🗄️ Agent: schema-agent
-**Trigger**: "update schema", "add model", "migrate db"
+## Project Identity
 
-**Reads**: `prisma/schema.prisma`
+- **Name**: RepairKL
+- **Stack**: Next.js 16 · Prisma 6 · MySQL · TanStack Query v5 · Zustand · TypeScript
+- **Auth**: JWT httpOnly cookie (repairkl_token)
+- **ORM**: Prisma with MySQL
+- **Purpose**: Home appliance repair booking in Malaysia
 
-**Protocol**:
-1. Check existing models to avoid duplication
-2. Follow naming conventions (camelCase fields, PascalCase models)
-3. Run `npx prisma db push` after changes
-4. Never change existing field types without confirming with user
-5. Add `@@map("snake_case")` for all models
+## 🔴 AGENT RULES — NON-NEGOTIABLE
 
----
+### Before EVERY task
 
-## 🎨 Agent: ui-agent
-**Trigger**: "create page", "add screen", "implement UI"
+1. Read `.context/overview.md`
+2. Read `.context/db.md` (before any DB work)
+3. Read `CLAUDE.md` (full rules)
+4. Read `.claude/memory/gotchas.md`
+5. Read the relevant `.claude/modules/[name].md`
+6. State your plan — list every file you will touch
+7. Wait for confirmation if touching more than 5 files
 
-**Reads**: `src/components/ui/`, `src/components/shared/Cards.tsx`
+### After EVERY task
 
-**Protocol**:
-1. Check if component exists before creating
-2. Follow design tokens from CLAUDE.md
-3. Use existing `Button`, `Input`, `StatusBadge`, `Modal`, `EmptyState`, `Skeleton` components
-4. SSR pages: no "use client", use `async` server components
-5. Client interactions: extract to `*Client.tsx` or `*Form.tsx` components
+1. Update `.context/overview.md` → add to Recent Changes
+2. Update `.context/db.md` → if any DB changes
+3. Update `.claude/modules/[affected].md` → add to changelog
+4. Update `.claude/memory/gotchas.md` → add any new traps found
+5. Update `.claude/memory/decisions.md` → log architectural choices
+6. Save task log → `.claude/tasks/logs/YYYY-MM-DD-[title].md`
+7. Suggest a git commit message
 
----
+### Forbidden (never do these)
 
-## 🔐 Agent: auth-agent
-**Trigger**: "fix auth", "add role", "session", "middleware"
+- ❌ NEVER `new PrismaClient()` — always `import { prisma } from "@/lib/prisma"`
+- ❌ NEVER `params.id` directly — always `const { id } = await params` (Next.js 16)
+- ❌ NEVER store JWT in localStorage — httpOnly cookie only
+- ❌ NEVER use `shifty_token` — always `repairkl_token` for JWT
+- ❌ NEVER expose `passwordHash` in API responses
+- ❌ NEVER write files outside the project root
+- ❌ NEVER skip reading memory before starting a task
+- ❌ NEVER skip updating memory after finishing a task
 
-**Reads**: `src/lib/auth/session.ts`, `src/app/api/auth/`
+## 📁 Memory System
 
-**Protocol**:
-1. Always use `getSession()` from `@/lib/auth/session`
-2. Never expose passwordHash in API responses
-3. JWT stored in httpOnly cookie `shifty_token`
-4. Role check pattern: `if (session.role !== "ADMIN") redirect("/login")`
+| Location                    | Purpose                           | Read When                    |
+| --------------------------- | --------------------------------- | ---------------------------- |
+| `AGENTS.md`                 | This file — universal entry point | Always                       |
+| `CLAUDE.md`                 | Full project memory (Claude Code) | Always                       |
+| `.context/overview.md`      | Quick project state               | Always                       |
+| `.context/db.md`            | Database config & history         | Any DB task                  |
+| `.context/[feature].md`     | Feature-specific notes            | When working on that feature |
+| `.claude/memory/gotchas.md` | Known traps                       | Before every task            |
+| `.claude/memory/rules.md`   | Coding rules                      | Before every task            |
+| `.claude/modules/[name].md` | Module detail                     | When touching that module    |
+| `.claude/tasks/logs/`       | Task history                      | When context is needed       |
 
----
+## 🏗️ Architecture Quick Reference
 
-## 📡 Agent: api-agent
-**Trigger**: "add API", "create endpoint", "fix API"
+### Route Groups (Next.js App Router)
 
-**Reads**: `src/app/api/`, `src/lib/prisma.ts`
+Route group folders `(name)` are NOT part of the URL path.
 
-**Protocol**:
-1. Always validate session at route start
-2. Return consistent `{ error: "message" }` on errors
-3. Use try/catch with console.error for all routes
-4. Status codes: 200 OK, 201 Created, 400 Bad Request, 401 Unauth, 403 Forbidden, 404 Not Found, 500 Server Error
-5. Admin-only routes check `session.role !== "ADMIN"`
+- `(customer)/home` → URL: `/home`
+- `(admin)/dashboard` → URL: `/admin/dashboard`
+- `(marketing)/about` → URL: `/about`
 
----
+### API Route Pattern
 
-## 📱 Agent: mobile-agent
-**Trigger**: "mobile screen", "react native", "expo"
+```ts
+export async function POST(req: Request) {
+  const session = await getSession(); // auth first
+  if (!session)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  try {
+    const body = await req.json();
+    const result = await prisma.model.create({ data: body });
+    return NextResponse.json({ result });
+  } catch (err) {
+    console.error("[ROUTE_NAME]", err);
+    return NextResponse.json({ error: "Failed" }, { status: 500 });
+  }
+}
+```
 
-**Reads**: `../shifty-mobile/CLAUDE.md`, `../shifty-mobile/src/store/`
+### Database (Prisma + MySQL)
 
-**Protocol**:
-1. Follow Expo Router file-based routing
-2. Use NativeWind v4 for styling (Tailwind classes via `className`)
-3. Protected routes check Redux auth state
-4. Use RTK Query for API calls
-5. Navigation: `router.push()`, `router.replace()` for auth flows
+```ts
+import { prisma } from "@/lib/prisma"; // ALWAYS use this import
+// Connection: mysql://root:password@localhost:3306/repairkl_db?schema=public
+// Never use new PrismaClient() outside of lib/prisma.ts
+```
 
----
+### Auth Pattern
 
-## 📊 Agent: admin-agent
-**Trigger**: "admin page", "dashboard", "reports"
+```ts
+const session = await getSession(); // from @/lib/auth/session
+if (!session) redirect("/login");
+if (session.role !== "ADMIN") redirect("/login");
+```
 
-**Reads**: `src/app/(admin)/`, `src/components/shared/Cards.tsx`
+## 🛠️ Dev Commands
 
-**Protocol**:
-1. All admin pages are SSR (no "use client" on page)
-2. Extract interactive parts to `*Client.tsx`
-3. Use `StatCard`, `BookingCard` from Cards.tsx
-4. Always include pagination for table views
-5. Add confirm dialogs for destructive actions
+```bash
+npm run dev          # Start dev server (Next.js 16, Turbopack)
+npm run build        # Production build
+npm run db:push      # Push schema to PostgreSQL (dev)
+npm run db:migrate   # Create migration file
+npm run db:seed      # Seed demo data
+npm run db:studio    # Open Prisma Studio (localhost:5555)
+npm run db:reset     # Drop + repush + reseed
+```
+
+## 🎨 Design Tokens
+
+- Primary: `#fd6b22` | Dark: `#1b1d21` | Success: `#4fbf67`
+- Danger: `#f15223` | Border: `#e8e6ea` | Muted: `#8f92a1`
+- Font: DM Sans | Border radius: 16px (buttons), 20–32px (cards)
+
+## 🤝 For Non-Claude Agents (Cursor, Windsurf, Copilot, etc.)
+
+If you don't have access to the `.claude/` command system:
+
+1. Read all files listed in the Memory System table above
+2. Follow all rules in the Forbidden section
+3. After finishing: manually update `.context/overview.md` and `.context/db.md`
+4. Leave a comment block at the top of any file you significantly modify:
+   `// Last modified: [DATE] by [AGENT] — [what changed]`

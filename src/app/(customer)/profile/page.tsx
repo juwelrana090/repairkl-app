@@ -3,7 +3,7 @@ import { getSession } from "@/lib/auth/session";
 import { prisma } from "@/lib/prisma";
 import ProfileForm from "./ProfileForm";
 
-export const metadata: Metadata = { title: "My Profile – Shifty" };
+export const metadata: Metadata = { title: "My Profile – RepairKL" };
 
 export default async function ProfilePage() {
   const session = await getSession();

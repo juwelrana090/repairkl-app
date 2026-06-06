@@ -1,9 +1,9 @@
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 
-const SESSION_COOKIE = "shifty_session";
-const TOKEN_COOKIE = "shifty_token";
-const JWT_SECRET = process.env.JWT_SECRET ?? "shifty-secret-change-in-production";
+const SESSION_COOKIE = "repairkl_session";
+const TOKEN_COOKIE = "repairkl_token";
+const JWT_SECRET = process.env.JWT_SECRET ?? "repairkl-secret-change-in-production";
 const SESSION_DURATION = 60 * 60 * 24 * 7; // 7 days
 
 export interface SessionPayload {
@@ -13,7 +13,7 @@ export interface SessionPayload {
   fullName: string;
 }
 
-export async function createSession(payload: SessionPayload): Promise<void> {
+export async function createSession(payload: SessionPayload): Promise<string> {
   const token = jwt.sign(payload, JWT_SECRET, { expiresIn: SESSION_DURATION });
   const cookieStore = await cookies();
   cookieStore.set(TOKEN_COOKIE, token, {
@@ -23,6 +23,7 @@ export async function createSession(payload: SessionPayload): Promise<void> {
     maxAge: SESSION_DURATION,
     path: "/",
   });
+  return token;
 }
 
 export async function getSession(): Promise<SessionPayload | null> {

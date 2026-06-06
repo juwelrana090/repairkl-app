@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { BookingCard } from "@/components/shared/Cards";
 import OrdersTabs from "./OrdersTabs";
 
-export const metadata: Metadata = { title: "My Orders – Shifty" };
+export const metadata: Metadata = { title: "My Orders – RepairKL" };
 
 export default async function OrdersPage({
   searchParams,

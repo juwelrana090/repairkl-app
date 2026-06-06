@@ -37,7 +37,7 @@ export async function POST(req: Request) {
         passwordHash,
         role: "CUSTOMER",
         address: address ? {
-          create: { street: address, city: state || "Dhaka", state: state || "Dhaka", zipCode: zipCode || "1000" },
+          create: { street: address, city: state || "Kuala Lumpur", state: state || "Kuala Lumpur", zipCode: zipCode || "1000" },
         } : undefined,
         otpCodes: {
           create: { code: otp, type: "PHONE_VERIFY", expiresAt: otpExpiry },
@@ -45,7 +45,7 @@ export async function POST(req: Request) {
       },
     });
 
-    // TODO: Send OTP via SMS (Twilio, BDTel, etc.)
+    // TODO: Send OTP via SMS (Twilio, MYTel, etc.)
     console.log(`[OTP] Send ${otp} to ${phone}`);
 
     return NextResponse.json({ userId: user.id, message: "OTP sent to your phone" }, { status: 201 });

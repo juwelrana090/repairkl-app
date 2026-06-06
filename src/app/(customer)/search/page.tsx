@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { ServiceCard } from "@/components/shared/Cards";
 import { Suspense } from "react";
 
-export const metadata: Metadata = { title: "Search – Shifty" };
+export const metadata: Metadata = { title: "Search – RepairKL" };
 
 export default async function SearchPage({
   searchParams,

@@ -4,7 +4,7 @@ import { ServiceCard } from "@/components/shared/Cards";
 import ServicesFilter from "./ServicesFilter";
 
 export const metadata: Metadata = {
-  title: "Services – Shifty",
+  title: "Services – RepairKL",
   description: "Browse all home services available near you",
 };
 

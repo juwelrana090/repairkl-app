@@ -25,6 +25,6 @@ export const useAuthStore = create<AuthState>()(
       setUser: (user) => set({ user, isAuthenticated: true }),
       clearUser: () => set({ user: null, isAuthenticated: false }),
     }),
-    { name: "shifty-auth" },
+    { name: "repairkl-auth" },
   ),
 );

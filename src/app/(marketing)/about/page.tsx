@@ -4,17 +4,17 @@ import { generateMeta, localBusinessSchema, breadcrumbSchema } from "@/lib/seo";
 
 export const metadata: Metadata = {
   ...generateMeta({
-    title: "About Us – Shifty Home Services",
-    description: "Learn about Shifty — Bangladesh's most trusted home service platform. Our story, mission, team and commitment to quality home services since 2021.",
+    title: "About Us – RepairKL Home Services",
+    description: "Learn about RepairKL — Malaysia's most trusted home service platform. Our story, mission, team and commitment to quality home services since 2021.",
     path: "/about",
-    keywords: ["about shifty", "home service company Bangladesh", "shifty team", "shifty mission"],
+    keywords: ["about repairkl", "home service company Malaysia", "repairkl team", "repairkl mission"],
   }),
 };
 
 const TIMELINE = [
-  { year: "2021", title: "Founded in Dhaka", desc: "Shifty launched with just 5 service workers and a vision to make home services effortless." },
+  { year: "2021", title: "Founded in Kuala Lumpur", desc: "RepairKL launched with just 5 service workers and a vision to make home services effortless." },
   { year: "2022", title: "1,000 Bookings Hit", desc: "We crossed our first major milestone and expanded to cleaning and electrical services." },
-  { year: "2023", title: "Chittagong Expansion", desc: "Moved into our second city with 100+ verified workers and 8 service categories." },
+  { year: "2023", title: "Penang Expansion", desc: "Moved into our second city with 100+ verified workers and 8 service categories." },
   { year: "2024", title: "Mobile App Launch", desc: "Our React Native app launched on iOS and Android, bringing bookings under 2 minutes." },
   { year: "2025", title: "50K+ Customers", desc: "Reached 50,000 happy customers with a consistent 4.9★ satisfaction rating." },
 ];
@@ -22,14 +22,14 @@ const TIMELINE = [
 const VALUES = [
   { icon: "🏆", title: "Quality First", desc: "We never compromise on the quality of our workers or the quality of your experience." },
   { icon: "🤝", title: "Trust & Transparency", desc: "Upfront pricing, no hidden fees, honest timelines. Always." },
-  { icon: "💚", title: "Community Impact", desc: "We create dignified employment opportunities for skilled workers across Bangladesh." },
+  { icon: "💚", title: "Community Impact", desc: "We create dignified employment opportunities for skilled workers across Malaysia." },
   { icon: "🚀", title: "Continuous Innovation", desc: "We keep improving our platform based on feedback from customers and workers alike." },
 ];
 
 const TEAM = [
   { name: "Ahmed Kamal", role: "Co-Founder & CEO", avatar: "A", bg: "#fd6b22", bio: "Serial entrepreneur with 10+ years in PropTech and marketplace businesses." },
-  { name: "Nadia Rahman", role: "Co-Founder & COO", avatar: "N", bg: "#4fbf67", bio: "Operations expert who built Shifty's worker vetting and quality systems from scratch." },
-  { name: "Rakib Hassan", role: "CTO", avatar: "R", bg: "#2196f3", bio: "Full-stack engineer and architect of the Shifty platform and mobile application." },
+  { name: "Nadia Rahman", role: "Co-Founder & COO", avatar: "N", bg: "#4fbf67", bio: "Operations expert who built RepairKL's worker vetting and quality systems from scratch." },
+  { name: "Rakib Hassan", role: "CTO", avatar: "R", bg: "#2196f3", bio: "Full-stack engineer and architect of the RepairKL platform and mobile application." },
   { name: "Sabina Akter", role: "Head of Customer Experience", avatar: "S", bg: "#9c27b0", bio: "Passionate about building systems that make customers feel genuinely cared for." },
 ];
 
@@ -60,7 +60,7 @@ export default function AboutPage() {
             <span className="text-[#fd6b22]">Fix Home Services</span>
           </h1>
           <p className="text-white/60 text-xl max-w-2xl mx-auto leading-relaxed">
-            Since 2021, we&apos;ve been making it easy for families across Bangladesh to access quality, affordable home services — with complete peace of mind.
+            Since 2021, we&apos;ve been making it easy for families across Malaysia to access quality, affordable home services — with complete peace of mind.
           </p>
         </div>
       </section>
@@ -75,9 +75,9 @@ export default function AboutPage() {
                 Born Out of Frustration, <br />Built with Purpose
               </h2>
               <div className="space-y-4 text-[#8f92a1] leading-relaxed">
-                <p>Shifty was born in 2021 when our founders spent three weeks trying to find a reliable house-shifting service in Dhaka — calling dozens of providers, getting different prices every time, and ultimately having a terrible experience.</p>
-                <p>We realised the problem wasn&apos;t a lack of skilled workers. Bangladesh has hundreds of thousands of capable professionals. The problem was that there was no trusted platform connecting them with customers in a transparent, fair way.</p>
-                <p>So we built one. Starting with house shifting, we quickly expanded to 8 service categories and 3 cities. Today, over 50,000 families trust Shifty for their home service needs.</p>
+                <p>RepairKL was born in 2021 when our founders spent three weeks trying to find a reliable house-shifting service in Kuala Lumpur — calling dozens of providers, getting different prices every time, and ultimately having a terrible experience.</p>
+                <p>We realised the problem wasn&apos;t a lack of skilled workers. Malaysia has hundreds of thousands of capable professionals. The problem was that there was no trusted platform connecting them with customers in a transparent, fair way.</p>
+                <p>So we built one. Starting with house shifting, we quickly expanded to 8 service categories and 3 cities. Today, over 50,000 families trust RepairKL for their home service needs.</p>
               </div>
             </div>
             {/* Stats grid */}
@@ -171,7 +171,7 @@ export default function AboutPage() {
       <section className="py-20 bg-[#1b1d21]">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl font-black text-white tracking-[-1.2px] mb-5">
-            Ready to Experience <br />the Shifty Difference?
+            Ready to Experience <br />the RepairKL Difference?
           </h2>
           <p className="text-white/60 mb-8">Join 50,000+ families who have already made the switch to smarter home services.</p>
           <div className="flex justify-center gap-4 flex-wrap">

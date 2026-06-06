@@ -4,7 +4,7 @@ import { getSession } from "@/lib/auth/session";
 import { prisma } from "@/lib/prisma";
 import { ServiceCard } from "@/components/shared/Cards";
 
-export const metadata: Metadata = { title: "Saved Services – Shifty" };
+export const metadata: Metadata = { title: "Saved Services – RepairKL" };
 
 export default async function SavedPage() {
   const session = await getSession();

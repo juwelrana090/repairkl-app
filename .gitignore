@@ -28,7 +28,6 @@ yarn-error.log*
 # local env files
 .env*.local
 .env
-.env.example
 
 # vercel
 .vercel
@@ -49,3 +48,10 @@ next-env.d.ts
 .tar.Z
 .tar.7z
 .tar.zst
+
+# ─────────────────────────────────────────────────────
+# Claude AI Memory System — Shifty App
+# ─────────────────────────────────────────────────────
+.claude/settings.local.json
+.claude/tasks/eod/
+

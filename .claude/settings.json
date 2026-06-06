@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(.claude/**)",
+      "Read(CLAUDE.md)",
+      "Read(src/**)",
+      "Write(src/**)",
+      "Read(prisma/**)",
+      "Write(prisma/**)",
+      "Read(public/**)",
+      "Write(public/**)",
+      "Write(.claude/tasks/**)",
+      "Write(.claude/memory/**)",
+      "Write(.claude/modules/**)",
+      "Write(.claude/skills/**)",
+      "Write(.claude/commands/**)",
+      "Read(package.json)",
+      "Read(tsconfig.json)",
+      "Read(next.config.ts)",
+      "Read(tailwind.config.ts)",
+      "Read(.env.example)"
+    ],
+    "deny": [
+      "Write(~/**)",
+      "Write(../**)",
+      "Read(~/.ssh/**)",
+      "Read(.env)"
+    ]
+  }
+}

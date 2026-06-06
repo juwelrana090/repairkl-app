@@ -5,10 +5,10 @@ import ContactForm from "./ContactForm";
 
 export const metadata: Metadata = {
   ...generateMeta({
-    title: "Contact Us – Shifty Home Services",
-    description: "Get in touch with Shifty. Call, email or fill in our contact form. Our support team is available Saturday–Thursday 8AM–10PM.",
+    title: "Contact Us – RepairKL Home Services",
+    description: "Get in touch with RepairKL. Call, email or fill in our contact form. Our support team is available Saturday–Thursday 8AM–10PM.",
     path: "/contact",
-    keywords: ["contact shifty", "shifty customer support", "home service help", "shifty phone number email"],
+    keywords: ["contact repairkl", "repairkl customer support", "home service help", "repairkl phone number email"],
   }),
 };
 
@@ -16,9 +16,9 @@ const CONTACT_INFO = [
   {
     icon: "📧",
     title: "Email Us",
-    value: "hello@shifty.com",
+    value: "hello@repairkl.com",
     subtitle: "We reply within 2 business hours",
-    href: "mailto:hello@shifty.com",
+    href: "mailto:hello@repairkl.com",
     color: "#fd6b22",
     bg: "#fff0e8",
   },
@@ -27,7 +27,7 @@ const CONTACT_INFO = [
     title: "Call Us",
     value: "+880 1711-000000",
     subtitle: "Sat–Thu, 8AM–10PM",
-    href: "tel:+8801711000000",
+    href: "tel:+601127272745",
     color: "#4fbf67",
     bg: "#e8fff2",
   },
@@ -43,7 +43,7 @@ const CONTACT_INFO = [
   {
     icon: "📍",
     title: "Visit Us",
-    value: "45 Gulshan Avenue, Dhaka 1212",
+    value: "45 Kuala Lumpur, Kuala Lumpur 1212",
     subtitle: "By appointment only",
     href: "https://maps.google.com",
     color: "#2196f3",
@@ -119,8 +119,8 @@ export default function ContactPage() {
               <div className="bg-[#f9fafb] rounded-[24px] border border-[#e8e6ea] overflow-hidden aspect-square flex items-center justify-center text-center p-8">
                 <div>
                   <div className="text-6xl mb-4">🗺️</div>
-                  <p className="font-bold text-[#1b1d21]">Dhaka, Bangladesh</p>
-                  <p className="text-[#8f92a1] text-sm mt-1">45 Gulshan Avenue, Dhaka 1212</p>
+                  <p className="font-bold text-[#1b1d21]">Kuala Lumpur, Malaysia</p>
+                  <p className="text-[#8f92a1] text-sm mt-1">45 Kuala Lumpur, Kuala Lumpur 1212</p>
                   <a href="https://maps.google.com" target="_blank" rel="noreferrer"
                     className="inline-block mt-4 text-[#fd6b22] text-sm font-bold hover:underline">
                     Open in Google Maps →
@@ -153,7 +153,7 @@ export default function ContactPage() {
       <section className="py-16 bg-[#f9fafb]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-2xl font-black text-[#1b1d21] tracking-[-0.6px] mb-4">Looking for quick help?</h2>
-          <p className="text-[#8f92a1] mb-8">Check our FAQ or download the Shifty app for instant support.</p>
+          <p className="text-[#8f92a1] mb-8">Check our FAQ or download the RepairKL app for instant support.</p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link href="/faq" className="bg-white border-2 border-[#e6e8ec] text-[#1b1d21] font-bold px-6 py-3 rounded-[12px] hover:border-[#fd6b22] transition-all">
               Browse FAQ
