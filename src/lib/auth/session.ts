@@ -49,5 +49,5 @@ export async function requireAuth(): Promise<SessionPayload> {
     const { redirect } = await import("next/navigation");
     redirect("/login");
   }
-  return session;
+  return session as SessionPayload;
 }

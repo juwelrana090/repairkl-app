@@ -18,9 +18,9 @@ export default async function SearchPage({
         where: {
           isActive: true,
           OR: [
-            { name: { contains: q, mode: "insensitive" } },
-            { description: { contains: q, mode: "insensitive" } },
-            { category: { name: { contains: q, mode: "insensitive" } } },
+            { name: { contains: q } },
+            { description: { contains: q } },
+            { category: { name: { contains: q } } },
           ],
         },
         include: { category: true },
@@ -54,7 +54,7 @@ export default async function SearchPage({
               key={s.id}
               service={{
                 id: s.id, slug: s.slug, name: s.name, description: s.description,
-                basePrice: s.basePrice, priceUnit: s.priceUnit, rating: s.rating,
+                basePrice: Number(s.basePrice), priceUnit: s.priceUnit, rating: s.rating,
                 reviewCount: s.reviewCount, imageUrl: s.imageUrl, isFeatured: s.isFeatured,
                 category: s.category,
               }}

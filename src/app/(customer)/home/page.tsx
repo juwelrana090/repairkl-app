@@ -15,9 +15,18 @@ export const metadata: Metadata = {
 export default async function HomePage() {
   const session = await getSession();
 
+  if (!session) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full">
+        <p className="text-lg font-bold text-[#1b1d21]">Please log in first</p>
+        <Link href="/login" className="text-[#fd6b22] mt-2">Return to login</Link>
+      </div>
+    );
+  }
+
   const [user, categories, featuredServices, recentBookings, activeBanner] = await Promise.all([
     prisma.user.findUnique({
-      where: { id: session!.userId },
+      where: { id: session.userId },
       select: { fullName: true, address: true },
     }),
     prisma.serviceCategory.findMany({
@@ -32,7 +41,7 @@ export default async function HomePage() {
       take: 6,
     }),
     prisma.booking.findMany({
-      where: { customerId: session!.userId, status: { in: ["PENDING", "CONFIRMED", "IN_PROGRESS"] } },
+      where: { customerId: session.userId, status: { in: ["PENDING", "CONFIRMED", "IN_PROGRESS"] } },
       include: { service: { include: { category: true } } },
       orderBy: { createdAt: "desc" },
       take: 3,
@@ -90,7 +99,7 @@ export default async function HomePage() {
                   status: b.status,
                   scheduledDate: b.scheduledDate,
                   scheduledTime: b.scheduledTime,
-                  totalAmount: b.totalAmount,
+                  totalAmount: Number(b.totalAmount),
                   service: { name: b.service.name, category: b.service.category },
                 }}
               />
@@ -134,7 +143,7 @@ export default async function HomePage() {
                 slug: s.slug,
                 name: s.name,
                 description: s.description,
-                basePrice: s.basePrice,
+                basePrice: Number(s.basePrice),
                 priceUnit: s.priceUnit,
                 rating: s.rating,
                 reviewCount: s.reviewCount,

@@ -79,7 +79,7 @@ export default function RegisterPage() {
           value={form.password}
           onChange={set("password")}
           error={errors.password}
-          suffix={<button type="button" onClick={() => setShowPass(!showPass)}>{showPass ? "🙈" : "👁️"}</button>}
+          rightIcon={<button type="button" onClick={() => setShowPass(!showPass)}>{showPass ? "🙈" : "👁️"}</button>}
         />
         <Input
           label="Confirm Password"
@@ -88,7 +88,7 @@ export default function RegisterPage() {
           onChange={set("confirmPassword")}
           error={errors.confirmPassword}
           variant={!passMismatch && form.confirmPassword ? "success" : undefined}
-          suffix={<button type="button" onClick={() => setShowConfirm(!showConfirm)}>{showConfirm ? "🙈" : "👁️"}</button>}
+          rightIcon={<button type="button" onClick={() => setShowConfirm(!showConfirm)}>{showConfirm ? "🙈" : "👁️"}</button>}
         />
 
         <label className="flex items-start gap-3 cursor-pointer mt-1">

@@ -2,17 +2,17 @@
 import { InputHTMLAttributes, forwardRef, useState } from "react";
 import { twMerge } from "tailwind-merge";
 
-interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'prefix' | 'suffix'> {
   label?: string;
   error?: string;
   hint?: string;
-  suffix?: React.ReactNode;
-  prefix?: React.ReactNode;
+  leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
   variant?: "default" | "success" | "error";
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ label, error, hint, suffix, prefix, variant, className, ...props }, ref) => {
+  ({ label, error, hint, leftIcon, rightIcon, variant, className, ...props }, ref) => {
     const [focused, setFocused] = useState(false);
     const hasValue = Boolean(props.value || props.defaultValue);
     const isActive = focused || hasValue;
@@ -47,8 +47,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           </label>
         )}
         <div className="relative flex items-center">
-          {prefix && (
-            <span className="absolute left-4 text-[#1b1d21]/40">{prefix}</span>
+          {leftIcon && (
+            <span className="absolute left-4 text-[#1b1d21]/40">{leftIcon}</span>
           )}
           <input
             ref={ref}
@@ -59,16 +59,16 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               "outline-none transition-colors duration-150",
               "placeholder:text-transparent",
               label ? "px-6 pt-2" : "px-6",
-              prefix && "pl-12",
-              suffix && "pr-12",
+              leftIcon && "pl-12",
+              rightIcon && "pr-12",
               borderColor,
               className,
             )}
             {...props}
           />
-          {suffix && (
+          {rightIcon && (
             <span className="absolute right-4 text-[#1b1d21]/40 cursor-pointer">
-              {suffix}
+              {rightIcon}
             </span>
           )}
           {variant === "success" && (

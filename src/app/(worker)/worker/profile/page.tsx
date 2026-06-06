@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { getSession } from "@/lib/auth/session";
 import { prisma } from "@/lib/prisma";
 import { RatingStars } from "@/components/ui";
@@ -8,8 +9,18 @@ export const metadata: Metadata = { title: "My Profile – Worker" };
 
 export default async function WorkerProfilePage() {
   const session = await getSession();
+
+  if (!session) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full">
+        <p className="text-lg font-bold text-[#1b1d21]">Please log in first</p>
+        <Link href="/login" className="text-[#fd6b22] mt-2">Return to login</Link>
+      </div>
+    );
+  }
+
   const user = await prisma.user.findUnique({
-    where: { id: session!.userId },
+    where: { id: session.userId },
     include: {
       workerProfile: { include: { reviews: { include: { customer: { select: { fullName: true } } }, take: 5, orderBy: { createdAt: "desc" } } } },
     },

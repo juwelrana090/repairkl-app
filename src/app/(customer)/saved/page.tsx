@@ -9,8 +9,17 @@ export const metadata: Metadata = { title: "Saved Services – RepairKL" };
 export default async function SavedPage() {
   const session = await getSession();
 
+  if (!session) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full">
+        <p className="text-lg font-bold text-[#1b1d21]">Please log in first</p>
+        <Link href="/login" className="text-[#fd6b22] mt-2">Return to login</Link>
+      </div>
+    );
+  }
+
   const saved = await prisma.savedService.findMany({
-    where: { userId: session!.userId },
+    where: { userId: session.userId },
     include: { service: { include: { category: true } } },
     orderBy: { savedAt: "desc" },
   });
@@ -46,7 +55,7 @@ export default async function SavedPage() {
                 slug: service.slug,
                 name: service.name,
                 description: service.description,
-                basePrice: service.basePrice,
+                basePrice: Number(service.basePrice),
                 priceUnit: service.priceUnit,
                 rating: service.rating,
                 reviewCount: service.reviewCount,

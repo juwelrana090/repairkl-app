@@ -121,7 +121,7 @@ export async function getWorkers(speciality?: string) {
     where: {
       isAvailable: true,
       isVerified: true,
-      ...(speciality ? { speciality: { contains: speciality, mode: "insensitive" } } : {}),
+      ...(speciality ? { speciality: { contains: speciality } } : {}),
     },
     orderBy: { rating: "desc" },
     take: 10,

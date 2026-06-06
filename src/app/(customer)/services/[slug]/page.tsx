@@ -50,6 +50,16 @@ export default async function ServicePage({
 
   if (!service) redirect("/services");
 
+  // Convert Decimal fields to numbers for type compatibility
+  const serviceWithNumbers = {
+    ...service,
+    basePrice: Number(service.basePrice),
+    packages: service.packages.map((pkg) => ({
+      ...pkg,
+      price: Number(pkg.price),
+    })),
+  };
+
   const jsonLd = serviceSchema({
     name: service.name,
     description: service.description || "",
@@ -173,7 +183,7 @@ export default async function ServicePage({
         )}
       </div>
 
-      <ServiceBookingPanel service={service} />
+      <ServiceBookingPanel service={serviceWithNumbers} />
     </>
   );
 }

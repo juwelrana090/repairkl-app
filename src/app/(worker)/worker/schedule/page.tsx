@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { getSession } from "@/lib/auth/session";
 import { prisma } from "@/lib/prisma";
 import WorkerScheduleClient from "./WorkerScheduleClient";
@@ -7,8 +8,18 @@ export const metadata: Metadata = { title: "My Schedule – Worker" };
 
 export default async function WorkerSchedulePage() {
   const session = await getSession();
+
+  if (!session) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full">
+        <p className="text-lg font-bold text-[#1b1d21]">Please log in first</p>
+        <Link href="/login" className="text-[#fd6b22] mt-2">Return to login</Link>
+      </div>
+    );
+  }
+
   const worker = await prisma.worker.findUnique({
-    where: { userId: session!.userId },
+    where: { userId: session.userId },
     include: { schedule: { orderBy: { dayOfWeek: "asc" } } },
   });
   if (!worker) return <p className="text-center py-20">Worker profile not found.</p>;

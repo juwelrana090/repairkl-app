@@ -14,9 +14,19 @@ export default async function OrdersPage({
 }) {
   const sp = await searchParams;
   const session = await getSession();
+
+  if (!session) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full">
+        <p className="text-lg font-bold text-[#1b1d21]">Please log in first</p>
+        <Link href="/login" className="text-[#fd6b22] mt-2">Return to login</Link>
+      </div>
+    );
+  }
+
   const status = sp.status?.toUpperCase();
 
-  const where: Record<string, unknown> = { customerId: session!.userId };
+  const where: Record<string, unknown> = { customerId: session.userId };
   if (status && status !== "ALL") where.status = status;
 
   const bookings = await prisma.booking.findMany({
@@ -27,7 +37,7 @@ export default async function OrdersPage({
 
   const counts = await prisma.booking.groupBy({
     by: ["status"],
-    where: { customerId: session!.userId },
+    where: { customerId: session.userId },
     _count: true,
   });
   const statusCounts = Object.fromEntries(counts.map((c) => [c.status, c._count]));
@@ -63,7 +73,7 @@ export default async function OrdersPage({
                 status: b.status,
                 scheduledDate: b.scheduledDate,
                 scheduledTime: b.scheduledTime,
-                totalAmount: b.totalAmount,
+                totalAmount: Number(b.totalAmount),
                 service: { name: b.service.name, category: b.service.category },
               }}
             />

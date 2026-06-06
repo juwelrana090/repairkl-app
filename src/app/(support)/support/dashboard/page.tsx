@@ -10,6 +10,15 @@ export const metadata: Metadata = { title: "Support Dashboard – RepairKL" };
 export default async function SupportDashboardPage() {
   const session = await getSession();
 
+  if (!session) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full">
+        <p className="text-lg font-bold text-[#1b1d21]">Please log in first</p>
+        <Link href="/login" className="text-[#fd6b22] mt-2">Return to login</Link>
+      </div>
+    );
+  }
+
   const [totalTickets, openTickets, resolvedToday, recentTickets] = await Promise.all([
     prisma.supportTicket.count(),
     prisma.supportTicket.count({ where: { status: "OPEN" } }),
@@ -24,8 +33,8 @@ export default async function SupportDashboardPage() {
     }),
   ]);
 
-  const myTickets = await prisma.supportTicket.count({ where: { agentId: session!.userId } });
-  const myOpen = await prisma.supportTicket.count({ where: { agentId: session!.userId, status: "OPEN" } });
+  const myTickets = await prisma.supportTicket.count({ where: { agentId: session.userId } });
+  const myOpen = await prisma.supportTicket.count({ where: { agentId: session.userId, status: "OPEN" } });
 
   return (
     <div className="flex flex-col gap-8">

@@ -80,7 +80,7 @@ export default async function ServicesPage({
                 slug: s.slug,
                 name: s.name,
                 description: s.description,
-                basePrice: s.basePrice,
+                basePrice: Number(s.basePrice),
                 priceUnit: s.priceUnit,
                 rating: s.rating,
                 reviewCount: s.reviewCount,

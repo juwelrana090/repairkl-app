@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { requireAuth } from "@/lib/auth/session";
 import { StatusBadge } from "@/components/ui";
 import WorkerJobActions from "./WorkerJobActions";
 
@@ -70,7 +71,9 @@ export default async function WorkerJobDetailPage({
               <span className="font-medium">{booking.customer.fullName}</span>
             </p>
             <p className="text-[#8f92a1]">{booking.customer.phone}</p>
-            <p className="text-[#8f92a1]">{booking.customer.address}</p>
+            <p className="text-[#8f92a1]">
+              {booking.customer.address ? `${booking.customer.address.street}, ${booking.customer.address.city}, ${booking.customer.address.state} ${booking.customer.address.zipCode}` : 'No address provided'}
+            </p>
           </div>
         </div>
       </div>

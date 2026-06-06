@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { requireAuth } from "@/lib/auth/session";
 import { StatusBadge } from "@/components/ui";
 import OrderActions from "./OrderActions";
 

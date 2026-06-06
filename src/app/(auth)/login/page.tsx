@@ -83,7 +83,7 @@ export default function LoginPage() {
           onChange={(e) => setForm({ ...form, password: e.target.value })}
           error={errors.password}
           autoComplete="current-password"
-          suffix={
+          rightIcon={
             <button type="button" onClick={() => setShowPass(!showPass)}>
               {showPass ? "🙈" : "👁️"}
             </button>

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { getSession } from "@/lib/auth/session";
 import { prisma } from "@/lib/prisma";
 
@@ -7,8 +8,17 @@ export const metadata: Metadata = { title: "Notifications – RepairKL" };
 export default async function NotificationsPage() {
   const session = await getSession();
 
+  if (!session) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full">
+        <p className="text-lg font-bold text-[#1b1d21]">Please log in first</p>
+        <Link href="/login" className="text-[#fd6b22] mt-2">Return to login</Link>
+      </div>
+    );
+  }
+
   const notifications = await prisma.notification.findMany({
-    where: { userId: session!.userId },
+    where: { userId: session.userId },
     orderBy: { createdAt: "desc" },
     take: 50,
   });

@@ -10,8 +10,17 @@ export const metadata: Metadata = { title: "Worker Dashboard – RepairKL" };
 export default async function WorkerDashboardPage() {
   const session = await getSession();
 
+  if (!session) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full">
+        <p className="text-lg font-bold text-[#1b1d21]">Please log in first</p>
+        <Link href="/login" className="text-[#fd6b22] mt-2">Return to login</Link>
+      </div>
+    );
+  }
+
   const worker = await prisma.worker.findUnique({
-    where: { userId: session!.userId },
+    where: { userId: session.userId },
     include: {
       user: { select: { fullName: true } },
       assignments: {

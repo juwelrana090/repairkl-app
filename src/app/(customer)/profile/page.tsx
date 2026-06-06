@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { getSession } from "@/lib/auth/session";
 import { prisma } from "@/lib/prisma";
 import ProfileForm from "./ProfileForm";
@@ -7,19 +8,29 @@ export const metadata: Metadata = { title: "My Profile – RepairKL" };
 
 export default async function ProfilePage() {
   const session = await getSession();
+
+  if (!session) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full">
+        <p className="text-lg font-bold text-[#1b1d21]">Please log in first</p>
+        <Link href="/login" className="text-[#fd6b22] mt-2">Return to login</Link>
+      </div>
+    );
+  }
+
   const user = await prisma.user.findUnique({
-    where: { id: session!.userId },
+    where: { id: session.userId },
     include: { address: true },
   });
 
   if (!user) return null;
 
   const stats = await prisma.booking.aggregate({
-    where: { customerId: session!.userId },
+    where: { customerId: session.userId },
     _count: true,
   });
   const completed = await prisma.booking.count({
-    where: { customerId: session!.userId, status: "COMPLETED" },
+    where: { customerId: session.userId, status: "COMPLETED" },
   });
 
   return (
