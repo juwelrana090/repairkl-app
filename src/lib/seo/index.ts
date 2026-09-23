@@ -54,7 +54,7 @@ export function localBusinessSchema() {
     url: BASE_URL,
     logo: `${BASE_URL}/logo.png`,
     image: `${BASE_URL}/og-image.png`,
-    telephone: "+601127272745",
+    telephone: "+601174347814",
     email: "hello@repairkl.com",
     address: {
       "@type": "PostalAddress",

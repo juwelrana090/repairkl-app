@@ -76,17 +76,17 @@ function OtpForm() {
   return (
     <>
       <div className="flex items-center gap-3 mb-6">
-        <Link href="/register" className="w-10 h-10 rounded-full bg-[#f3f6f8] flex items-center justify-center hover:bg-[#e6e8ec]">
-          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#1b1d21" strokeWidth="2.5">
+        <Link href="/register" className="w-10 h-10 rounded-full bg-[#eeeef6] flex items-center justify-center hover:bg-[#ddddee]">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#001353" strokeWidth="2.5">
             <path strokeLinecap="round" strokeLinejoin="round" d="M19 12H5m7-7-7 7 7 7"/>
           </svg>
         </Link>
-        <h1 className="text-lg font-bold text-[#1b1d21] tracking-[-0.4px]">OTP Verification</h1>
+        <h1 className="text-lg font-bold text-[#001353] tracking-[-0.4px]">OTP Verification</h1>
       </div>
 
       <div className="text-center mb-8">
-        <p className="text-sm text-[#1b1d21]/50">An authentication code has been sent to</p>
-        <p className="text-sm font-bold text-[#fd6b22] mt-1">{phone}</p>
+        <p className="text-sm text-[#001353]/50">An authentication code has been sent to</p>
+        <p className="text-sm font-bold text-[#034795] mt-1">{phone}</p>
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col items-center gap-6">
@@ -102,18 +102,18 @@ function OtpForm() {
               onChange={(e) => handleChange(i, e.target.value)}
               onKeyDown={(e) => handleKeyDown(i, e)}
               maxLength={1}
-              className="w-14 h-16 text-center text-3xl font-bold text-[#1b1d21] border-2 border-[#d9d9d9] rounded-[12px] outline-none focus:border-[#fd6b22] transition-colors"
+              className="w-14 h-16 text-center text-3xl font-bold text-[#001353] border-2 border-[#c9c9de] rounded-[12px] outline-none focus:border-[#034795] transition-colors"
             />
           ))}
         </div>
 
         <Button type="submit" fullWidth loading={loading}>Submit</Button>
 
-        <p className="text-sm text-[#1b1d21]/50">
+        <p className="text-sm text-[#001353]/50">
           {resendTimer > 0 ? (
-            <>Code Sent. Resend in <span className="text-[#fd6b22] font-bold">00:{String(resendTimer).padStart(2, "0")}</span></>
+            <>Code Sent. Resend in <span className="text-[#034795] font-bold">00:{String(resendTimer).padStart(2, "0")}</span></>
           ) : (
-            <button type="button" onClick={handleResend} disabled={resending} className="text-[#fd6b22] font-bold hover:underline">
+            <button type="button" onClick={handleResend} disabled={resending} className="text-[#034795] font-bold hover:underline">
               Resend Code
             </button>
           )}

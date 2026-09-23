@@ -12,8 +12,8 @@ export default async function WorkerSchedulePage() {
   if (!session) {
     return (
       <div className="flex flex-col items-center justify-center h-full">
-        <p className="text-lg font-bold text-[#1b1d21]">Please log in first</p>
-        <Link href="/login" className="text-[#fd6b22] mt-2">Return to login</Link>
+        <p className="text-lg font-bold text-[#001353]">Please log in first</p>
+        <Link href="/login" className="text-[#034795] mt-2">Return to login</Link>
       </div>
     );
   }
@@ -45,7 +45,7 @@ export default async function WorkerSchedulePage() {
   return (
     <div className="flex flex-col gap-8 max-w-3xl">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-[#1b1d21] tracking-[-0.5px]">My Schedule</h1>
+        <h1 className="text-2xl font-bold text-[#001353] tracking-[-0.5px]">My Schedule</h1>
       </div>
 
       <WorkerScheduleClient

@@ -30,18 +30,18 @@ export default async function ReviewPage({
   return (
     <div className="max-w-2xl mx-auto">
       <div className="bg-white rounded-2xl p-6 shadow-sm">
-        <h1 className="text-2xl font-bold text-[#1b1d21] mb-2">
+        <h1 className="text-2xl font-bold text-[#001353] mb-2">
           Write a Review
         </h1>
-        <p className="text-[#8f92a1] mb-6">
+        <p className="text-[#5b6480] mb-6">
           Review your experience with {booking.service.name}
         </p>
 
         <div className="mb-6">
-          <div className="flex items-center gap-4 p-4 bg-[#f9fafb] rounded-xl">
+          <div className="flex items-center gap-4 p-4 bg-[#f5f5fa] rounded-xl">
             <div>
               <p className="font-medium">{booking.service.name}</p>
-              <p className="text-sm text-[#8f92a1]">
+              <p className="text-sm text-[#5b6480]">
                 Booking #{booking.bookingCode}
               </p>
             </div>
@@ -63,8 +63,8 @@ function ReviewForm({
 }) {
   return (
     <div className="text-center py-8">
-      <p className="text-[#8f92a1] mb-4">Review form component</p>
-      <p className="text-sm text-[#8f92a1]">
+      <p className="text-[#5b6480] mb-4">Review form component</p>
+      <p className="text-sm text-[#5b6480]">
         This will be a client component for submitting reviews
       </p>
     </div>

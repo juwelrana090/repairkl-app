@@ -76,22 +76,22 @@ export default async function ServicePage({
         <div className="bg-white rounded-2xl p-6 shadow-sm mb-6">
           <div className="flex items-start justify-between mb-4">
             <div>
-              <span className="text-sm font-medium text-[#fd6b22]">
+              <span className="text-sm font-medium text-[#034795]">
                 {service.category.name}
               </span>
-              <h1 className="text-2xl font-bold text-[#1b1d21] mt-1">
+              <h1 className="text-2xl font-bold text-[#001353] mt-1">
                 {service.name}
               </h1>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-2xl font-bold text-[#fd6b22]">
+              <span className="text-2xl font-bold text-[#034795]">
                 RM{Number(service.basePrice).toLocaleString()}
               </span>
-              <span className="text-sm text-[#8f92a1]">/from</span>
+              <span className="text-sm text-[#5b6480]">/from</span>
             </div>
           </div>
 
-          <p className="text-[#8f92a1] mb-6 leading-relaxed">
+          <p className="text-[#5b6480] mb-6 leading-relaxed">
             {service.description}
           </p>
 
@@ -105,12 +105,12 @@ export default async function ServicePage({
             <div className="flex items-center gap-1">
               <span className="text-yellow-500">★</span>
               <span className="font-medium">{service.rating.toFixed(1)}</span>
-              <span className="text-[#8f92a1]">
+              <span className="text-[#5b6480]">
                 ({service.reviewCount} reviews)
               </span>
             </div>
             {service.duration && (
-              <div className="text-[#8f92a1]">
+              <div className="text-[#5b6480]">
                 Duration: {service.duration} mins
               </div>
             )}
@@ -119,7 +119,7 @@ export default async function ServicePage({
 
         {service.packages.length > 0 && (
           <div className="bg-white rounded-2xl p-6 shadow-sm mb-6">
-            <h2 className="text-lg font-bold text-[#1b1d21] mb-4">
+            <h2 className="text-lg font-bold text-[#001353] mb-4">
               Service Packages
             </h2>
             <div className="grid md:grid-cols-3 gap-4">
@@ -128,22 +128,22 @@ export default async function ServicePage({
                   key={pkg.id}
                   className={`border rounded-xl p-4 ${
                     pkg.isPopular
-                      ? "border-[#fd6b22] bg-[#fff0e8]"
-                      : "border-[#e8e6ea]"
+                      ? "border-[#034795] bg-[#eaf0f8]"
+                      : "border-[#ddddee]"
                   }`}
                 >
                   {pkg.isPopular && (
-                    <span className="text-xs font-bold text-[#fd6b22]">
+                    <span className="text-xs font-bold text-[#034795]">
                       Most Popular
                     </span>
                   )}
-                  <h3 className="font-bold text-[#1b1d21] mt-2">
+                  <h3 className="font-bold text-[#001353] mt-2">
                     {pkg.name}
                   </h3>
-                  <p className="text-sm text-[#8f92a1] mb-3">
+                  <p className="text-sm text-[#5b6480] mb-3">
                     {pkg.description}
                   </p>
-                  <p className="text-lg font-bold text-[#fd6b22]">
+                  <p className="text-lg font-bold text-[#034795]">
                     RM{Number(pkg.price).toLocaleString()}
                   </p>
                 </div>
@@ -154,14 +154,14 @@ export default async function ServicePage({
 
         {service.reviews.length > 0 && (
           <div className="bg-white rounded-2xl p-6 shadow-sm mb-6">
-            <h2 className="text-lg font-bold text-[#1b1d21] mb-4">
+            <h2 className="text-lg font-bold text-[#001353] mb-4">
               Recent Reviews
             </h2>
             <div className="space-y-4">
               {service.reviews.map((review) => (
                 <div
                   key={review.createdAt.toISOString()}
-                  className="border-b border-[#e8e6ea] pb-4 last:border-0"
+                  className="border-b border-[#ddddee] pb-4 last:border-0"
                 >
                   <div className="flex items-center justify-between mb-2">
                     <span className="font-medium text-sm">
@@ -175,7 +175,7 @@ export default async function ServicePage({
                       ))}
                     </div>
                   </div>
-                  <p className="text-sm text-[#8f92a1]">{review.comment}</p>
+                  <p className="text-sm text-[#5b6480]">{review.comment}</p>
                 </div>
               ))}
             </div>

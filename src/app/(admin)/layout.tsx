@@ -13,7 +13,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   });
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#f9fafb]">
+    <div className="flex h-screen overflow-hidden bg-[#f5f5fa]">
       <PanelSidebar role="ADMIN" user={{ fullName: user?.fullName ?? "Admin", email: user?.email ?? "" }} />
       <div className="flex-1 flex flex-col overflow-hidden">
         <main className="flex-1 overflow-y-auto p-6 lg:p-8">{children}</main>

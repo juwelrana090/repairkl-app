@@ -44,9 +44,9 @@ const NAV_BY_ROLE: Record<string, NavItem[]> = {
 };
 
 const COLORS: Record<string, string> = {
-  ADMIN: "#fd6b22",
-  WORKER: "#4fbf67",
-  SUPPORT: "#2196f3",
+  ADMIN: "#034795",
+  WORKER: "#1a8f5c",
+  SUPPORT: "#fb6f27",
 };
 
 const TITLES: Record<string, string> = {
@@ -71,7 +71,7 @@ export default function PanelSidebar({
   return (
     <aside
       className={twMerge(
-        "flex flex-col h-screen bg-[#1b1d21] text-white sticky top-0 transition-all duration-300",
+        "flex flex-col h-screen bg-[#001353] text-white sticky top-0 transition-all duration-300",
         collapsed ? "w-[72px]" : "w-64",
       )}
     >

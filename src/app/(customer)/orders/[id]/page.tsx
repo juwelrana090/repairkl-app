@@ -39,10 +39,10 @@ export default async function OrderDetailPage({
       <div className="bg-white rounded-2xl p-6 shadow-sm mb-6">
         <div className="flex items-start justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-[#1b1d21]">
+            <h1 className="text-2xl font-bold text-[#001353]">
               Booking #{booking.bookingCode}
             </h1>
-            <p className="text-sm text-[#8f92a1] mt-1">
+            <p className="text-sm text-[#5b6480] mt-1">
               Booked on {new Date(booking.createdAt).toLocaleDateString()}
             </p>
           </div>
@@ -51,24 +51,24 @@ export default async function OrderDetailPage({
 
         <div className="grid md:grid-cols-2 gap-6 mb-6">
           <div>
-            <h3 className="font-bold text-[#1b1d21] mb-2">Service</h3>
-            <p className="text-[#8f92a1]">{booking.service.name}</p>
+            <h3 className="font-bold text-[#001353] mb-2">Service</h3>
+            <p className="text-[#5b6480]">{booking.service.name}</p>
           </div>
           <div>
-            <h3 className="font-bold text-[#1b1d21] mb-2">Scheduled</h3>
-            <p className="text-[#8f92a1]">
+            <h3 className="font-bold text-[#001353] mb-2">Scheduled</h3>
+            <p className="text-[#5b6480]">
               {new Date(booking.scheduledDate).toLocaleDateString()} at {booking.scheduledTime}
             </p>
           </div>
           <div>
-            <h3 className="font-bold text-[#1b1d21] mb-2">Address</h3>
-            <p className="text-[#8f92a1]">{booking.address}</p>
+            <h3 className="font-bold text-[#001353] mb-2">Address</h3>
+            <p className="text-[#5b6480]">{booking.address}</p>
           </div>
           <div>
-            <h3 className="font-bold text-[#1b1d21] mb-2">Payment</h3>
+            <h3 className="font-bold text-[#001353] mb-2">Payment</h3>
             <div className="flex items-center gap-2">
               <StatusBadge status={booking.paymentStatus} />
-              <span className="text-[#8f92a1]">
+              <span className="text-[#5b6480]">
                 {booking.paymentMethod || "Pending"}
               </span>
             </div>
@@ -77,15 +77,15 @@ export default async function OrderDetailPage({
 
         {booking.notes && (
           <div className="mb-6">
-            <h3 className="font-bold text-[#1b1d21] mb-2">Notes</h3>
-            <p className="text-[#8f92a1]">{booking.notes}</p>
+            <h3 className="font-bold text-[#001353] mb-2">Notes</h3>
+            <p className="text-[#5b6480]">{booking.notes}</p>
           </div>
         )}
 
-        <div className="border-t border-[#e8e6ea] pt-4 mb-6">
+        <div className="border-t border-[#ddddee] pt-4 mb-6">
           <div className="flex justify-between items-center">
-            <span className="font-bold text-[#1b1d21]">Total Amount</span>
-            <span className="text-2xl font-bold text-[#fd6b22]">
+            <span className="font-bold text-[#001353]">Total Amount</span>
+            <span className="text-2xl font-bold text-[#034795]">
               RM{Number(booking.totalAmount).toLocaleString()}
             </span>
           </div>
@@ -93,18 +93,18 @@ export default async function OrderDetailPage({
 
         {booking.workers.length > 0 && (
           <div className="mb-6">
-            <h3 className="font-bold text-[#1b1d21] mb-3">Assigned Workers</h3>
+            <h3 className="font-bold text-[#001353] mb-3">Assigned Workers</h3>
             <div className="space-y-3">
               {booking.workers.map((assignment) => (
                 <div
                   key={assignment.workerId}
-                  className="flex items-center justify-between p-3 bg-[#f9fafb] rounded-xl"
+                  className="flex items-center justify-between p-3 bg-[#f5f5fa] rounded-xl"
                 >
                   <div>
                     <p className="font-medium">{assignment.worker.user.fullName}</p>
-                    <p className="text-sm text-[#8f92a1]">{assignment.worker.user.phone}</p>
+                    <p className="text-sm text-[#5b6480]">{assignment.worker.user.phone}</p>
                   </div>
-                  <div className="text-sm text-[#8f92a1]">
+                  <div className="text-sm text-[#5b6480]">
                     {assignment.worker.speciality}
                   </div>
                 </div>

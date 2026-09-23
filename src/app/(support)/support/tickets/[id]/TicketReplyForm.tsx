@@ -41,14 +41,14 @@ export default function TicketReplyForm({ ticketId }: { ticketId: string }) {
 
   return (
     <div className="bg-white rounded-2xl p-6 shadow-sm">
-      <h3 className="font-bold text-[#1b1d21] mb-4">Reply to Ticket</h3>
+      <h3 className="font-bold text-[#001353] mb-4">Reply to Ticket</h3>
       <form onSubmit={handleSubmit} className="space-y-4">
         <textarea
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder="Type your reply..."
           rows={4}
-          className="w-full p-3 border border-[#e8e6ea] rounded-xl focus:outline-none focus:border-[#fd6b22] resize-none"
+          className="w-full p-3 border border-[#ddddee] rounded-xl focus:outline-none focus:border-[#034795] resize-none"
           required
         />
         
@@ -58,9 +58,9 @@ export default function TicketReplyForm({ ticketId }: { ticketId: string }) {
               type="checkbox"
               checked={isInternal}
               onChange={(e) => setIsInternal(e.target.checked)}
-              className="w-4 h-4 accent-[#fd6b22]"
+              className="w-4 h-4 accent-[#034795]"
             />
-            <span className="text-sm text-[#8f92a1]">Internal note</span>
+            <span className="text-sm text-[#5b6480]">Internal note</span>
           </label>
           
           <Button

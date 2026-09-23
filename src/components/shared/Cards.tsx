@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { RatingStars } from "@/components/ui";
 import { twMerge } from "tailwind-merge";
+import { getServiceAssets, getServiceIcon } from "@/lib/brandAssets";
 
 // ─── Service Card ─────────────────────────────────────────────────────────────
 
@@ -22,18 +23,22 @@ export interface ServiceCardData {
 export function ServiceCard({ service }: { service: ServiceCardData }) {
   return (
     <Link href={`/services/${service.slug}`}>
-      <div className="bg-white rounded-[20px] border border-[#e8e6ea] overflow-hidden hover:shadow-[0_8px_24px_rgba(0,0,0,0.10)] transition-all group cursor-pointer h-full flex flex-col">
+      <div className="bg-white rounded-[20px] border border-[#ddddee] overflow-hidden hover:shadow-[0_8px_24px_rgba(0,0,0,0.10)] transition-all group cursor-pointer h-full flex flex-col">
         {/* Image */}
-        <div className="relative h-48 bg-gradient-to-br from-[#fff0e8] to-[#fde8d5] overflow-hidden">
-          {service.imageUrl ? (
-            <Image src={service.imageUrl} alt={service.name} fill className="object-cover group-hover:scale-105 transition-transform duration-300" />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center text-5xl">
-              {getCategoryEmoji(service.category?.name ?? "")}
-            </div>
-          )}
+        <div className="relative h-48 bg-gradient-to-br from-[#eaf0f8] to-[#dde6f3] overflow-hidden">
+          {(() => {
+            const fallback = getServiceAssets(service.category?.name ?? service.name);
+            const src = service.imageUrl ?? fallback?.image;
+            return src ? (
+              <Image src={src} alt={service.name} fill sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" className="object-cover group-hover:scale-105 transition-transform duration-300" />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center">
+                <Image src={getServiceIcon(service.name)} alt="" width={72} height={72} className="w-18 h-18 object-contain" />
+              </div>
+            );
+          })()}
           {service.isFeatured && (
-            <span className="absolute top-3 left-3 bg-[#fd6b22] text-white text-[10px] font-bold px-2 py-1 rounded-full">
+            <span className="absolute top-3 left-3 bg-[#034795] text-white text-[10px] font-bold px-2 py-1 rounded-full">
               Featured
             </span>
           )}
@@ -48,20 +53,20 @@ export function ServiceCard({ service }: { service: ServiceCardData }) {
         </div>
         {/* Content */}
         <div className="p-4 flex flex-col gap-2 flex-1">
-          <h3 className="font-bold text-base text-[#1b1d21] tracking-[-0.3px] line-clamp-1">{service.name}</h3>
+          <h3 className="font-bold text-base text-[#001353] tracking-[-0.3px] line-clamp-1">{service.name}</h3>
           {service.description && (
-            <p className="text-sm text-[#8f92a1] line-clamp-2">{service.description}</p>
+            <p className="text-sm text-[#5b6480] line-clamp-2">{service.description}</p>
           )}
           <div className="flex items-center gap-2 mt-auto pt-2">
             <RatingStars rating={service.rating} size={13} />
-            <span className="text-xs text-[#8f92a1]">({service.reviewCount})</span>
+            <span className="text-xs text-[#5b6480]">({service.reviewCount})</span>
           </div>
           <div className="flex items-center justify-between">
             <div>
-              <span className="text-lg font-bold text-[#fd6b22]">RM{Number(service.basePrice).toLocaleString()}</span>
-              <span className="text-xs text-[#8f92a1] ml-1">/{service.priceUnit === "fixed" ? "job" : service.priceUnit.replace("_", " ")}</span>
+              <span className="text-lg font-bold text-[#034795]">RM{Number(service.basePrice).toLocaleString()}</span>
+              <span className="text-xs text-[#5b6480] ml-1">/{service.priceUnit === "fixed" ? "job" : service.priceUnit.replace("_", " ")}</span>
             </div>
-            <span className="text-xs font-bold text-[#fd6b22] bg-[#fff0e8] px-3 py-1.5 rounded-full">Book →</span>
+            <span className="text-xs font-bold text-[#034795] bg-[#eaf0f8] px-3 py-1.5 rounded-full">Book →</span>
           </div>
         </div>
       </div>
@@ -86,16 +91,16 @@ export function CategoryCard({
 }) {
   return (
     <Link href={`/services?category=${slug}`}>
-      <div className="flex flex-col items-center gap-3 p-4 rounded-[20px] border border-[#e8e6ea] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition-all cursor-pointer bg-white group">
+      <div className="flex flex-col items-center gap-3 p-4 rounded-[20px] border border-[#ddddee] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition-all cursor-pointer bg-white group">
         <div
           className="w-14 h-14 rounded-[16px] flex items-center justify-center text-2xl group-hover:scale-110 transition-transform"
           style={{ background: `${color}20` }}
         >
-          <span>{getCategoryEmoji(name)}</span>
+          <Image src={getServiceIcon(slug || name)} alt="" width={36} height={36} className="w-9 h-9 object-contain" />
         </div>
-        <p className="text-xs font-bold text-[#1b1d21] text-center tracking-[-0.2px] leading-tight">{name}</p>
+        <p className="text-xs font-bold text-[#001353] text-center tracking-[-0.2px] leading-tight">{name}</p>
         {count !== undefined && (
-          <p className="text-[10px] text-[#8f92a1]">{count} services</p>
+          <p className="text-[10px] text-[#5b6480]">{count} services</p>
         )}
       </div>
     </Link>
@@ -128,23 +133,23 @@ export function BookingCard({
 
   return (
     <Link href={`/orders/${booking.id}`}>
-      <div className="bg-white rounded-[20px] border border-[#e8e6ea] p-4 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition-all cursor-pointer">
+      <div className="bg-white rounded-[20px] border border-[#ddddee] p-4 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition-all cursor-pointer">
         <div className="flex items-start justify-between mb-3">
           <div>
-            <h4 className="font-bold text-[#1b1d21] text-sm tracking-[-0.3px]">{booking.service.name}</h4>
-            <p className="text-xs text-[#8f92a1] mt-0.5">{booking.bookingCode}</p>
+            <h4 className="font-bold text-[#001353] text-sm tracking-[-0.3px]">{booking.service.name}</h4>
+            <p className="text-xs text-[#5b6480] mt-0.5">{booking.bookingCode}</p>
           </div>
           <span className={twMerge("px-3 py-1 rounded-full text-xs font-bold", statusColor)}>
             {booking.status.replace("_", " ")}
           </span>
         </div>
-        <div className="flex items-center gap-4 text-xs text-[#8f92a1]">
+        <div className="flex items-center gap-4 text-xs text-[#5b6480]">
           <span>📅 {new Date(booking.scheduledDate).toLocaleDateString("en-MY", { day: "numeric", month: "short", year: "numeric" })}</span>
           <span>🕐 {booking.scheduledTime}</span>
         </div>
-        <div className="flex items-center justify-between mt-3 pt-3 border-t border-[#e8e6ea]">
-          <span className="text-base font-bold text-[#fd6b22]">RM{Number(booking.totalAmount).toLocaleString()}</span>
-          <span className="text-xs text-[#fd6b22] font-medium">View Details →</span>
+        <div className="flex items-center justify-between mt-3 pt-3 border-t border-[#ddddee]">
+          <span className="text-base font-bold text-[#034795]">RM{Number(booking.totalAmount).toLocaleString()}</span>
+          <span className="text-xs text-[#034795] font-medium">View Details →</span>
         </div>
       </div>
     </Link>
@@ -168,24 +173,24 @@ export function WorkerCard({
   };
 }) {
   return (
-    <div className="bg-white rounded-[20px] border border-[#e8e6ea] p-4 flex items-start gap-4 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition-all">
-      <div className="w-14 h-14 rounded-full bg-[#fff0e8] flex items-center justify-center text-xl font-bold text-[#fd6b22] shrink-0">
+    <div className="bg-white rounded-[20px] border border-[#ddddee] p-4 flex items-start gap-4 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition-all">
+      <div className="w-14 h-14 rounded-full bg-[#eaf0f8] flex items-center justify-center text-xl font-bold text-[#034795] shrink-0">
         {worker.user.fullName.charAt(0)}
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-start justify-between">
-          <h4 className="font-bold text-[#1b1d21] text-sm">{worker.user.fullName}</h4>
+          <h4 className="font-bold text-[#001353] text-sm">{worker.user.fullName}</h4>
           <span className={twMerge("text-[10px] font-bold px-2 py-1 rounded-full", worker.isAvailable ? "bg-green-50 text-green-600" : "bg-gray-100 text-gray-500")}>
             {worker.isAvailable ? "Available" : "Busy"}
           </span>
         </div>
-        <p className="text-xs text-[#8f92a1] mt-0.5">{worker.speciality} • {worker.experience}yr exp</p>
+        <p className="text-xs text-[#5b6480] mt-0.5">{worker.speciality} • {worker.experience}yr exp</p>
         <div className="flex items-center gap-3 mt-2">
           <div className="flex items-center gap-1">
             <RatingStars rating={worker.rating} size={12} />
-            <span className="text-xs text-[#8f92a1]">({worker.reviewCount})</span>
+            <span className="text-xs text-[#5b6480]">({worker.reviewCount})</span>
           </div>
-          <span className="text-sm font-bold text-[#fd6b22]">RM{Number(worker.hourlyRate).toLocaleString()}/hr</span>
+          <span className="text-sm font-bold text-[#034795]">RM{Number(worker.hourlyRate).toLocaleString()}/hr</span>
         </div>
       </div>
     </div>
@@ -200,7 +205,7 @@ export function StatCard({
   icon,
   change,
   changeType = "neutral",
-  color = "#fd6b22",
+  color = "#034795",
 }: {
   label: string;
   value: string | number;
@@ -210,7 +215,7 @@ export function StatCard({
   color?: string;
 }) {
   return (
-    <div className="bg-white rounded-[20px] border border-[#e8e6ea] p-5">
+    <div className="bg-white rounded-[20px] border border-[#ddddee] p-5">
       <div className="flex items-start justify-between mb-4">
         <div className="w-12 h-12 rounded-[14px] flex items-center justify-center text-2xl" style={{ background: `${color}15` }}>
           {icon}
@@ -225,23 +230,8 @@ export function StatCard({
           </span>
         )}
       </div>
-      <p className="text-2xl font-bold text-[#1b1d21] tracking-[-0.5px]">{value}</p>
-      <p className="text-sm text-[#8f92a1] mt-1">{label}</p>
+      <p className="text-2xl font-bold text-[#001353] tracking-[-0.5px]">{value}</p>
+      <p className="text-sm text-[#5b6480] mt-1">{label}</p>
     </div>
   );
-}
-
-// ─── Helper ───────────────────────────────────────────────────────────────────
-
-function getCategoryEmoji(name: string) {
-  const lower = name.toLowerCase();
-  if (lower.includes("shift")) return "🏠";
-  if (lower.includes("clean")) return "🧹";
-  if (lower.includes("plumb")) return "🔧";
-  if (lower.includes("electr")) return "⚡";
-  if (lower.includes("pest")) return "🐛";
-  if (lower.includes("paint")) return "🎨";
-  if (lower.includes("carp")) return "🪵";
-  if (lower.includes("ac")) return "❄️";
-  return "🏡";
 }

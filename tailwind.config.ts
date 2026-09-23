@@ -9,12 +9,12 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        primary: "#fd6b22",
-        dark: "#1b1d21",
-        success: "#4fbf67",
-        danger: "#f15223",
-        muted: "#8f92a1",
-        border: "#e8e6ea",
+        primary: "#034795",
+        dark: "#001353",
+        success: "#1a8f5c",
+        danger: "#d64545",
+        muted: "#5b6480",
+        border: "#ddddee",
       },
       fontFamily: {
         sans: ["var(--font-dm-sans)", "sans-serif"],

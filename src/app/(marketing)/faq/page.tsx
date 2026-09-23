@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
+import { whatsappLink } from "@/lib/whatsapp";
+import WhatsAppIcon from "@/components/marketing/WhatsAppIcon";
 import { generateMeta, faqSchema, breadcrumbSchema } from "@/lib/seo";
 
 export const metadata: Metadata = {
@@ -16,7 +19,7 @@ const FAQ_SECTIONS = [
     category: "Booking",
     emoji: "📅",
     faqs: [
-      { q: "How do I book a service?", a: "Create a free RepairKL account, browse our services, select the service you need, choose a package, pick your preferred date and time, confirm your address and payment method — done! The whole process takes under 2 minutes." },
+      { q: "How do I book a service?", a: "Send us a WhatsApp message at +60 11-7434 7814 with your appliance, the problem and your area. We'll confirm a time slot and assign a verified technician. It usually takes just a few minutes." },
       { q: "How far in advance do I need to book?", a: "You can book same-day services up to 1 hour in advance for many service types. For house shifting and large jobs, we recommend booking at least 24–48 hours ahead to ensure worker availability." },
       { q: "Can I book a recurring service?", a: "Yes! For cleaning and maintenance services, you can set up weekly, bi-weekly or monthly recurring bookings at a discounted rate from the RepairKL app." },
       { q: "Is there a minimum booking value?", a: "There is no minimum booking value. Some promotions may have a minimum order requirement, which is shown clearly before applying." },
@@ -73,10 +76,18 @@ export default function FaqPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
 
       {/* ─── HERO ── */}
-      <section className="relative bg-[#1b1d21] pt-36 pb-24 overflow-hidden">
-        <div className="absolute inset-0">
-          <div className="absolute top-0 right-1/3 w-[500px] h-[500px] bg-[#fd6b22]/10 rounded-full blur-[130px]" />
-          <div className="absolute inset-0 opacity-[0.025]" style={{ backgroundImage: "radial-gradient(circle, #fff 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
+      <section className="relative pt-36 pb-24 overflow-hidden text-white">
+        <div className="absolute inset-0" aria-hidden="true">
+          <div className="absolute inset-0 bg-gradient-to-br from-[#001353] via-[#0a1f63] to-[#001353]" />
+          <Image
+            src="/images/hero/fridge-repairbg.jpg.jpg"
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-center"
+          />
+          <div className="absolute inset-0 bg-[#001353]/85" />
         </div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <nav className="flex justify-center items-center gap-2 text-sm text-white/50 mb-6" aria-label="Breadcrumb">
@@ -86,7 +97,7 @@ export default function FaqPage() {
           </nav>
           <h1 className="text-5xl lg:text-7xl font-black text-white tracking-[-2px] leading-tight mb-6">
             Frequently Asked <br />
-            <span className="text-[#fd6b22]">Questions</span>
+            <span className="text-[#034795]">Questions</span>
           </h1>
           <p className="text-white/60 text-xl max-w-xl mx-auto">
             Everything you need to know about booking home services on RepairKL.
@@ -101,7 +112,7 @@ export default function FaqPage() {
           <div className="flex flex-wrap gap-2 justify-center mb-14">
             {FAQ_SECTIONS.map((s) => (
               <a key={s.category} href={`#${s.category.toLowerCase().replace(/[& ]+/g, "-")}`}
-                className="px-4 py-2 rounded-full bg-[#f9fafb] border border-[#e8e6ea] text-sm font-semibold text-[#8f92a1] hover:border-[#fd6b22] hover:text-[#fd6b22] transition-all">
+                className="px-4 py-2 rounded-full bg-[#f5f5fa] border border-[#ddddee] text-sm font-semibold text-[#5b6480] hover:border-[#034795] hover:text-[#034795] transition-all">
                 {s.emoji} {s.category}
               </a>
             ))}
@@ -111,18 +122,18 @@ export default function FaqPage() {
             {FAQ_SECTIONS.map((section) => (
               <div key={section.category} id={section.category.toLowerCase().replace(/[& ]+/g, "-")} className="scroll-mt-24">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="w-10 h-10 bg-[#fff0e8] rounded-[12px] flex items-center justify-center text-xl">{section.emoji}</div>
-                  <h2 className="text-xl font-black text-[#1b1d21]">{section.category}</h2>
+                  <div className="w-10 h-10 bg-[#eaf0f8] rounded-[12px] flex items-center justify-center text-xl">{section.emoji}</div>
+                  <h2 className="text-xl font-black text-[#001353]">{section.category}</h2>
                 </div>
                 <div className="space-y-3">
                   {section.faqs.map((faq) => (
-                    <details key={faq.q} className="group bg-[#f9fafb] rounded-[16px] border border-[#e8e6ea] overflow-hidden">
+                    <details key={faq.q} className="group bg-[#f5f5fa] rounded-[16px] border border-[#ddddee] overflow-hidden">
                       <summary className="flex items-start justify-between px-6 py-5 cursor-pointer list-none gap-4">
-                        <span className="font-bold text-[#1b1d21] text-sm leading-relaxed">{faq.q}</span>
-                        <span className="text-[#fd6b22] text-xl font-light shrink-0 mt-0.5 group-open:rotate-45 transition-transform duration-200">+</span>
+                        <span className="font-bold text-[#001353] text-sm leading-relaxed">{faq.q}</span>
+                        <span className="text-[#034795] text-xl font-light shrink-0 mt-0.5 group-open:rotate-45 transition-transform duration-200">+</span>
                       </summary>
                       <div className="px-6 pb-5">
-                        <p className="text-[#8f92a1] text-sm leading-relaxed">{faq.a}</p>
+                        <p className="text-[#5b6480] text-sm leading-relaxed">{faq.a}</p>
                       </div>
                     </details>
                   ))}
@@ -134,17 +145,23 @@ export default function FaqPage() {
       </section>
 
       {/* ─── STILL STUCK ── */}
-      <section className="py-16 bg-[#f9fafb]">
+      <section className="py-16 bg-[#f5f5fa]">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="text-5xl mb-4">🤝</div>
-          <h2 className="text-3xl font-black text-[#1b1d21] tracking-[-0.8px] mb-4">Still Have Questions?</h2>
-          <p className="text-[#8f92a1] mb-8">Our support team is available Sat–Thu 8AM–10PM and can answer any question in minutes.</p>
+          <h2 className="text-3xl font-black text-[#001353] tracking-[-0.8px] mb-4">Still Have Questions?</h2>
+          <p className="text-[#5b6480] mb-8">Our support team is available Sat–Thu 8AM–10PM and can answer any question in minutes.</p>
           <div className="flex flex-wrap justify-center gap-4">
-            <Link href="/contact" className="bg-[#fd6b22] text-white font-bold px-8 py-4 rounded-[14px] shadow-[0_6px_24px_rgba(253,107,34,0.3)] transition-all hover:-translate-y-0.5">
+            <Link href="/contact" className="bg-[#034795] text-white font-bold px-8 py-4 rounded-[14px] shadow-[0_6px_24px_rgba(3,71,149,0.3)] transition-all hover:-translate-y-0.5">
               Contact Support
             </Link>
-            <a href="tel:+601127272745" className="bg-white border-2 border-[#e6e8ec] text-[#1b1d21] font-bold px-8 py-4 rounded-[14px] hover:border-[#fd6b22] transition-all flex items-center gap-2">
-              📞 Call Us
+            <a
+              href={whatsappLink("Hi RepairKL, I have a question.")}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-white border-2 border-[#ddddee] text-[#001353] font-bold px-8 py-4 rounded-[14px] hover:border-[#25d366] transition-all flex items-center gap-2"
+            >
+              <WhatsAppIcon className="w-5 h-5 text-[#25d366]" />
+              WhatsApp Us
             </a>
           </div>
         </div>

@@ -18,12 +18,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const isActive = focused || hasValue;
 
     const borderColor = error
-      ? "border-[#f15223]"
+      ? "border-[#d64545]"
       : variant === "success"
-        ? "border-[#4fbf67]"
+        ? "border-[#1a8f5c]"
         : focused
-          ? "border-[#fd6b22]"
-          : "border-[#1b1d21]/10";
+          ? "border-[#034795]"
+          : "border-[#001353]/10";
 
     return (
       <div className="relative w-full">
@@ -35,12 +35,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
                 ? "-top-2 left-4 bg-white px-2 text-[11px]"
                 : "top-[calc(50%-8px)] left-6 text-sm",
               error
-                ? "text-[#f15223]"
+                ? "text-[#d64545]"
                 : variant === "success"
-                  ? "text-[#4fbf67]"
+                  ? "text-[#1a8f5c]"
                   : isActive
-                    ? "text-[#1b1d21]/40"
-                    : "text-[#1b1d21]/40",
+                    ? "text-[#001353]/40"
+                    : "text-[#001353]/40",
             )}
           >
             {label}
@@ -48,14 +48,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         )}
         <div className="relative flex items-center">
           {leftIcon && (
-            <span className="absolute left-4 text-[#1b1d21]/40">{leftIcon}</span>
+            <span className="absolute left-4 text-[#001353]/40">{leftIcon}</span>
           )}
           <input
             ref={ref}
             onFocus={() => setFocused(true)}
             onBlur={() => setFocused(false)}
             className={twMerge(
-              "w-full h-14 bg-white border rounded-[16px] text-sm text-[#040415]",
+              "w-full h-14 bg-white border rounded-[16px] text-sm text-[#001353]",
               "outline-none transition-colors duration-150",
               "placeholder:text-transparent",
               label ? "px-6 pt-2" : "px-6",
@@ -67,12 +67,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             {...props}
           />
           {rightIcon && (
-            <span className="absolute right-4 text-[#1b1d21]/40 cursor-pointer">
+            <span className="absolute right-4 text-[#001353]/40 cursor-pointer">
               {rightIcon}
             </span>
           )}
           {variant === "success" && (
-            <span className="absolute right-4 text-[#4fbf67]">
+            <span className="absolute right-4 text-[#1a8f5c]">
               <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
                 <path
                   stroke="currentColor"
@@ -89,7 +89,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           <p
             className={twMerge(
               "mt-1 text-xs px-2",
-              error ? "text-[#f15223]" : "text-[#8f92a1]",
+              error ? "text-[#d64545]" : "text-[#5b6480]",
             )}
           >
             {error ?? hint}

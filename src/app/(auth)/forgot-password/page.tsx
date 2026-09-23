@@ -37,27 +37,27 @@ export default function ForgotPasswordPage() {
   return (
     <>
       <div className="flex items-center gap-3 mb-6">
-        <Link href="/login" className="w-10 h-10 rounded-full bg-[#f3f6f8] flex items-center justify-center hover:bg-[#e6e8ec]">
+        <Link href="/login" className="w-10 h-10 rounded-full bg-[#eeeef6] flex items-center justify-center hover:bg-[#ddddee]">
           ←
         </Link>
-        <h1 className="text-lg font-bold text-[#1b1d21]">Forgot Password</h1>
+        <h1 className="text-lg font-bold text-[#001353]">Forgot Password</h1>
       </div>
 
       {sent ? (
         <div className="text-center py-8">
-          <div className="w-16 h-16 bg-[#fff0e8] rounded-full flex items-center justify-center text-3xl mx-auto mb-4">📱</div>
-          <p className="font-bold text-[#1b1d21] mb-2">Code Sent!</p>
-          <p className="text-sm text-[#8f92a1]">Check your phone for the reset code.</p>
+          <div className="w-16 h-16 bg-[#eaf0f8] rounded-full flex items-center justify-center text-3xl mx-auto mb-4">📱</div>
+          <p className="font-bold text-[#001353] mb-2">Code Sent!</p>
+          <p className="text-sm text-[#5b6480]">Check your phone for the reset code.</p>
         </div>
       ) : (
         <>
           <div className="mb-6">
-            <p className="text-[#1b1d21]/60 text-sm">Enter your email address and we&apos;ll send a reset code to your registered phone number.</p>
+            <p className="text-[#001353]/60 text-sm">Enter your email address and we&apos;ll send a reset code to your registered phone number.</p>
           </div>
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <Input label="Email Address" type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
             <Button type="submit" fullWidth loading={loading}>Send Reset Code</Button>
-            <Link href="/login" className="text-center text-sm text-[#8f92a1] hover:text-[#1b1d21]">Back to Login</Link>
+            <Link href="/login" className="text-center text-sm text-[#5b6480] hover:text-[#001353]">Back to Login</Link>
           </form>
         </>
       )}

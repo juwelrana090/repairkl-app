@@ -44,8 +44,8 @@ export default async function AdminUsersPage({
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-[#1b1d21] tracking-[-0.5px]">Users</h1>
-          <p className="text-sm text-[#8f92a1] mt-1">{total} total users</p>
+          <h1 className="text-2xl font-bold text-[#001353] tracking-[-0.5px]">Users</h1>
+          <p className="text-sm text-[#5b6480] mt-1">{total} total users</p>
         </div>
       </div>
 

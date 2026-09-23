@@ -39,79 +39,79 @@ export default async function SupportTicketsPage({
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-[#1b1d21] tracking-[-0.5px]">Support Tickets</h1>
-          <p className="text-sm text-[#8f92a1] mt-1">{tickets.length} tickets</p>
+          <h1 className="text-2xl font-bold text-[#001353] tracking-[-0.5px]">Support Tickets</h1>
+          <p className="text-sm text-[#5b6480] mt-1">{tickets.length} tickets</p>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-[20px] border border-[#e8e6ea] p-4 flex flex-wrap gap-3">
+      <div className="bg-white rounded-[20px] border border-[#ddddee] p-4 flex flex-wrap gap-3">
         <div className="flex gap-2">
-          <span className="text-xs font-bold text-[#8f92a1] flex items-center">Status:</span>
+          <span className="text-xs font-bold text-[#5b6480] flex items-center">Status:</span>
           {["OPEN", "IN_PROGRESS", "RESOLVED", "CLOSED"].map((s) => (
             <Link key={s} href={`/support/tickets?status=${s}${sp.priority ? `&priority=${sp.priority}` : ""}`}
-              className={`px-3 py-1 rounded-full text-xs font-bold border transition-all ${sp.status === s ? "border-[#2196f3] bg-blue-50 text-blue-600" : "border-[#e6e8ec] text-[#8f92a1]"}`}>
+              className={`px-3 py-1 rounded-full text-xs font-bold border transition-all ${sp.status === s ? "border-[#fb6f27] bg-blue-50 text-blue-600" : "border-[#ddddee] text-[#5b6480]"}`}>
               {s.replace("_", " ")}
             </Link>
           ))}
         </div>
         <div className="flex gap-2">
-          <span className="text-xs font-bold text-[#8f92a1] flex items-center">Priority:</span>
+          <span className="text-xs font-bold text-[#5b6480] flex items-center">Priority:</span>
           {["URGENT", "HIGH", "MEDIUM", "LOW"].map((p) => (
             <Link key={p} href={`/support/tickets?priority=${p}${sp.status ? `&status=${sp.status}` : ""}`}
-              className={`px-3 py-1 rounded-full text-xs font-bold border transition-all ${sp.priority === p ? PRIORITY_COLOR[p] + " border-current" : "border-[#e6e8ec] text-[#8f92a1]"}`}>
+              className={`px-3 py-1 rounded-full text-xs font-bold border transition-all ${sp.priority === p ? PRIORITY_COLOR[p] + " border-current" : "border-[#ddddee] text-[#5b6480]"}`}>
               {p}
             </Link>
           ))}
         </div>
         {(sp.status || sp.priority) && (
-          <Link href="/support/tickets" className="ml-auto text-xs text-[#fd6b22] font-bold flex items-center">
+          <Link href="/support/tickets" className="ml-auto text-xs text-[#034795] font-bold flex items-center">
             Clear filters ✕
           </Link>
         )}
       </div>
 
       {/* Tickets table */}
-      <div className="bg-white rounded-[24px] border border-[#e8e6ea] overflow-hidden">
+      <div className="bg-white rounded-[24px] border border-[#ddddee] overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-[#f9fafb] border-b border-[#e8e6ea]">
+            <thead className="bg-[#f5f5fa] border-b border-[#ddddee]">
               <tr>
                 {["#", "Customer", "Subject", "Priority", "Status", "Agent", "Messages", "Created", "Action"].map((h) => (
-                  <th key={h} className="text-left px-4 py-3 text-xs font-bold text-[#8f92a1] uppercase tracking-wide whitespace-nowrap">{h}</th>
+                  <th key={h} className="text-left px-4 py-3 text-xs font-bold text-[#5b6480] uppercase tracking-wide whitespace-nowrap">{h}</th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#e8e6ea]">
+            <tbody className="divide-y divide-[#ddddee]">
               {tickets.length === 0 ? (
-                <tr><td colSpan={9} className="text-center py-12 text-[#8f92a1]">No tickets found</td></tr>
+                <tr><td colSpan={9} className="text-center py-12 text-[#5b6480]">No tickets found</td></tr>
               ) : (
                 tickets.map((t) => (
-                  <tr key={t.id} className="hover:bg-[#f9fafb] transition-colors">
-                    <td className="px-4 py-3 text-xs text-[#8f92a1] font-mono">{t.id.slice(-6).toUpperCase()}</td>
+                  <tr key={t.id} className="hover:bg-[#f5f5fa] transition-colors">
+                    <td className="px-4 py-3 text-xs text-[#5b6480] font-mono">{t.id.slice(-6).toUpperCase()}</td>
                     <td className="px-4 py-3">
-                      <p className="text-sm font-medium text-[#1b1d21]">{t.customer.fullName}</p>
-                      <p className="text-xs text-[#8f92a1]">{t.customer.email}</p>
+                      <p className="text-sm font-medium text-[#001353]">{t.customer.fullName}</p>
+                      <p className="text-xs text-[#5b6480]">{t.customer.email}</p>
                     </td>
                     <td className="px-4 py-3 max-w-[200px]">
-                      <p className="text-sm text-[#1b1d21] truncate">{t.subject}</p>
-                      {t.category && <p className="text-xs text-[#8f92a1]">{t.category}</p>}
+                      <p className="text-sm text-[#001353] truncate">{t.subject}</p>
+                      {t.category && <p className="text-xs text-[#5b6480]">{t.category}</p>}
                     </td>
                     <td className="px-4 py-3">
                       <span className={`text-xs font-bold px-2 py-1 rounded-full ${PRIORITY_COLOR[t.priority]}`}>{t.priority}</span>
                     </td>
                     <td className="px-4 py-3"><StatusBadge status={t.status} /></td>
-                    <td className="px-4 py-3 text-sm text-[#8f92a1]">{t.agent?.fullName ?? "Unassigned"}</td>
+                    <td className="px-4 py-3 text-sm text-[#5b6480]">{t.agent?.fullName ?? "Unassigned"}</td>
                     <td className="px-4 py-3 text-center">
-                      <span className="text-sm font-bold text-[#1b1d21] bg-[#f3f6f8] w-7 h-7 rounded-full flex items-center justify-center">
+                      <span className="text-sm font-bold text-[#001353] bg-[#eeeef6] w-7 h-7 rounded-full flex items-center justify-center">
                         {t._count.messages}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-xs text-[#8f92a1] whitespace-nowrap">
+                    <td className="px-4 py-3 text-xs text-[#5b6480] whitespace-nowrap">
                       {new Date(t.createdAt).toLocaleDateString()}
                     </td>
                     <td className="px-4 py-3">
-                      <Link href={`/support/tickets/${t.id}`} className="text-xs text-[#2196f3] font-bold hover:underline whitespace-nowrap">
+                      <Link href={`/support/tickets/${t.id}`} className="text-xs text-[#fb6f27] font-bold hover:underline whitespace-nowrap">
                         {t.agentId ? "View" : "Assign & Reply"} →
                       </Link>
                     </td>

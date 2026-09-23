@@ -12,8 +12,8 @@ export default async function SavedPage() {
   if (!session) {
     return (
       <div className="flex flex-col items-center justify-center h-full">
-        <p className="text-lg font-bold text-[#1b1d21]">Please log in first</p>
-        <Link href="/login" className="text-[#fd6b22] mt-2">Return to login</Link>
+        <p className="text-lg font-bold text-[#001353]">Please log in first</p>
+        <Link href="/login" className="text-[#034795] mt-2">Return to login</Link>
       </div>
     );
   }
@@ -28,10 +28,10 @@ export default async function SavedPage() {
     <div className="max-w-5xl mx-auto pb-20 md:pb-0">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-[#1b1d21] tracking-[-0.5px]">Saved Services</h1>
-          <p className="text-sm text-[#8f92a1] mt-1">{saved.length} saved</p>
+          <h1 className="text-2xl font-bold text-[#001353] tracking-[-0.5px]">Saved Services</h1>
+          <p className="text-sm text-[#5b6480] mt-1">{saved.length} saved</p>
         </div>
-        <Link href="/services" className="text-sm font-bold text-[#fd6b22] bg-[#fff0e8] px-4 py-2 rounded-full">
+        <Link href="/services" className="text-sm font-bold text-[#034795] bg-[#eaf0f8] px-4 py-2 rounded-full">
           Browse more →
         </Link>
       </div>
@@ -39,9 +39,9 @@ export default async function SavedPage() {
       {saved.length === 0 ? (
         <div className="flex flex-col items-center py-20 text-center">
           <span className="text-6xl mb-4">❤️</span>
-          <h2 className="text-xl font-bold text-[#1b1d21] mb-2">No saved services yet</h2>
-          <p className="text-sm text-[#8f92a1] mb-6">Browse services and tap the heart icon to save your favorites.</p>
-          <Link href="/services" className="bg-[#fd6b22] text-white font-bold px-6 py-3 rounded-[14px] text-sm">
+          <h2 className="text-xl font-bold text-[#001353] mb-2">No saved services yet</h2>
+          <p className="text-sm text-[#5b6480] mb-6">Browse services and tap the heart icon to save your favorites.</p>
+          <Link href="/services" className="bg-[#034795] text-white font-bold px-6 py-3 rounded-[14px] text-sm">
             Explore Services
           </Link>
         </div>

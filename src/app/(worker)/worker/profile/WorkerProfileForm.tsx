@@ -41,16 +41,16 @@ export default function WorkerProfileForm({ data }: { data: WorkerData }) {
         <Input label="Experience (years)" type="number" value={String(form.experience)} onChange={set("experience")} />
       </div>
       <div>
-        <p className="text-xs text-[#8f92a1] mb-1">Bio</p>
+        <p className="text-xs text-[#5b6480] mb-1">Bio</p>
         <textarea
           value={form.bio}
           onChange={set("bio")}
           rows={3}
-          className="w-full border-2 border-[#e6e8ec] rounded-[16px] px-4 py-3 text-sm outline-none focus:border-[#4fbf67] resize-none"
+          className="w-full border-2 border-[#ddddee] rounded-[16px] px-4 py-3 text-sm outline-none focus:border-[#1a8f5c] resize-none"
           placeholder="Tell customers about your experience..."
         />
       </div>
-      <Button type="submit" fullWidth loading={loading} className="bg-[#4fbf67] hover:bg-[#3daa56]">
+      <Button type="submit" fullWidth loading={loading} className="bg-[#1a8f5c] hover:bg-[#147349]">
         Save Changes
       </Button>
     </form>

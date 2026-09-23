@@ -50,10 +50,10 @@ export default async function ServicesPage({
     <div className="flex flex-col gap-6 pb-20 md:pb-0">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-[#1b1d21] tracking-[-0.5px]">
+        <h1 className="text-2xl font-bold text-[#001353] tracking-[-0.5px]">
           {activeCategory ? activeCategory.name : search ? `Results for "${search}"` : "All Services"}
         </h1>
-        <p className="text-sm text-[#8f92a1] mt-1">{services.length} services available</p>
+        <p className="text-sm text-[#5b6480] mt-1">{services.length} services available</p>
       </div>
 
       {/* Filters */}
@@ -67,8 +67,8 @@ export default async function ServicesPage({
       {services.length === 0 ? (
         <div className="flex flex-col items-center py-20 text-center">
           <span className="text-5xl mb-4">🔍</span>
-          <p className="text-lg font-bold text-[#1b1d21]">No services found</p>
-          <p className="text-sm text-[#8f92a1] mt-2">Try a different category or search term</p>
+          <p className="text-lg font-bold text-[#001353]">No services found</p>
+          <p className="text-sm text-[#5b6480] mt-2">Try a different category or search term</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">

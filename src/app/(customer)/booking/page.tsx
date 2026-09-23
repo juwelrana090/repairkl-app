@@ -111,27 +111,27 @@ function BookingWizard() {
             <div key={s} className="flex items-center gap-2">
               <div className={twMerge(
                 "w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all",
-                i < step ? "bg-[#4fbf67] text-white"
-                : i === step ? "bg-[#fd6b22] text-white"
-                : "bg-[#e6e8ec] text-[#8f92a1]"
+                i < step ? "bg-[#1a8f5c] text-white"
+                : i === step ? "bg-[#034795] text-white"
+                : "bg-[#ddddee] text-[#5b6480]"
               )}>
                 {i < step ? "✓" : i + 1}
               </div>
               {i < STEPS.length - 1 && (
-                <div className={twMerge("h-0.5 w-16 sm:w-24 transition-all", i < step ? "bg-[#4fbf67]" : "bg-[#e6e8ec]")} />
+                <div className={twMerge("h-0.5 w-16 sm:w-24 transition-all", i < step ? "bg-[#1a8f5c]" : "bg-[#ddddee]")} />
               )}
             </div>
           ))}
         </div>
-        <div className="flex justify-between text-xs text-[#8f92a1]">
+        <div className="flex justify-between text-xs text-[#5b6480]">
           {STEPS.map((s) => <span key={s} className="text-center">{s}</span>)}
         </div>
       </div>
 
       {/* Title */}
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-[#1b1d21] tracking-[-1.2px]">{STEPS[step]}</h1>
-        <p className="text-[#8f92a1] mt-1 text-sm">Booking: <span className="font-medium text-[#1b1d21]">{serviceName}</span></p>
+        <h1 className="text-3xl font-bold text-[#001353] tracking-[-1.2px]">{STEPS[step]}</h1>
+        <p className="text-[#5b6480] mt-1 text-sm">Booking: <span className="font-medium text-[#001353]">{serviceName}</span></p>
       </div>
 
       {/* Step 0 — Service Details */}
@@ -140,20 +140,20 @@ function BookingWizard() {
           {isHouseShifting && (
             <>
               <div>
-                <h3 className="font-bold text-[#1b1d21] mb-3 flex items-center justify-between">
+                <h3 className="font-bold text-[#001353] mb-3 flex items-center justify-between">
                   House Size
-                  <span className="text-xs text-[#fd6b22] font-medium bg-[#fff0e8] px-3 py-1 rounded-full cursor-pointer">+ Custom</span>
+                  <span className="text-xs text-[#034795] font-medium bg-[#eaf0f8] px-3 py-1 rounded-full cursor-pointer">+ Custom</span>
                 </h3>
                 <div className="grid grid-cols-3 gap-3">
                   {HOUSE_SIZES.map((h) => (
                     <button key={h.id} onClick={() => setHouseSize(h.id)}
                       className={twMerge("p-4 rounded-[16px] border-2 flex flex-col items-center gap-2 transition-all",
-                        houseSize === h.id ? "border-[#fd6b22] bg-[#fff0e8]" : "border-[#e6e8ec] bg-white"
+                        houseSize === h.id ? "border-[#034795] bg-[#eaf0f8]" : "border-[#ddddee] bg-white"
                       )}>
                       <span className="text-3xl">{h.emoji}</span>
                       <div className="text-center">
-                        <p className="text-xs font-bold text-[#1b1d21]">{h.label}</p>
-                        <p className="text-[10px] text-[#8f92a1]">{h.sub}</p>
+                        <p className="text-xs font-bold text-[#001353]">{h.label}</p>
+                        <p className="text-[10px] text-[#5b6480]">{h.sub}</p>
                       </div>
                     </button>
                   ))}
@@ -161,8 +161,8 @@ function BookingWizard() {
               </div>
 
               <div>
-                <h3 className="font-bold text-[#1b1d21] mb-1">Furnitures {totalItems > 0 && <span className="text-xs text-[#fd6b22] ml-2">{totalItems} selected ✕</span>}</h3>
-                <p className="text-xs text-[#8f92a1] mb-3">Approximate furnitures ℹ️</p>
+                <h3 className="font-bold text-[#001353] mb-1">Furnitures {totalItems > 0 && <span className="text-xs text-[#034795] ml-2">{totalItems} selected ✕</span>}</h3>
+                <p className="text-xs text-[#5b6480] mb-3">Approximate furnitures ℹ️</p>
                 <div className="grid grid-cols-4 sm:grid-cols-5 gap-3">
                   {FURNITURE_ITEMS.map((item) => {
                     const count = furnitures[item.key] ?? 0;
@@ -171,16 +171,16 @@ function BookingWizard() {
                         <button
                           onClick={() => changeFurniture(item.key, 1)}
                           className={twMerge("w-full aspect-square rounded-full flex flex-col items-center justify-center gap-1 border-2 transition-all",
-                            count > 0 ? "border-[#fd6b22] bg-[#fff0e8]" : "border-[#e6e8ec] bg-white"
+                            count > 0 ? "border-[#034795] bg-[#eaf0f8]" : "border-[#ddddee] bg-white"
                           )}>
                           <span className="text-xl">{item.emoji}</span>
                         </button>
                         {count > 0 && (
-                          <div className="absolute -top-1 -right-1 w-5 h-5 bg-[#fd6b22] rounded-full flex items-center justify-center text-[10px] text-white font-bold">
+                          <div className="absolute -top-1 -right-1 w-5 h-5 bg-[#034795] rounded-full flex items-center justify-center text-[10px] text-white font-bold">
                             {count}
                           </div>
                         )}
-                        <p className="text-[10px] text-center text-[#1b1d21] font-bold mt-1">{item.label}</p>
+                        <p className="text-[10px] text-center text-[#001353] font-bold mt-1">{item.label}</p>
                       </div>
                     );
                   })}
@@ -188,24 +188,24 @@ function BookingWizard() {
               </div>
 
               <div>
-                <h3 className="font-bold text-[#1b1d21] mb-3">Additional</h3>
+                <h3 className="font-bold text-[#001353] mb-3">Additional</h3>
                 {[
                   { key: "packedBoxes", label: "Packed Boxes", sub: "Weight below 10kg", value: packedBoxes, set: setPackedBoxes, emoji: "📦" },
                   { key: "workers", label: "Workers", sub: "RM500/hr each", value: workers, set: setWorkers, emoji: "👷" },
                   { key: "electricians", label: "Electricians", sub: "RM600/hr each", value: electricians, set: setElectricians, emoji: "⚡" },
                 ].map((item) => (
-                  <div key={item.key} className="flex items-center justify-between py-4 border-b border-[#e8e6ea] last:border-0">
+                  <div key={item.key} className="flex items-center justify-between py-4 border-b border-[#ddddee] last:border-0">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-full bg-[#f3f6f8] flex items-center justify-center text-xl">{item.emoji}</div>
+                      <div className="w-12 h-12 rounded-full bg-[#eeeef6] flex items-center justify-center text-xl">{item.emoji}</div>
                       <div>
-                        <p className="font-bold text-sm text-[#1b1d21]">{item.label}</p>
-                        <p className="text-xs text-[#d9d9d9]">{item.sub}</p>
+                        <p className="font-bold text-sm text-[#001353]">{item.label}</p>
+                        <p className="text-xs text-[#c9c9de]">{item.sub}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
-                      <button onClick={() => item.set(Math.max(0, item.value - 1))} className="w-8 h-8 bg-[#8f92a1]/10 rounded-[10px] flex items-center justify-center font-bold text-[#8f92a1]">−</button>
-                      <span className="w-6 text-center font-bold text-[#1b1d21]">{item.value}</span>
-                      <button onClick={() => item.set(item.value + 1)} className="w-8 h-8 bg-[#8f92a1]/10 rounded-[10px] flex items-center justify-center font-bold text-[#fd6b22]">+</button>
+                      <button onClick={() => item.set(Math.max(0, item.value - 1))} className="w-8 h-8 bg-[#5b6480]/10 rounded-[10px] flex items-center justify-center font-bold text-[#5b6480]">−</button>
+                      <span className="w-6 text-center font-bold text-[#001353]">{item.value}</span>
+                      <button onClick={() => item.set(item.value + 1)} className="w-8 h-8 bg-[#5b6480]/10 rounded-[10px] flex items-center justify-center font-bold text-[#034795]">+</button>
                     </div>
                   </div>
                 ))}
@@ -223,22 +223,22 @@ function BookingWizard() {
       {step === 1 && (
         <div className="space-y-6">
           <div>
-            <h3 className="font-bold text-[#1b1d21] mb-3">Pick Date</h3>
+            <h3 className="font-bold text-[#001353] mb-3">Pick Date</h3>
             <input
               type="date"
               value={selectedDate}
               min={today.toISOString().split("T")[0]}
               onChange={(e) => setSelectedDate(e.target.value)}
-              className="w-full h-14 px-6 bg-white border-2 border-[#e6e8ec] rounded-[16px] text-sm text-[#1b1d21] outline-none focus:border-[#fd6b22]"
+              className="w-full h-14 px-6 bg-white border-2 border-[#ddddee] rounded-[16px] text-sm text-[#001353] outline-none focus:border-[#034795]"
             />
           </div>
           <div>
-            <h3 className="text-[#1b1d21]/40 text-base mb-3">Pick time</h3>
+            <h3 className="text-[#001353]/40 text-base mb-3">Pick time</h3>
             <div className="flex flex-wrap gap-2">
               {TIME_SLOTS.map((t) => (
                 <button key={t} onClick={() => setSelectedTime(t)}
                   className={twMerge("px-6 py-3 rounded-full border-2 text-sm font-bold transition-all",
-                    selectedTime === t ? "border-[#fd6b22] text-[#fd6b22] bg-[#fff0e8]" : "border-[#e6e8ec] text-[#23262f]"
+                    selectedTime === t ? "border-[#034795] text-[#034795] bg-[#eaf0f8]" : "border-[#ddddee] text-[#0a1f63]"
                   )}>
                   {t}
                 </button>
@@ -258,8 +258,8 @@ function BookingWizard() {
             error={addressError}
             placeholder="123 Main Street, Kuala Lumpur"
           />
-          <div className="bg-[#f3f6f8] rounded-[16px] p-4 text-sm text-[#8f92a1]">
-            <p className="font-bold text-[#1b1d21] mb-2">📍 Location Tips</p>
+          <div className="bg-[#eeeef6] rounded-[16px] p-4 text-sm text-[#5b6480]">
+            <p className="font-bold text-[#001353] mb-2">📍 Location Tips</p>
             <ul className="space-y-1">
               <li>• Provide full street address including floor/flat</li>
               <li>• Include any landmarks nearby</li>
@@ -272,7 +272,7 @@ function BookingWizard() {
       {/* Step 3 — Confirm */}
       {step === 3 && (
         <div className="space-y-4">
-          <div className="bg-white border border-[#e8e6ea] rounded-[20px] p-5 space-y-3">
+          <div className="bg-white border border-[#ddddee] rounded-[20px] p-5 space-y-3">
             {[
               { label: "Service", value: serviceName },
               { label: "Date", value: selectedDate },
@@ -285,8 +285,8 @@ function BookingWizard() {
               ] : []),
             ].map((item) => (
               <div key={item.label} className="flex items-start justify-between gap-4">
-                <span className="text-sm text-[#8f92a1]">{item.label}</span>
-                <span className="text-sm font-medium text-[#1b1d21] text-right">{item.value}</span>
+                <span className="text-sm text-[#5b6480]">{item.label}</span>
+                <span className="text-sm font-medium text-[#001353] text-right">{item.value}</span>
               </div>
             ))}
           </div>
@@ -301,7 +301,7 @@ function BookingWizard() {
                 if (res.ok) { setPromoApplied(true); showToast("Promo applied! 🎉", "success"); }
                 else showToast("Invalid promo code", "error");
               }}
-              className="h-14 px-5 bg-[#1b1d21] text-white rounded-[16px] text-sm font-bold shrink-0"
+              className="h-14 px-5 bg-[#001353] text-white rounded-[16px] text-sm font-bold shrink-0"
             >
               Apply
             </button>
@@ -313,9 +313,9 @@ function BookingWizard() {
             </div>
           )}
 
-          <p className="text-xs text-[#8f92a1] text-center">
+          <p className="text-xs text-[#5b6480] text-center">
             By booking you agree to our{" "}
-            <a href="/terms" className="text-[#fd6b22]">Terms of Service</a>
+            <a href="/terms" className="text-[#034795]">Terms of Service</a>
           </p>
         </div>
       )}
@@ -343,7 +343,7 @@ function BookingWizard() {
 
 export default function BookingPage() {
   return (
-    <Suspense fallback={<div className="text-center py-20 text-[#8f92a1]">Loading...</div>}>
+    <Suspense fallback={<div className="text-center py-20 text-[#5b6480]">Loading...</div>}>
       <BookingWizard />
     </Suspense>
   );

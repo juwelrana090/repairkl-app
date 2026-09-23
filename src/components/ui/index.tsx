@@ -90,8 +90,8 @@ export function RatingStars({
             width={size}
             height={size}
             viewBox="0 0 24 24"
-            fill={filled ? "#fd6b22" : "none"}
-            stroke={filled ? "#fd6b22" : "#d9d9d9"}
+            fill={filled ? "#034795" : "none"}
+            stroke={filled ? "#034795" : "#c9c9de"}
             strokeWidth="1.5"
             className={interactive ? "cursor-pointer" : ""}
             onMouseEnter={() => interactive && setHovered(i + 1)}
@@ -138,10 +138,10 @@ export function Toaster() {
   }, [remove]);
 
   const COLORS = {
-    success: "bg-[#4fbf67] text-white",
-    error: "bg-[#f15223] text-white",
-    info: "bg-[#1b1d21] text-white",
-    warning: "bg-[#ffb800] text-white",
+    success: "bg-[#1a8f5c] text-white",
+    error: "bg-[#d64545] text-white",
+    info: "bg-[#001353] text-white",
+    warning: "bg-[#e0972f] text-white",
   };
 
   return (
@@ -207,10 +207,10 @@ export function Modal({
       >
         {title && (
           <div className="flex items-center justify-between mb-5">
-            <h2 className="text-lg font-bold text-[#1b1d21] tracking-[-0.4px]">{title}</h2>
+            <h2 className="text-lg font-bold text-[#001353] tracking-[-0.4px]">{title}</h2>
             <button
               onClick={onClose}
-              className="w-8 h-8 rounded-full bg-[#f3f6f8] flex items-center justify-center hover:bg-[#e6e8ec] text-[#1b1d21]"
+              className="w-8 h-8 rounded-full bg-[#eeeef6] flex items-center justify-center hover:bg-[#ddddee] text-[#001353]"
             >
               ✕
             </button>
@@ -238,13 +238,13 @@ export function EmptyState({
   return (
     <div className="flex flex-col items-center justify-center py-16 text-center px-4">
       {icon && (
-        <div className="w-16 h-16 bg-[#fff0e8] rounded-full flex items-center justify-center mb-4 text-2xl">
+        <div className="w-16 h-16 bg-[#eaf0f8] rounded-full flex items-center justify-center mb-4 text-2xl">
           {icon}
         </div>
       )}
-      <h3 className="text-lg font-bold text-[#1b1d21] mb-2 tracking-[-0.4px]">{title}</h3>
+      <h3 className="text-lg font-bold text-[#001353] mb-2 tracking-[-0.4px]">{title}</h3>
       {description && (
-        <p className="text-sm text-[#8f92a1] max-w-xs mb-6">{description}</p>
+        <p className="text-sm text-[#5b6480] max-w-xs mb-6">{description}</p>
       )}
       {action}
     </div>
@@ -285,11 +285,11 @@ export function ConfirmDialog({
 }) {
   return (
     <Modal open={open} onClose={onClose} title={title} size="sm">
-      <p className="text-sm text-[#8f92a1] mb-6">{message}</p>
+      <p className="text-sm text-[#5b6480] mb-6">{message}</p>
       <div className="flex gap-3">
         <button
           onClick={onClose}
-          className="flex-1 h-11 rounded-[12px] bg-[#f3f6f8] text-[#1b1d21] font-bold text-sm"
+          className="flex-1 h-11 rounded-[12px] bg-[#eeeef6] text-[#001353] font-bold text-sm"
         >
           Cancel
         </button>
@@ -297,7 +297,7 @@ export function ConfirmDialog({
           onClick={() => { onConfirm(); onClose(); }}
           className={twMerge(
             "flex-1 h-11 rounded-[12px] text-white font-bold text-sm",
-            variant === "danger" ? "bg-[#f15223]" : "bg-[#fd6b22]",
+            variant === "danger" ? "bg-[#d64545]" : "bg-[#034795]",
           )}
         >
           {confirmLabel}

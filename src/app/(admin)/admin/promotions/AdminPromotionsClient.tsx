@@ -71,14 +71,14 @@ export default function AdminPromotionsClient({ promos: initial }: { promos: Pro
       </div>
 
       {showForm && (
-        <div className="bg-white rounded-[24px] border border-[#e8e6ea] p-6">
-          <h2 className="font-bold text-[#1b1d21] mb-5">Create Promo Code</h2>
+        <div className="bg-white rounded-[24px] border border-[#ddddee] p-6">
+          <h2 className="font-bold text-[#001353] mb-5">Create Promo Code</h2>
           <form onSubmit={handleCreate} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Input label="Code (e.g. SAVE20)" value={form.code} onChange={set("code")} />
             <Input label="Title" value={form.title} onChange={set("title")} />
             <div>
-              <p className="text-xs text-[#8f92a1] mb-1">Discount Type</p>
-              <select value={form.discountType} onChange={set("discountType")} className="w-full h-14 border-2 border-[#e6e8ec] rounded-[16px] px-4 text-sm outline-none focus:border-[#fd6b22]">
+              <p className="text-xs text-[#5b6480] mb-1">Discount Type</p>
+              <select value={form.discountType} onChange={set("discountType")} className="w-full h-14 border-2 border-[#ddddee] rounded-[16px] px-4 text-sm outline-none focus:border-[#034795]">
                 <option value="percentage">Percentage (%)</option>
                 <option value="fixed">Fixed Amount (RM)</option>
               </select>
@@ -100,32 +100,32 @@ export default function AdminPromotionsClient({ promos: initial }: { promos: Pro
           const isExpired = new Date(p.validUntil) < new Date();
           const usagePct = p.usageLimit ? (p.usedCount / p.usageLimit) * 100 : (p.usedCount > 0 ? 50 : 0);
           return (
-            <div key={p.id} className={twMerge("bg-white rounded-[20px] border p-5 relative overflow-hidden", p.isActive && !isExpired ? "border-[#fd6b22]/30" : "border-[#e8e6ea] opacity-70")}>
-              {p.isActive && !isExpired && <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#fd6b22] to-[#ffb800]" />}
+            <div key={p.id} className={twMerge("bg-white rounded-[20px] border p-5 relative overflow-hidden", p.isActive && !isExpired ? "border-[#034795]/30" : "border-[#ddddee] opacity-70")}>
+              {p.isActive && !isExpired && <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#034795] to-[#e0972f]" />}
               <div className="flex items-start justify-between mb-3">
                 <div>
-                  <span className="font-mono text-lg font-black text-[#fd6b22] tracking-wider">{p.code}</span>
-                  <p className="text-sm text-[#8f92a1] mt-0.5">{p.title}</p>
+                  <span className="font-mono text-lg font-black text-[#034795] tracking-wider">{p.code}</span>
+                  <p className="text-sm text-[#5b6480] mt-0.5">{p.title}</p>
                 </div>
                 <button onClick={() => toggleActive(p.id, p.isActive)}
                   className={twMerge("text-xs font-bold px-2 py-1 rounded-full", p.isActive ? "bg-green-100 text-green-600" : "bg-gray-100 text-gray-500")}>
                   {p.isActive ? "Active" : "Paused"}
                 </button>
               </div>
-              <div className="bg-[#fff0e8] rounded-[12px] px-4 py-2 mb-3 text-center">
-                <span className="text-2xl font-black text-[#fd6b22]">
+              <div className="bg-[#eaf0f8] rounded-[12px] px-4 py-2 mb-3 text-center">
+                <span className="text-2xl font-black text-[#034795]">
                   {p.discountType === "percentage" ? `${p.discountValue}%` : `RM${p.discountValue}`}
                 </span>
-                <span className="text-sm text-[#fd6b22]/70 ml-1">OFF</span>
+                <span className="text-sm text-[#034795]/70 ml-1">OFF</span>
               </div>
-              <div className="space-y-1.5 text-xs text-[#8f92a1]">
+              <div className="space-y-1.5 text-xs text-[#5b6480]">
                 <p>Min order: RM{p.minOrderValue.toLocaleString()}</p>
                 <p>Valid: {new Date(p.validFrom).toLocaleDateString()} – {new Date(p.validUntil).toLocaleDateString()}</p>
                 <div className="flex items-center gap-2">
                   <span>Used: {p.usedCount}{p.usageLimit ? `/${p.usageLimit}` : ""}</span>
                   {p.usageLimit && (
-                    <div className="flex-1 h-1.5 bg-[#e6e8ec] rounded-full overflow-hidden">
-                      <div className="h-full bg-[#fd6b22] rounded-full" style={{ width: `${Math.min(100, usagePct)}%` }} />
+                    <div className="flex-1 h-1.5 bg-[#ddddee] rounded-full overflow-hidden">
+                      <div className="h-full bg-[#034795] rounded-full" style={{ width: `${Math.min(100, usagePct)}%` }} />
                     </div>
                   )}
                 </div>

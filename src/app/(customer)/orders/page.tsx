@@ -18,8 +18,8 @@ export default async function OrdersPage({
   if (!session) {
     return (
       <div className="flex flex-col items-center justify-center h-full">
-        <p className="text-lg font-bold text-[#1b1d21]">Please log in first</p>
-        <Link href="/login" className="text-[#fd6b22] mt-2">Return to login</Link>
+        <p className="text-lg font-bold text-[#001353]">Please log in first</p>
+        <Link href="/login" className="text-[#034795] mt-2">Return to login</Link>
       </div>
     );
   }
@@ -45,8 +45,8 @@ export default async function OrdersPage({
   return (
     <div className="max-w-3xl mx-auto pb-20 md:pb-0">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-[#1b1d21] tracking-[-0.5px]">My Orders</h1>
-        <Link href="/services" className="text-sm font-bold text-[#fd6b22] bg-[#fff0e8] px-4 py-2 rounded-full">
+        <h1 className="text-2xl font-bold text-[#001353] tracking-[-0.5px]">My Orders</h1>
+        <Link href="/services" className="text-sm font-bold text-[#034795] bg-[#eaf0f8] px-4 py-2 rounded-full">
           + New Booking
         </Link>
       </div>
@@ -57,9 +57,9 @@ export default async function OrdersPage({
         {bookings.length === 0 ? (
           <div className="text-center py-16">
             <span className="text-5xl block mb-4">📋</span>
-            <p className="font-bold text-[#1b1d21] text-lg">No orders yet</p>
-            <p className="text-sm text-[#8f92a1] mt-2 mb-6">Book your first service to get started</p>
-            <Link href="/services" className="bg-[#fd6b22] text-white px-6 py-3 rounded-[14px] font-bold text-sm">
+            <p className="font-bold text-[#001353] text-lg">No orders yet</p>
+            <p className="text-sm text-[#5b6480] mt-2 mb-6">Book your first service to get started</p>
+            <Link href="/services" className="bg-[#034795] text-white px-6 py-3 rounded-[14px] font-bold text-sm">
               Browse Services
             </Link>
           </div>

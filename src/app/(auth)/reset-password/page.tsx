@@ -63,17 +63,17 @@ function ResetPasswordForm() {
   return (
     <>
       <div className="flex items-center gap-3 mb-6">
-        <Link href="/forgot-password" className="w-10 h-10 rounded-full bg-[#f3f6f8] flex items-center justify-center hover:bg-[#e6e8ec]">
+        <Link href="/forgot-password" className="w-10 h-10 rounded-full bg-[#eeeef6] flex items-center justify-center hover:bg-[#ddddee]">
           ←
         </Link>
-        <h1 className="text-lg font-bold text-[#1b1d21]">
+        <h1 className="text-lg font-bold text-[#001353]">
           {step === "otp" ? "Enter OTP" : "New Password"}
         </h1>
       </div>
 
       {step === "otp" ? (
         <form onSubmit={handleVerifyOtp} className="flex flex-col items-center gap-6">
-          <p className="text-sm text-[#8f92a1] text-center w-full">Enter the 4-digit code sent to your phone.</p>
+          <p className="text-sm text-[#5b6480] text-center w-full">Enter the 4-digit code sent to your phone.</p>
           <div className="flex gap-4">
             {otp.map((digit, i) => (
               <input
@@ -90,7 +90,7 @@ function ResetPasswordForm() {
                 }}
                 id={`otp-${i}`}
                 maxLength={1}
-                className="w-14 h-16 text-center text-3xl font-bold border-2 border-[#d9d9d9] rounded-[12px] outline-none focus:border-[#fd6b22]"
+                className="w-14 h-16 text-center text-3xl font-bold border-2 border-[#c9c9de] rounded-[12px] outline-none focus:border-[#034795]"
               />
             ))}
           </div>
@@ -98,7 +98,7 @@ function ResetPasswordForm() {
         </form>
       ) : (
         <form onSubmit={handleResetPassword} className="flex flex-col gap-4">
-          <p className="text-sm text-[#8f92a1] mb-2">Create a strong new password.</p>
+          <p className="text-sm text-[#5b6480] mb-2">Create a strong new password.</p>
           <Input
             label="New Password"
             type={showPass ? "text" : "password"}
@@ -122,7 +122,7 @@ function ResetPasswordForm() {
 
 export default function ResetPasswordPage() {
   return (
-    <Suspense fallback={<div className="py-10 text-center text-[#8f92a1]">Loading...</div>}>
+    <Suspense fallback={<div className="py-10 text-center text-[#5b6480]">Loading...</div>}>
       <ResetPasswordForm />
     </Suspense>
   );

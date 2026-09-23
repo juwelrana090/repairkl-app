@@ -28,7 +28,7 @@ export default function ServicesFilter({
         <button
           onClick={() => setParam("category", null)}
           className={twMerge("shrink-0 px-4 py-2 rounded-full text-sm font-bold border-2 transition-all whitespace-nowrap",
-            !activeCategory ? "border-[#fd6b22] text-[#fd6b22] bg-[#fff0e8]" : "border-[#e6e8ec] text-[#23262f]"
+            !activeCategory ? "border-[#034795] text-[#034795] bg-[#eaf0f8]" : "border-[#ddddee] text-[#0a1f63]"
           )}
         >
           All
@@ -38,7 +38,7 @@ export default function ServicesFilter({
             key={c.slug}
             onClick={() => setParam("category", c.slug)}
             className={twMerge("shrink-0 px-4 py-2 rounded-full text-sm font-bold border-2 transition-all whitespace-nowrap",
-              activeCategory === c.slug ? "border-[#fd6b22] text-[#fd6b22] bg-[#fff0e8]" : "border-[#e6e8ec] text-[#23262f]"
+              activeCategory === c.slug ? "border-[#034795] text-[#034795] bg-[#eaf0f8]" : "border-[#ddddee] text-[#0a1f63]"
             )}
           >
             {c.name} ({c.count})
@@ -48,7 +48,7 @@ export default function ServicesFilter({
 
       {/* Sort */}
       <div className="flex items-center gap-2">
-        <span className="text-sm text-[#8f92a1] font-medium shrink-0">Sort:</span>
+        <span className="text-sm text-[#5b6480] font-medium shrink-0">Sort:</span>
         <div className="flex gap-2 overflow-x-auto scrollbar-hide">
           {[
             { value: "popular", label: "Popular" },
@@ -60,7 +60,7 @@ export default function ServicesFilter({
               key={s.value}
               onClick={() => setParam("sort", s.value)}
               className={twMerge("shrink-0 px-3 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap",
-                activeSort === s.value ? "bg-[#1b1d21] text-white" : "bg-[#f3f6f8] text-[#8f92a1] hover:bg-[#e6e8ec]"
+                activeSort === s.value ? "bg-[#001353] text-white" : "bg-[#eeeef6] text-[#5b6480] hover:bg-[#ddddee]"
               )}
             >
               {s.label}

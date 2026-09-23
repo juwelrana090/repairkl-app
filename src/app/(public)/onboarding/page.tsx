@@ -6,19 +6,19 @@ import { Button } from "@/components/ui/Button";
 const SLIDES = [
   {
     emoji: "📦",
-    bg: "from-[#d080ff] via-[#9e6fe9] to-[#6c5dd3]",
+    bg: "from-[#5b8fd0] via-[#034795] to-[#001353]",
     title: "Easy Process",
     subtitle: "Find all your house needs in one place. We provide every service to make your home experience smooth.",
   },
   {
     emoji: "⚡",
-    bg: "from-[#fd6b22] via-[#ff9b22] to-[#ffc122]",
+    bg: "from-[#034795] via-[#2f6db3] to-[#5b8fd0]",
     title: "Fast & Reliable",
     subtitle: "Our verified professionals arrive on time and get the job done right, every single time.",
   },
   {
     emoji: "🛡️",
-    bg: "from-[#4fbf67] via-[#22c55e] to-[#16a34a]",
+    bg: "from-[#1a8f5c] via-[#2fae74] to-[#147349]",
     title: "Safe & Trusted",
     subtitle: "Every service provider is background-checked and trained to ensure your peace of mind.",
   },
@@ -70,10 +70,10 @@ export default function OnboardingPage() {
 
         {/* Content */}
         <div className="flex-1 px-10 pt-10 pb-8 flex flex-col">
-          <h1 className="text-4xl font-bold text-[#1b1d21] tracking-[-1.6px] leading-[46px]">
+          <h1 className="text-4xl font-bold text-[#001353] tracking-[-1.6px] leading-[46px]">
             {slide.title}
           </h1>
-          <p className="text-base text-[#1b1d21]/50 mt-4 leading-[26px] tracking-[-0.35px]">
+          <p className="text-base text-[#001353]/50 mt-4 leading-[26px] tracking-[-0.35px]">
             {slide.subtitle}
           </p>
 
@@ -84,7 +84,7 @@ export default function OnboardingPage() {
                 key={i}
                 onClick={() => setCurrent(i)}
                 className={`h-2 rounded-full transition-all duration-300 ${
-                  i === current ? "w-8 bg-[#fd6b22]" : "w-2 bg-[#d9d9d9]"
+                  i === current ? "w-8 bg-[#034795]" : "w-2 bg-[#c9c9de]"
                 }`}
               />
             ))}

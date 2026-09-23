@@ -25,22 +25,22 @@ export default async function AdminWorkersPage() {
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-[#1b1d21] tracking-[-0.5px]">Workers</h1>
-          <p className="text-sm text-[#8f92a1] mt-1">{stats.total} registered workers</p>
+          <h1 className="text-2xl font-bold text-[#001353] tracking-[-0.5px]">Workers</h1>
+          <p className="text-sm text-[#5b6480] mt-1">{stats.total} registered workers</p>
         </div>
       </div>
 
       {/* Quick stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {[
-          { label: "Total Workers", value: stats.total, color: "#fd6b22" },
-          { label: "Verified", value: stats.verified, color: "#4fbf67" },
-          { label: "Available Now", value: stats.available, color: "#2196f3" },
-          { label: "Avg Rating", value: stats.avgRating, color: "#ffb800" },
+          { label: "Total Workers", value: stats.total, color: "#034795" },
+          { label: "Verified", value: stats.verified, color: "#1a8f5c" },
+          { label: "Available Now", value: stats.available, color: "#fb6f27" },
+          { label: "Avg Rating", value: stats.avgRating, color: "#e0972f" },
         ].map((s) => (
-          <div key={s.label} className="bg-white rounded-[16px] border border-[#e8e6ea] p-4">
+          <div key={s.label} className="bg-white rounded-[16px] border border-[#ddddee] p-4">
             <p className="text-2xl font-bold" style={{ color: s.color }}>{s.value}</p>
-            <p className="text-sm text-[#8f92a1] mt-1">{s.label}</p>
+            <p className="text-sm text-[#5b6480] mt-1">{s.label}</p>
           </div>
         ))}
       </div>

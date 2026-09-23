@@ -46,17 +46,17 @@ export default function WorkerScheduleClient({
   return (
     <div className="flex flex-col gap-6">
       {/* Availability toggle */}
-      <div className="bg-white rounded-[20px] border border-[#e8e6ea] p-5 flex items-center justify-between">
+      <div className="bg-white rounded-[20px] border border-[#ddddee] p-5 flex items-center justify-between">
         <div>
-          <p className="font-bold text-[#1b1d21]">Availability Status</p>
-          <p className="text-sm text-[#8f92a1] mt-0.5">Toggle to accept or pause new jobs</p>
+          <p className="font-bold text-[#001353]">Availability Status</p>
+          <p className="text-sm text-[#5b6480] mt-0.5">Toggle to accept or pause new jobs</p>
         </div>
         <button
           onClick={toggleAvailability}
           disabled={saving}
           className={twMerge(
             "w-14 h-7 rounded-full transition-all duration-300 relative",
-            available ? "bg-[#4fbf67]" : "bg-[#d9d9d9]"
+            available ? "bg-[#1a8f5c]" : "bg-[#c9c9de]"
           )}
         >
           <span className={twMerge(
@@ -67,20 +67,20 @@ export default function WorkerScheduleClient({
       </div>
 
       {/* Weekly schedule */}
-      <div className="bg-white rounded-[20px] border border-[#e8e6ea] p-5">
-        <p className="font-bold text-[#1b1d21] mb-4">Weekly Hours</p>
-        <div className="divide-y divide-[#e8e6ea]">
+      <div className="bg-white rounded-[20px] border border-[#ddddee] p-5">
+        <p className="font-bold text-[#001353] mb-4">Weekly Hours</p>
+        <div className="divide-y divide-[#ddddee]">
           {DAYS.map((day, i) => {
             const s = scheduleByDay[i];
             return (
               <div key={day} className="flex items-center justify-between py-3">
-                <span className="text-sm font-medium text-[#1b1d21] w-12">{day}</span>
+                <span className="text-sm font-medium text-[#001353] w-12">{day}</span>
                 {s?.isOff ? (
-                  <span className="text-xs font-bold text-[#8f92a1] bg-[#f3f6f8] px-3 py-1 rounded-full">Off</span>
+                  <span className="text-xs font-bold text-[#5b6480] bg-[#eeeef6] px-3 py-1 rounded-full">Off</span>
                 ) : s ? (
-                  <span className="text-sm text-[#8f92a1]">{s.startTime} – {s.endTime}</span>
+                  <span className="text-sm text-[#5b6480]">{s.startTime} – {s.endTime}</span>
                 ) : (
-                  <span className="text-sm text-[#fd6b22] font-medium">08:00 – 18:00</span>
+                  <span className="text-sm text-[#034795] font-medium">08:00 – 18:00</span>
                 )}
               </div>
             );
@@ -89,18 +89,18 @@ export default function WorkerScheduleClient({
       </div>
 
       {/* Upcoming bookings */}
-      <div className="bg-white rounded-[20px] border border-[#e8e6ea] p-5">
-        <p className="font-bold text-[#1b1d21] mb-4">Upcoming Jobs</p>
+      <div className="bg-white rounded-[20px] border border-[#ddddee] p-5">
+        <p className="font-bold text-[#001353] mb-4">Upcoming Jobs</p>
         {upcoming.length === 0 ? (
-          <p className="text-sm text-[#8f92a1] text-center py-4">No upcoming jobs</p>
+          <p className="text-sm text-[#5b6480] text-center py-4">No upcoming jobs</p>
         ) : (
           <div className="space-y-3">
             {upcoming.map((job) => (
-              <div key={job.bookingId} className="bg-[#f9fafb] rounded-[14px] p-4 flex items-start justify-between gap-3">
+              <div key={job.bookingId} className="bg-[#f5f5fa] rounded-[14px] p-4 flex items-start justify-between gap-3">
                 <div>
-                  <p className="font-medium text-sm text-[#1b1d21]">{job.serviceName}</p>
-                  <p className="text-xs text-[#8f92a1]">{job.customerName}</p>
-                  <p className="text-xs text-[#fd6b22] font-medium mt-1">
+                  <p className="font-medium text-sm text-[#001353]">{job.serviceName}</p>
+                  <p className="text-xs text-[#5b6480]">{job.customerName}</p>
+                  <p className="text-xs text-[#034795] font-medium mt-1">
                     📅 {new Date(job.scheduledDate).toLocaleDateString()} at {job.scheduledTime}
                   </p>
                 </div>

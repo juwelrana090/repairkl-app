@@ -27,11 +27,11 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       "inline-flex items-center justify-center font-bold rounded-[16px] transition-all active:scale-[0.98] disabled:cursor-not-allowed select-none tracking-[-0.3px]";
 
     const variants = {
-      primary: "bg-[#fd6b22] text-white hover:bg-[#e55a14] disabled:bg-[#d9d9d9]",
-      secondary: "bg-[#f3f6f8] text-[#1b1d21] hover:bg-[#e6e8ec]",
-      outline: "border-2 border-[#fd6b22] text-[#fd6b22] hover:bg-[#fff0e8]",
-      ghost: "text-[#fd6b22] hover:bg-[#fff0e8]",
-      danger: "bg-[#f15223] text-white hover:bg-[#d94319]",
+      primary: "bg-[#034795] text-white hover:bg-[#023a7a] disabled:bg-[#c9c9de]",
+      secondary: "bg-[#eeeef6] text-[#001353] hover:bg-[#ddddee]",
+      outline: "border-2 border-[#034795] text-[#034795] hover:bg-[#eaf0f8]",
+      ghost: "text-[#034795] hover:bg-[#eaf0f8]",
+      danger: "bg-[#d64545] text-white hover:bg-[#b53535]",
     };
 
     const sizes = {

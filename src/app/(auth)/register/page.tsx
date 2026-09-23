@@ -58,8 +58,8 @@ export default function RegisterPage() {
   return (
     <>
       <div className="mb-6">
-        <h1 className="text-4xl font-bold text-[#1b1d21] tracking-[-1.6px] leading-[46px]">Getting Started</h1>
-        <p className="text-2xl text-[#1b1d21]/50 mt-2 leading-[34px] tracking-[-0.8px]">
+        <h1 className="text-4xl font-bold text-[#001353] tracking-[-1.6px] leading-[46px]">Getting Started</h1>
+        <p className="text-2xl text-[#001353]/50 mt-2 leading-[34px] tracking-[-0.8px]">
           Seems you are new here,<br />Let&apos;s set up your profile.
         </p>
       </div>
@@ -93,23 +93,23 @@ export default function RegisterPage() {
 
         <label className="flex items-start gap-3 cursor-pointer mt-1">
           <div
-            className={`w-6 h-6 rounded-[6px] border-2 flex items-center justify-center shrink-0 mt-0.5 transition-colors ${agreed ? "bg-[#fd6b22] border-[#fd6b22]" : "border-[#d9d9d9]"}`}
+            className={`w-6 h-6 rounded-[6px] border-2 flex items-center justify-center shrink-0 mt-0.5 transition-colors ${agreed ? "bg-[#034795] border-[#034795]" : "border-[#c9c9de]"}`}
             onClick={() => setAgreed(!agreed)}
           >
             {agreed && <svg width="12" height="10" fill="none" viewBox="0 0 12 10"><path d="M1 5l3.5 3.5L11 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>}
           </div>
-          <span className="text-xs text-[#1b1d21]/50">
+          <span className="text-xs text-[#001353]/50">
             By creating an account, you agree to our{" "}
-            <Link href="/terms" className="text-[#fd6b22] font-bold">Terms and Conditions</Link>
+            <Link href="/terms" className="text-[#034795] font-bold">Terms and Conditions</Link>
           </span>
         </label>
-        {errors.agreed && <p className="text-xs text-[#f15223] -mt-2">{errors.agreed}</p>}
+        {errors.agreed && <p className="text-xs text-[#d64545] -mt-2">{errors.agreed}</p>}
 
         <Button type="submit" fullWidth loading={loading} className="mt-2">Continue</Button>
 
-        <p className="text-center text-sm text-[#1b1d21]/50">
+        <p className="text-center text-sm text-[#001353]/50">
           Already have an account?{" "}
-          <Link href="/login" className="text-[#fd6b22] font-bold">Login</Link>
+          <Link href="/login" className="text-[#034795] font-bold">Login</Link>
         </p>
       </form>
     </>

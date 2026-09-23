@@ -41,15 +41,15 @@ export default function ContactForm() {
 
   if (submitted) {
     return (
-      <div className="bg-[#e8fff2] border-2 border-[#4fbf67]/30 rounded-[24px] p-10 text-center">
+      <div className="bg-[#e6f5ee] border-2 border-[#1a8f5c]/30 rounded-[24px] p-10 text-center">
         <div className="text-5xl mb-4">🎉</div>
-        <h3 className="font-black text-2xl text-[#1b1d21] mb-2">Message Sent!</h3>
-        <p className="text-[#8f92a1] mb-6">
+        <h3 className="font-black text-2xl text-[#001353] mb-2">Message Sent!</h3>
+        <p className="text-[#5b6480] mb-6">
           Thanks for reaching out, {form.name.split(" ")[0]}. We&apos;ll get back to you at <strong>{form.email}</strong> within 2 business hours.
         </p>
         <button
           onClick={() => { setSubmitted(false); setForm({ name: "", email: "", phone: "", subject: "General Enquiry", message: "" }); }}
-          className="text-[#fd6b22] text-sm font-bold hover:underline"
+          className="text-[#034795] text-sm font-bold hover:underline"
         >
           Send another message
         </button>
@@ -90,11 +90,11 @@ export default function ContactForm() {
           placeholder="+880 1711-000000"
         />
         <div>
-          <label className="text-xs text-[#8f92a1] block mb-1 font-medium">Subject</label>
+          <label className="text-xs text-[#5b6480] block mb-1 font-medium">Subject</label>
           <select
             value={form.subject}
             onChange={set("subject")}
-            className="w-full h-14 border-2 border-[#e6e8ec] rounded-[16px] px-4 text-sm text-[#1b1d21] outline-none focus:border-[#fd6b22] transition-colors bg-white"
+            className="w-full h-14 border-2 border-[#ddddee] rounded-[16px] px-4 text-sm text-[#001353] outline-none focus:border-[#034795] transition-colors bg-white"
           >
             {SUBJECTS.map((s) => <option key={s}>{s}</option>)}
           </select>
@@ -102,14 +102,14 @@ export default function ContactForm() {
       </div>
 
       <div>
-        <label className="text-xs text-[#8f92a1] block mb-1 font-medium">Message *</label>
+        <label className="text-xs text-[#5b6480] block mb-1 font-medium">Message *</label>
         <textarea
           value={form.message}
           onChange={set("message")}
           required
           rows={5}
           placeholder="Tell us how we can help you..."
-          className="w-full border-2 border-[#e6e8ec] rounded-[16px] px-4 py-3 text-sm text-[#1b1d21] outline-none focus:border-[#fd6b22] transition-colors resize-none"
+          className="w-full border-2 border-[#ddddee] rounded-[16px] px-4 py-3 text-sm text-[#001353] outline-none focus:border-[#034795] transition-colors resize-none"
         />
       </div>
 
@@ -117,9 +117,9 @@ export default function ContactForm() {
         Send Message →
       </Button>
 
-      <p className="text-[10px] text-[#8f92a1] text-center">
+      <p className="text-[10px] text-[#5b6480] text-center">
         By submitting this form you agree to our{" "}
-        <a href="/privacy" className="text-[#fd6b22] hover:underline">Privacy Policy</a>.
+        <a href="/privacy" className="text-[#034795] hover:underline">Privacy Policy</a>.
         We&apos;ll never share your data.
       </p>
     </form>

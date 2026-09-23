@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
+import { getServiceIcon } from "@/lib/brandAssets";
 import { prisma } from "@/lib/prisma";
 import { RatingStars } from "@/components/ui";
 import AdminServicesClient from "./AdminServicesClient";
@@ -22,10 +24,10 @@ export default async function AdminServicesPage() {
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-[#1b1d21] tracking-[-0.5px]">Services</h1>
-          <p className="text-sm text-[#8f92a1] mt-1">{services.length} total services</p>
+          <h1 className="text-2xl font-bold text-[#001353] tracking-[-0.5px]">Services</h1>
+          <p className="text-sm text-[#5b6480] mt-1">{services.length} total services</p>
         </div>
-        <Link href="/admin/services/new" className="bg-[#fd6b22] text-white px-4 py-2.5 rounded-[12px] text-sm font-bold hover:bg-[#e55a14] transition-colors">
+        <Link href="/admin/services/new" className="bg-[#034795] text-white px-4 py-2.5 rounded-[12px] text-sm font-bold hover:bg-[#023a7a] transition-colors">
           + Add Service
         </Link>
       </div>
@@ -35,12 +37,12 @@ export default async function AdminServicesPage() {
         {categories.map((cat) => {
           const count = services.filter((s) => s.categoryId === cat.id).length;
           return (
-            <div key={cat.id} className="bg-white rounded-[16px] border border-[#e8e6ea] p-3 text-center">
-              <div className="w-10 h-10 rounded-full mx-auto mb-2 flex items-center justify-center text-xl" style={{ background: `${cat.color}20` }}>
-                {getEmoji(cat.name)}
+            <div key={cat.id} className="bg-white rounded-[16px] border border-[#ddddee] p-3 text-center">
+              <div className="w-11 h-11 rounded-full mx-auto mb-2 flex items-center justify-center" style={{ background: `${cat.color}20` }}>
+                <Image src={getServiceIcon(cat.slug || cat.name)} alt="" width={28} height={28} className="w-7 h-7 object-contain" />
               </div>
-              <p className="text-xs font-bold text-[#1b1d21] leading-tight">{cat.name}</p>
-              <p className="text-[10px] text-[#8f92a1] mt-0.5">{count} services</p>
+              <p className="text-xs font-bold text-[#001353] leading-tight">{cat.name}</p>
+              <p className="text-[10px] text-[#5b6480] mt-0.5">{count} services</p>
             </div>
           );
         })}
@@ -65,13 +67,4 @@ export default async function AdminServicesPage() {
       />
     </div>
   );
-}
-
-function getEmoji(name: string) {
-  const n = name.toLowerCase();
-  if (n.includes("shift")) return "🏠"; if (n.includes("clean")) return "🧹";
-  if (n.includes("plumb")) return "🔧"; if (n.includes("electr")) return "⚡";
-  if (n.includes("pest")) return "🐛"; if (n.includes("paint")) return "🎨";
-  if (n.includes("office")) return "🏢"; if (n.includes("ac")) return "❄️";
-  return "🏡";
 }

@@ -22,7 +22,7 @@ export default async function CustomerLayout({ children }: { children: React.Rea
   });
 
   return (
-    <div className="min-h-screen bg-[#f9fafb]">
+    <div className="min-h-screen bg-[#f5f5fa]">
       <Navbar user={user} />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {children}
@@ -35,7 +35,7 @@ export default async function CustomerLayout({ children }: { children: React.Rea
 
 function MobileBottomNav() {
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-[#e8e6ea] px-6 py-3 z-30">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-[#ddddee] px-6 py-3 z-30">
       <div className="flex items-center justify-around">
         {[
           { href: "/home", icon: "🏠", label: "Home" },
@@ -44,7 +44,7 @@ function MobileBottomNav() {
           { href: "/notifications", icon: "🔔", label: "Alerts" },
           { href: "/profile", icon: "👤", label: "Profile" },
         ].map((item) => (
-          <a key={item.href} href={item.href} className="flex flex-col items-center gap-1 text-[#8f92a1]">
+          <a key={item.href} href={item.href} className="flex flex-col items-center gap-1 text-[#5b6480]">
             <span className="text-xl">{item.icon}</span>
             <span className="text-[9px] font-medium">{item.label}</span>
           </a>

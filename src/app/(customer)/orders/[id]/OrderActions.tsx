@@ -44,7 +44,7 @@ export default function OrderActions({ booking }: { booking: Booking }) {
   return (
     <>
       <div className="bg-white rounded-2xl p-6 shadow-sm">
-        <h3 className="font-bold text-[#1b1d21] mb-4">Actions</h3>
+        <h3 className="font-bold text-[#001353] mb-4">Actions</h3>
         <div className="flex gap-3">
           {canCancel && !isPast && (
             <Button

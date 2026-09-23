@@ -46,7 +46,7 @@ export default function AdminSettingsClient() {
         {SECTIONS.map((s) => (
           <button key={s.id} onClick={() => setActive(s.id)}
             className={twMerge("flex items-center gap-2 px-3 py-2.5 rounded-[12px] text-sm font-medium transition-all text-left",
-              active === s.id ? "bg-[#fff0e8] text-[#fd6b22] font-bold" : "text-[#8f92a1] hover:bg-[#f3f6f8]"
+              active === s.id ? "bg-[#eaf0f8] text-[#034795] font-bold" : "text-[#5b6480] hover:bg-[#eeeef6]"
             )}>
             <span>{s.icon}</span>{s.label}
           </button>
@@ -54,10 +54,10 @@ export default function AdminSettingsClient() {
       </div>
 
       {/* Content */}
-      <div className="flex-1 bg-white rounded-[24px] border border-[#e8e6ea] p-6">
+      <div className="flex-1 bg-white rounded-[24px] border border-[#ddddee] p-6">
         {active === "general" && (
           <div className="flex flex-col gap-4">
-            <h2 className="font-bold text-[#1b1d21] mb-2">General Settings</h2>
+            <h2 className="font-bold text-[#001353] mb-2">General Settings</h2>
             <div className="grid grid-cols-2 gap-4">
               <Input label="App Name" value={general.appName} onChange={setG("appName")} />
               <Input label="Support Email" type="email" value={general.supportEmail} onChange={setG("supportEmail")} />
@@ -68,16 +68,16 @@ export default function AdminSettingsClient() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-xs text-[#8f92a1] mb-1">Currency</p>
-                <select value={general.currency} onChange={setG("currency")} className="w-full h-14 border-2 border-[#e6e8ec] rounded-[16px] px-4 text-sm outline-none">
+                <p className="text-xs text-[#5b6480] mb-1">Currency</p>
+                <select value={general.currency} onChange={setG("currency")} className="w-full h-14 border-2 border-[#ddddee] rounded-[16px] px-4 text-sm outline-none">
                   <option value="MYT">MYT (Malaysiai Taka)</option>
                   <option value="USD">USD (US Dollar)</option>
                   <option value="EUR">EUR (Euro)</option>
                 </select>
               </div>
               <div>
-                <p className="text-xs text-[#8f92a1] mb-1">Timezone</p>
-                <select value={general.timezone} onChange={setG("timezone")} className="w-full h-14 border-2 border-[#e6e8ec] rounded-[16px] px-4 text-sm outline-none">
+                <p className="text-xs text-[#5b6480] mb-1">Timezone</p>
+                <select value={general.timezone} onChange={setG("timezone")} className="w-full h-14 border-2 border-[#ddddee] rounded-[16px] px-4 text-sm outline-none">
                   <option value="Asia/Kuala Lumpur">Asia/Kuala Lumpur (UTC+8)</option>
                   <option value="UTC">UTC</option>
                   <option value="Asia/Kolkata">Asia/Kolkata (UTC+5:30)</option>
@@ -89,7 +89,7 @@ export default function AdminSettingsClient() {
 
         {active === "notifications" && (
           <div className="flex flex-col gap-4">
-            <h2 className="font-bold text-[#1b1d21] mb-2">Notification Settings</h2>
+            <h2 className="font-bold text-[#001353] mb-2">Notification Settings</h2>
             {[
               { key: "emailOnBooking", label: "Email on new booking" },
               { key: "smsOnBooking", label: "SMS on new booking" },
@@ -98,11 +98,11 @@ export default function AdminSettingsClient() {
               { key: "emailOnReview", label: "Email on new review" },
               { key: "pushEnabled", label: "Push notifications" },
             ].map((item) => (
-              <div key={item.key} className="flex items-center justify-between py-2 border-b border-[#e8e6ea] last:border-0">
-                <span className="text-sm font-medium text-[#1b1d21]">{item.label}</span>
+              <div key={item.key} className="flex items-center justify-between py-2 border-b border-[#ddddee] last:border-0">
+                <span className="text-sm font-medium text-[#001353]">{item.label}</span>
                 <button
                   onClick={() => setNotif({ ...notif, [item.key]: !notif[item.key as keyof typeof notif] })}
-                  className={twMerge("w-12 h-6 rounded-full transition-all relative", notif[item.key as keyof typeof notif] ? "bg-[#4fbf67]" : "bg-[#d9d9d9]")}
+                  className={twMerge("w-12 h-6 rounded-full transition-all relative", notif[item.key as keyof typeof notif] ? "bg-[#1a8f5c]" : "bg-[#c9c9de]")}
                 >
                   <span className={twMerge("absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform", notif[item.key as keyof typeof notif] ? "translate-x-6" : "translate-x-0.5")} />
                 </button>
@@ -113,10 +113,10 @@ export default function AdminSettingsClient() {
 
         {active === "payment" && (
           <div className="flex flex-col gap-4">
-            <h2 className="font-bold text-[#1b1d21] mb-2">Payment Settings</h2>
-            <div className="bg-[#f9fafb] rounded-[16px] p-4">
-              <p className="text-sm font-bold text-[#1b1d21] mb-1">Payment Gateways</p>
-              <p className="text-xs text-[#8f92a1]">Configure Billplz, Touch 'n Go, GrabPay, and card payment integrations in your .env file.</p>
+            <h2 className="font-bold text-[#001353] mb-2">Payment Settings</h2>
+            <div className="bg-[#f5f5fa] rounded-[16px] p-4">
+              <p className="text-sm font-bold text-[#001353] mb-1">Payment Gateways</p>
+              <p className="text-xs text-[#5b6480]">Configure Billplz, Touch 'n Go, GrabPay, and card payment integrations in your .env file.</p>
             </div>
             <Input label="Billplz Store ID" placeholder="Configure in .env" disabled />
             <Input label="Touch 'n Go App Key" placeholder="Configure in .env" disabled />
@@ -126,10 +126,10 @@ export default function AdminSettingsClient() {
 
         {active === "security" && (
           <div className="flex flex-col gap-4">
-            <h2 className="font-bold text-[#1b1d21] mb-2">Security Settings</h2>
-            <div className="bg-[#f9fafb] rounded-[16px] p-4">
-              <p className="text-sm font-bold text-[#1b1d21] mb-1">JWT Configuration</p>
-              <p className="text-xs text-[#8f92a1]">JWT secret is configured via the JWT_SECRET environment variable. Minimum 32 characters recommended.</p>
+            <h2 className="font-bold text-[#001353] mb-2">Security Settings</h2>
+            <div className="bg-[#f5f5fa] rounded-[16px] p-4">
+              <p className="text-sm font-bold text-[#001353] mb-1">JWT Configuration</p>
+              <p className="text-xs text-[#5b6480]">JWT secret is configured via the JWT_SECRET environment variable. Minimum 32 characters recommended.</p>
             </div>
             <Input label="Session Duration" value="30 days" disabled />
             <Input label="OTP Expiry" value="15 minutes" disabled />

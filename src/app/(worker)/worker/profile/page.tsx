@@ -13,8 +13,8 @@ export default async function WorkerProfilePage() {
   if (!session) {
     return (
       <div className="flex flex-col items-center justify-center h-full">
-        <p className="text-lg font-bold text-[#1b1d21]">Please log in first</p>
-        <Link href="/login" className="text-[#fd6b22] mt-2">Return to login</Link>
+        <p className="text-lg font-bold text-[#001353]">Please log in first</p>
+        <Link href="/login" className="text-[#034795] mt-2">Return to login</Link>
       </div>
     );
   }
@@ -32,16 +32,16 @@ export default async function WorkerProfilePage() {
   return (
     <div className="max-w-2xl mx-auto flex flex-col gap-6">
       {/* Header card */}
-      <div className="bg-[#1b1d21] rounded-[24px] p-6 text-white">
+      <div className="bg-[#001353] rounded-[24px] p-6 text-white">
         <div className="flex items-center gap-4 mb-4">
-          <div className="w-16 h-16 rounded-full bg-[#4fbf67] flex items-center justify-center text-2xl font-bold text-white shrink-0">
+          <div className="w-16 h-16 rounded-full bg-[#1a8f5c] flex items-center justify-center text-2xl font-bold text-white shrink-0">
             {user.fullName.charAt(0)}
           </div>
           <div>
             <h1 className="text-xl font-bold">{user.fullName}</h1>
             <p className="text-white/60 text-sm">{worker.speciality}</p>
             <div className="flex items-center gap-2 mt-1">
-              <span className="text-xs bg-[#4fbf67] px-2 py-0.5 rounded-full font-bold">✓ Verified</span>
+              <span className="text-xs bg-[#1a8f5c] px-2 py-0.5 rounded-full font-bold">✓ Verified</span>
               <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${worker.isAvailable ? "bg-green-600" : "bg-gray-600"}`}>
                 {worker.isAvailable ? "Available" : "Unavailable"}
               </span>
@@ -69,8 +69,8 @@ export default async function WorkerProfilePage() {
       </div>
 
       {/* Edit form */}
-      <div className="bg-white rounded-[24px] border border-[#e8e6ea] p-6">
-        <h2 className="font-bold text-[#1b1d21] tracking-[-0.4px] mb-5">Edit Profile</h2>
+      <div className="bg-white rounded-[24px] border border-[#ddddee] p-6">
+        <h2 className="font-bold text-[#001353] tracking-[-0.4px] mb-5">Edit Profile</h2>
         <WorkerProfileForm
           data={{
             fullName: user.fullName,
@@ -86,16 +86,16 @@ export default async function WorkerProfilePage() {
 
       {/* Recent reviews */}
       {worker.reviews.length > 0 && (
-        <div className="bg-white rounded-[24px] border border-[#e8e6ea] p-6">
-          <h2 className="font-bold text-[#1b1d21] mb-4">Recent Reviews</h2>
+        <div className="bg-white rounded-[24px] border border-[#ddddee] p-6">
+          <h2 className="font-bold text-[#001353] mb-4">Recent Reviews</h2>
           <div className="space-y-4">
             {worker.reviews.map((r) => (
-              <div key={r.id} className="pb-4 border-b border-[#e8e6ea] last:border-0">
+              <div key={r.id} className="pb-4 border-b border-[#ddddee] last:border-0">
                 <div className="flex items-center gap-2 mb-1">
                   <RatingStars rating={r.rating} size={12} />
-                  <span className="text-xs text-[#8f92a1]">by {r.customer.fullName}</span>
+                  <span className="text-xs text-[#5b6480]">by {r.customer.fullName}</span>
                 </div>
-                {r.comment && <p className="text-sm text-[#1b1d21]/70">{r.comment}</p>}
+                {r.comment && <p className="text-sm text-[#001353]/70">{r.comment}</p>}
               </div>
             ))}
           </div>

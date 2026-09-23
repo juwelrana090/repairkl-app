@@ -59,10 +59,10 @@ export default function LoginPage() {
   return (
     <>
       <div className="mb-6">
-        <h1 className="text-4xl font-bold text-[#1b1d21] tracking-[-1.6px] leading-[46px]">
+        <h1 className="text-4xl font-bold text-[#001353] tracking-[-1.6px] leading-[46px]">
           Let&apos;s Sign<br />You In
         </h1>
-        <p className="text-2xl text-[#1b1d21]/50 mt-2 leading-[34px] tracking-[-0.8px]">
+        <p className="text-2xl text-[#001353]/50 mt-2 leading-[34px] tracking-[-0.8px]">
           Welcome back, you&apos;ve<br />been missed!
         </p>
       </div>
@@ -96,11 +96,11 @@ export default function LoginPage() {
               type="checkbox"
               checked={remember}
               onChange={(e) => setRemember(e.target.checked)}
-              className="w-5 h-5 rounded accent-[#fd6b22]"
+              className="w-5 h-5 rounded accent-[#034795]"
             />
-            <span className="text-sm font-medium text-[#040415]">Remember Me</span>
+            <span className="text-sm font-medium text-[#001353]">Remember Me</span>
           </label>
-          <Link href="/forgot-password" className="text-sm font-medium text-[#fd6b22]">
+          <Link href="/forgot-password" className="text-sm font-medium text-[#034795]">
             Forgot Password?
           </Link>
         </div>
@@ -110,22 +110,22 @@ export default function LoginPage() {
         </Button>
 
         <div className="flex items-center gap-3 my-2">
-          <div className="flex-1 h-px bg-[#e8e6ea]" />
-          <span className="text-xs font-bold text-[#8f92a1] uppercase tracking-wider">OR</span>
-          <div className="flex-1 h-px bg-[#e8e6ea]" />
+          <div className="flex-1 h-px bg-[#ddddee]" />
+          <span className="text-xs font-bold text-[#5b6480] uppercase tracking-wider">OR</span>
+          <div className="flex-1 h-px bg-[#ddddee]" />
         </div>
 
         <button
           type="button"
-          className="w-full h-14 rounded-[16px] bg-[#f3f6f8] flex items-center justify-center gap-3 font-bold text-sm text-[#171717] hover:bg-[#e6e8ec] transition-colors"
+          className="w-full h-14 rounded-[16px] bg-[#eeeef6] flex items-center justify-center gap-3 font-bold text-sm text-[#001353] hover:bg-[#ddddee] transition-colors"
         >
           <span className="text-lg">G</span>
           Continue with Google
         </button>
 
-        <p className="text-center text-sm text-[#1b1d21]/50 mt-2">
+        <p className="text-center text-sm text-[#001353]/50 mt-2">
           Don&apos;t have an account?{" "}
-          <Link href="/register" className="text-[#fd6b22] font-bold">
+          <Link href="/register" className="text-[#034795] font-bold">
             Sign Up
           </Link>
         </p>

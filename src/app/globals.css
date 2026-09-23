@@ -1,12 +1,20 @@
 @import "tailwindcss";
 
 :root {
-  --color-primary: #fd6b22;
-  --color-dark: #1b1d21;
-  --color-success: #4fbf67;
-  --color-border: #e8e6ea;
-  --color-muted: #8f92a1;
-  --color-bg: #f9fafb;
+  /* RepairKL palette (huemint website-3) */
+  --color-bg: #fefeff;
+  --color-surface: #ddddee;
+  --color-ink: #001353;
+  --color-primary: #034795;
+  --color-primary-hover: #023a7a;
+  --color-accent: #fb6f27;
+  --color-gold: #f5bc6b;
+
+  /* Derived UI tokens */
+  --color-dark: #001353;
+  --color-success: #1a8f5c;
+  --color-border: #ddddee;
+  --color-muted: #5b6480;
   --font-dm-sans: 'DM Sans', sans-serif;
 }
 
@@ -16,6 +24,12 @@ body {
   font-family: var(--font-dm-sans);
   -webkit-font-smoothing: antialiased;
   color: var(--color-dark);
+  background: var(--color-bg);
+}
+
+::selection {
+  background: #034795;
+  color: #fefeff;
 }
 
 .scrollbar-hide::-webkit-scrollbar { display: none; }

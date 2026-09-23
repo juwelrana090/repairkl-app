@@ -33,17 +33,17 @@ export default function ServiceBookingPanel({ service }: { service: Service }) {
 
   return (
     <div className="bg-white rounded-2xl p-6 shadow-sm sticky top-6">
-      <h3 className="text-lg font-bold text-[#1b1d21] mb-4">Book Service</h3>
+      <h3 className="text-lg font-bold text-[#001353] mb-4">Book Service</h3>
 
       {service.packages.length > 0 && (
         <div className="mb-4">
-          <label className="block text-sm font-medium text-[#1b1d21] mb-2">
+          <label className="block text-sm font-medium text-[#001353] mb-2">
             Select Package
           </label>
           <select
             value={selectedPackage || ""}
             onChange={(e) => setSelectedPackage(e.target.value)}
-            className="w-full p-3 border border-[#e8e6ea] rounded-xl focus:outline-none focus:border-[#fd6b22]"
+            className="w-full p-3 border border-[#ddddee] rounded-xl focus:outline-none focus:border-[#034795]"
           >
             <option value="">Choose a package...</option>
             {service.packages.map((pkg) => (
@@ -55,9 +55,9 @@ export default function ServiceBookingPanel({ service }: { service: Service }) {
         </div>
       )}
 
-      <div className="flex items-center justify-between mb-4 p-3 bg-[#f9fafb] rounded-xl">
-        <span className="text-sm text-[#8f92a1]">Starting from</span>
-        <span className="text-xl font-bold text-[#fd6b22]">
+      <div className="flex items-center justify-between mb-4 p-3 bg-[#f5f5fa] rounded-xl">
+        <span className="text-sm text-[#5b6480]">Starting from</span>
+        <span className="text-xl font-bold text-[#034795]">
           RM{Number(service.basePrice).toLocaleString()}
         </span>
       </div>

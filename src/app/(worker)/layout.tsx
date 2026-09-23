@@ -11,7 +11,7 @@ export default async function WorkerLayout({ children }: { children: React.React
     select: { fullName: true, email: true },
   });
   return (
-    <div className="flex h-screen overflow-hidden bg-[#f9fafb]">
+    <div className="flex h-screen overflow-hidden bg-[#f5f5fa]">
       <PanelSidebar role="WORKER" user={{ fullName: user?.fullName ?? "Worker", email: user?.email ?? "" }} />
       <main className="flex-1 overflow-y-auto p-6 lg:p-8">{children}</main>
     </div>

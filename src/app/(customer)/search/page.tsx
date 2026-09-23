@@ -31,21 +31,21 @@ export default async function SearchPage({
 
   return (
     <div className="max-w-4xl mx-auto pb-20 md:pb-0">
-      <h1 className="text-2xl font-bold text-[#1b1d21] tracking-[-0.5px] mb-2">
+      <h1 className="text-2xl font-bold text-[#001353] tracking-[-0.5px] mb-2">
         {q ? `Results for "${q}"` : "Search Services"}
       </h1>
-      {q && <p className="text-sm text-[#8f92a1] mb-6">{services.length} results found</p>}
+      {q && <p className="text-sm text-[#5b6480] mb-6">{services.length} results found</p>}
 
       {!q ? (
         <div className="text-center py-20">
           <span className="text-5xl block mb-4">🔍</span>
-          <p className="text-[#8f92a1]">Search for a service above</p>
+          <p className="text-[#5b6480]">Search for a service above</p>
         </div>
       ) : services.length === 0 ? (
         <div className="text-center py-20">
           <span className="text-5xl block mb-4">😔</span>
-          <p className="font-bold text-[#1b1d21]">No services found</p>
-          <p className="text-sm text-[#8f92a1] mt-2">Try a different search term</p>
+          <p className="font-bold text-[#001353]">No services found</p>
+          <p className="text-sm text-[#5b6480] mt-2">Try a different search term</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

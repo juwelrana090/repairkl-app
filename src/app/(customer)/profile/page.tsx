@@ -12,8 +12,8 @@ export default async function ProfilePage() {
   if (!session) {
     return (
       <div className="flex flex-col items-center justify-center h-full">
-        <p className="text-lg font-bold text-[#1b1d21]">Please log in first</p>
-        <Link href="/login" className="text-[#fd6b22] mt-2">Return to login</Link>
+        <p className="text-lg font-bold text-[#001353]">Please log in first</p>
+        <Link href="/login" className="text-[#034795] mt-2">Return to login</Link>
       </div>
     );
   }
@@ -36,18 +36,18 @@ export default async function ProfilePage() {
   return (
     <div className="max-w-2xl mx-auto pb-20 md:pb-0">
       {/* Header */}
-      <div className="bg-[#1b1d21] rounded-[24px] p-6 text-white mb-6 relative overflow-hidden">
-        <div className="absolute -right-4 -top-6 w-28 h-28 bg-[#fd6b22]/20 rounded-full" />
+      <div className="bg-[#001353] rounded-[24px] p-6 text-white mb-6 relative overflow-hidden">
+        <div className="absolute -right-4 -top-6 w-28 h-28 bg-[#034795]/20 rounded-full" />
         <div className="flex items-center gap-4">
-          <div className="w-16 h-16 rounded-full bg-[#fd6b22] flex items-center justify-center text-2xl font-bold text-white shrink-0">
+          <div className="w-16 h-16 rounded-full bg-[#034795] flex items-center justify-center text-2xl font-bold text-white shrink-0">
             {user.fullName.charAt(0)}
           </div>
           <div>
             <h1 className="text-xl font-bold">{user.fullName}</h1>
             <p className="text-white/60 text-sm mt-0.5">{user.email}</p>
             <div className="flex items-center gap-2 mt-1">
-              <span className="text-xs bg-[#fd6b22] px-2 py-0.5 rounded-full font-bold capitalize">{user.role.toLowerCase()}</span>
-              {user.isPhoneVerified && <span className="text-xs bg-[#4fbf67] px-2 py-0.5 rounded-full font-bold">✓ Verified</span>}
+              <span className="text-xs bg-[#034795] px-2 py-0.5 rounded-full font-bold capitalize">{user.role.toLowerCase()}</span>
+              {user.isPhoneVerified && <span className="text-xs bg-[#1a8f5c] px-2 py-0.5 rounded-full font-bold">✓ Verified</span>}
             </div>
           </div>
         </div>
@@ -68,27 +68,27 @@ export default async function ProfilePage() {
       </div>
 
       {/* Links */}
-      <div className="bg-white rounded-[24px] border border-[#e8e6ea] divide-y divide-[#e8e6ea] mb-6 overflow-hidden">
+      <div className="bg-white rounded-[24px] border border-[#ddddee] divide-y divide-[#ddddee] mb-6 overflow-hidden">
         {[
           { href: "/orders", icon: "📋", label: "My Orders", sub: `${stats._count} total` },
           { href: "/saved", icon: "❤️", label: "Saved Services", sub: "View favorites" },
           { href: "/notifications", icon: "🔔", label: "Notifications", sub: "Manage alerts" },
           { href: "/support/new", icon: "🎧", label: "Support", sub: "Get help" },
         ].map((item) => (
-          <a key={item.href} href={item.href} className="flex items-center gap-4 px-5 py-4 hover:bg-[#f9fafb] transition-colors">
-            <div className="w-10 h-10 rounded-[12px] bg-[#fff0e8] flex items-center justify-center text-lg shrink-0">{item.icon}</div>
+          <a key={item.href} href={item.href} className="flex items-center gap-4 px-5 py-4 hover:bg-[#f5f5fa] transition-colors">
+            <div className="w-10 h-10 rounded-[12px] bg-[#eaf0f8] flex items-center justify-center text-lg shrink-0">{item.icon}</div>
             <div className="flex-1">
-              <p className="font-medium text-sm text-[#1b1d21]">{item.label}</p>
-              <p className="text-xs text-[#8f92a1]">{item.sub}</p>
+              <p className="font-medium text-sm text-[#001353]">{item.label}</p>
+              <p className="text-xs text-[#5b6480]">{item.sub}</p>
             </div>
-            <span className="text-[#8f92a1]">→</span>
+            <span className="text-[#5b6480]">→</span>
           </a>
         ))}
       </div>
 
       {/* Edit form */}
-      <div className="bg-white rounded-[24px] border border-[#e8e6ea] p-6">
-        <h2 className="text-lg font-bold text-[#1b1d21] tracking-[-0.4px] mb-5">Edit Profile</h2>
+      <div className="bg-white rounded-[24px] border border-[#ddddee] p-6">
+        <h2 className="text-lg font-bold text-[#001353] tracking-[-0.4px] mb-5">Edit Profile</h2>
         <ProfileForm
           user={{
             id: user.id,
@@ -105,7 +105,7 @@ export default async function ProfilePage() {
 
       {/* Sign out */}
       <form action="/api/auth/logout" method="POST" className="mt-4">
-        <button type="submit" className="w-full h-14 rounded-[16px] border-2 border-[#f15223] text-[#f15223] font-bold text-sm hover:bg-red-50 transition-colors">
+        <button type="submit" className="w-full h-14 rounded-[16px] border-2 border-[#d64545] text-[#d64545] font-bold text-sm hover:bg-red-50 transition-colors">
           Sign Out
         </button>
       </form>

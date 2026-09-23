@@ -14,7 +14,7 @@ export default function TermsPage() {
   const lastUpdated = "June 1, 2025";
   return (
     <>
-      <section className="bg-[#1b1d21] pt-36 pb-16">
+      <section className="bg-[#001353] pt-36 pb-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl font-black text-white tracking-[-1px] mb-3">Terms of Service</h1>
           <p className="text-white/50 text-sm">Last updated: {lastUpdated}</p>
@@ -23,7 +23,7 @@ export default function TermsPage() {
 
       <section className="py-16 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="space-y-8 text-[#1b1d21]">
+          <div className="space-y-8 text-[#001353]">
             {[
               { title: "1. Acceptance of Terms", body: "By creating a RepairKL account or using our services, you agree to these Terms of Service and our Privacy Policy. These terms govern your use of the RepairKL platform, mobile app, and all associated services." },
               { title: "2. Eligibility", body: "You must be at least 18 years old and a resident of Malaysia to use RepairKL. By using the platform, you confirm you meet these requirements and have the legal capacity to enter into binding agreements." },
@@ -34,14 +34,14 @@ export default function TermsPage() {
               { title: "7. Limitation of Liability", body: "While we verify all workers and maintain insurance coverage, RepairKL is not liable for indirect, consequential, or incidental damages arising from service delivery. Our liability is limited to the value of the specific booking." },
               { title: "8. Governing Law", body: "These terms are governed by the laws of Malaysia. Any disputes will be subject to the exclusive jurisdiction of the courts of Kuala Lumpur." },
             ].map((section) => (
-              <div key={section.title} className="border-b border-[#e8e6ea] pb-8 last:border-0">
-                <h2 className="text-xl font-black text-[#1b1d21] mb-3">{section.title}</h2>
-                <p className="text-[#8f92a1] leading-relaxed">{section.body}</p>
+              <div key={section.title} className="border-b border-[#ddddee] pb-8 last:border-0">
+                <h2 className="text-xl font-black text-[#001353] mb-3">{section.title}</h2>
+                <p className="text-[#5b6480] leading-relaxed">{section.body}</p>
               </div>
             ))}
           </div>
           <div className="mt-10">
-            <Link href="/contact" className="text-[#fd6b22] font-bold hover:underline">Questions? Contact our team →</Link>
+            <Link href="/contact" className="text-[#034795] font-bold hover:underline">Questions? Contact our team →</Link>
           </div>
         </div>
       </section>

@@ -77,33 +77,33 @@ export default async function AdminReportsPage() {
   return (
     <div className="flex flex-col gap-8">
       <div>
-        <h1 className="text-2xl font-bold text-[#1b1d21] tracking-[-0.5px]">Reports & Analytics</h1>
-        <p className="text-sm text-[#8f92a1] mt-1">Business performance overview</p>
+        <h1 className="text-2xl font-bold text-[#001353] tracking-[-0.5px]">Reports & Analytics</h1>
+        <p className="text-sm text-[#5b6480] mt-1">Business performance overview</p>
       </div>
 
       {/* KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard label="Total Revenue" value={`RM${(Number(totalRevenue._sum.amount ?? 0) / 1000).toFixed(0)}K`} icon="💰" color="#fd6b22" change="+8% vs last month" changeType="up" />
-        <StatCard label="Total Bookings" value={totalBookings.toLocaleString()} icon="📋" color="#4fbf67" change="+12%" changeType="up" />
-        <StatCard label="Total Customers" value={totalCustomers.toLocaleString()} icon="👥" color="#2196f3" />
-        <StatCard label="Active Workers" value={totalWorkers} icon="👷" color="#ffb800" />
+        <StatCard label="Total Revenue" value={`RM${(Number(totalRevenue._sum.amount ?? 0) / 1000).toFixed(0)}K`} icon="💰" color="#034795" change="+8% vs last month" changeType="up" />
+        <StatCard label="Total Bookings" value={totalBookings.toLocaleString()} icon="📋" color="#1a8f5c" change="+12%" changeType="up" />
+        <StatCard label="Total Customers" value={totalCustomers.toLocaleString()} icon="👥" color="#fb6f27" />
+        <StatCard label="Active Workers" value={totalWorkers} icon="👷" color="#e0972f" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Monthly bookings bar chart */}
-        <div className="bg-white rounded-[24px] border border-[#e8e6ea] p-6">
-          <h2 className="font-bold text-[#1b1d21] mb-6">Monthly Bookings</h2>
+        <div className="bg-white rounded-[24px] border border-[#ddddee] p-6">
+          <h2 className="font-bold text-[#001353] mb-6">Monthly Bookings</h2>
           <div className="flex items-end gap-3 h-40">
             {months.map(({ label }, i) => {
               const count = monthlyBookings[i];
               const height = maxMonthly > 0 ? (count / maxMonthly) * 100 : 0;
               return (
                 <div key={label} className="flex-1 flex flex-col items-center gap-2">
-                  <span className="text-xs font-bold text-[#1b1d21]">{count}</span>
-                  <div className="w-full bg-[#f3f6f8] rounded-t-[8px] relative" style={{ height: "120px" }}>
-                    <div className="absolute bottom-0 left-0 right-0 bg-[#fd6b22] rounded-t-[8px] transition-all" style={{ height: `${height}%` }} />
+                  <span className="text-xs font-bold text-[#001353]">{count}</span>
+                  <div className="w-full bg-[#eeeef6] rounded-t-[8px] relative" style={{ height: "120px" }}>
+                    <div className="absolute bottom-0 left-0 right-0 bg-[#034795] rounded-t-[8px] transition-all" style={{ height: `${height}%` }} />
                   </div>
-                  <span className="text-[10px] text-[#8f92a1]">{label}</span>
+                  <span className="text-[10px] text-[#5b6480]">{label}</span>
                 </div>
               );
             })}
@@ -111,19 +111,19 @@ export default async function AdminReportsPage() {
         </div>
 
         {/* Monthly revenue */}
-        <div className="bg-white rounded-[24px] border border-[#e8e6ea] p-6">
-          <h2 className="font-bold text-[#1b1d21] mb-6">Monthly Revenue (RM)</h2>
+        <div className="bg-white rounded-[24px] border border-[#ddddee] p-6">
+          <h2 className="font-bold text-[#001353] mb-6">Monthly Revenue (RM)</h2>
           <div className="flex items-end gap-3 h-40">
             {months.map(({ label }, i) => {
               const amount = Number(monthlyRevenue[i]._sum.amount ?? 0);
               const height = maxRevenue > 0 ? (amount / maxRevenue) * 100 : 0;
               return (
                 <div key={label} className="flex-1 flex flex-col items-center gap-2">
-                  <span className="text-[10px] font-bold text-[#1b1d21]">RM{(amount / 1000).toFixed(0)}K</span>
-                  <div className="w-full bg-[#f3f6f8] rounded-t-[8px] relative" style={{ height: "120px" }}>
-                    <div className="absolute bottom-0 left-0 right-0 bg-[#4fbf67] rounded-t-[8px] transition-all" style={{ height: `${height}%` }} />
+                  <span className="text-[10px] font-bold text-[#001353]">RM{(amount / 1000).toFixed(0)}K</span>
+                  <div className="w-full bg-[#eeeef6] rounded-t-[8px] relative" style={{ height: "120px" }}>
+                    <div className="absolute bottom-0 left-0 right-0 bg-[#1a8f5c] rounded-t-[8px] transition-all" style={{ height: `${height}%` }} />
                   </div>
-                  <span className="text-[10px] text-[#8f92a1]">{label}</span>
+                  <span className="text-[10px] text-[#5b6480]">{label}</span>
                 </div>
               );
             })}
@@ -131,8 +131,8 @@ export default async function AdminReportsPage() {
         </div>
 
         {/* Top services */}
-        <div className="bg-white rounded-[24px] border border-[#e8e6ea] p-6">
-          <h2 className="font-bold text-[#1b1d21] mb-4">Top Services by Bookings</h2>
+        <div className="bg-white rounded-[24px] border border-[#ddddee] p-6">
+          <h2 className="font-bold text-[#001353] mb-4">Top Services by Bookings</h2>
           <div className="space-y-3">
             {topServices.map((s, i) => {
               const max = topServices[0]._count.bookings || 1;
@@ -140,14 +140,14 @@ export default async function AdminReportsPage() {
               return (
                 <div key={s.id}>
                   <div className="flex justify-between text-sm mb-1">
-                    <span className="font-medium text-[#1b1d21] flex items-center gap-2">
-                      <span className="w-5 h-5 rounded-full bg-[#fff0e8] text-[#fd6b22] text-xs flex items-center justify-center font-bold">{i + 1}</span>
+                    <span className="font-medium text-[#001353] flex items-center gap-2">
+                      <span className="w-5 h-5 rounded-full bg-[#eaf0f8] text-[#034795] text-xs flex items-center justify-center font-bold">{i + 1}</span>
                       {s.name}
                     </span>
-                    <span className="font-bold text-[#fd6b22]">{s._count.bookings}</span>
+                    <span className="font-bold text-[#034795]">{s._count.bookings}</span>
                   </div>
-                  <div className="h-1.5 bg-[#f3f6f8] rounded-full overflow-hidden">
-                    <div className="h-full bg-[#fd6b22] rounded-full" style={{ width: `${pct}%` }} />
+                  <div className="h-1.5 bg-[#eeeef6] rounded-full overflow-hidden">
+                    <div className="h-full bg-[#034795] rounded-full" style={{ width: `${pct}%` }} />
                   </div>
                 </div>
               );
@@ -156,8 +156,8 @@ export default async function AdminReportsPage() {
         </div>
 
         {/* Revenue by category */}
-        <div className="bg-white rounded-[24px] border border-[#e8e6ea] p-6">
-          <h2 className="font-bold text-[#1b1d21] mb-4">Revenue by Category</h2>
+        <div className="bg-white rounded-[24px] border border-[#ddddee] p-6">
+          <h2 className="font-bold text-[#001353] mb-4">Revenue by Category</h2>
           <div className="space-y-3">
             {catRevenue.filter((c) => c.total > 0).slice(0, 6).map((cat, i) => {
               const max = catRevenue[0]?.total || 1;
@@ -165,17 +165,17 @@ export default async function AdminReportsPage() {
               return (
                 <div key={cat.name}>
                   <div className="flex justify-between text-sm mb-1">
-                    <span className="font-medium text-[#1b1d21]">{cat.name}</span>
+                    <span className="font-medium text-[#001353]">{cat.name}</span>
                     <span className="font-bold" style={{ color: cat.color }}>RM{cat.total.toLocaleString()}</span>
                   </div>
-                  <div className="h-1.5 bg-[#f3f6f8] rounded-full overflow-hidden">
+                  <div className="h-1.5 bg-[#eeeef6] rounded-full overflow-hidden">
                     <div className="h-full rounded-full" style={{ width: `${pct}%`, background: cat.color }} />
                   </div>
                 </div>
               );
             })}
             {catRevenue.every((c) => c.total === 0) && (
-              <p className="text-sm text-[#8f92a1] text-center py-6">No revenue data yet</p>
+              <p className="text-sm text-[#5b6480] text-center py-6">No revenue data yet</p>
             )}
           </div>
         </div>

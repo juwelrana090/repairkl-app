@@ -56,10 +56,10 @@ export default function WorkerJobActions({ assignment }: { assignment: Assignmen
   return (
     <>
       <div className="bg-white rounded-2xl p-6 shadow-sm">
-        <h3 className="font-bold text-[#1b1d21] mb-4">Update Status</h3>
+        <h3 className="font-bold text-[#001353] mb-4">Update Status</h3>
         
         <div className="flex items-center justify-between mb-4">
-          <span className="text-[#8f92a1]">Current Status</span>
+          <span className="text-[#5b6480]">Current Status</span>
           <StatusBadge status={assignment.booking.status} />
         </div>
 
@@ -77,7 +77,7 @@ export default function WorkerJobActions({ assignment }: { assignment: Assignmen
         )}
 
         {assignment.booking.status === "COMPLETED" && (
-          <div className="text-center text-[#8f92a1]">
+          <div className="text-center text-[#5b6480]">
             This job has been completed
           </div>
         )}

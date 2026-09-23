@@ -18,8 +18,8 @@ export default async function HomePage() {
   if (!session) {
     return (
       <div className="flex flex-col items-center justify-center h-full">
-        <p className="text-lg font-bold text-[#1b1d21]">Please log in first</p>
-        <Link href="/login" className="text-[#fd6b22] mt-2">Return to login</Link>
+        <p className="text-lg font-bold text-[#001353]">Please log in first</p>
+        <Link href="/login" className="text-[#034795] mt-2">Return to login</Link>
       </div>
     );
   }
@@ -56,9 +56,9 @@ export default async function HomePage() {
     <div className="flex flex-col gap-8 pb-20 md:pb-0">
       {/* Hero greeting */}
       <section>
-        <div className="bg-gradient-to-br from-[#1b1d21] to-[#2d3038] rounded-[24px] p-6 text-white relative overflow-hidden">
-          <div className="absolute -right-6 -top-6 w-32 h-32 bg-[#fd6b22]/20 rounded-full" />
-          <div className="absolute -right-2 -bottom-8 w-20 h-20 bg-[#fd6b22]/10 rounded-full" />
+        <div className="bg-gradient-to-br from-[#001353] to-[#0f2a73] rounded-[24px] p-6 text-white relative overflow-hidden">
+          <div className="absolute -right-6 -top-6 w-32 h-32 bg-[#034795]/20 rounded-full" />
+          <div className="absolute -right-2 -bottom-8 w-20 h-20 bg-[#034795]/10 rounded-full" />
           <p className="text-sm text-white/60 mb-1">📍 {location}</p>
           <h1 className="text-2xl font-bold leading-tight tracking-[-0.5px]">
             Hello, {firstName}! 👋
@@ -71,7 +71,7 @@ export default async function HomePage() {
       {/* Promo banner */}
       {activeBanner && (
         <section>
-          <div className="bg-gradient-to-r from-[#fd6b22] to-[#ff9b22] rounded-[20px] p-5 text-white flex items-center justify-between">
+          <div className="bg-gradient-to-r from-[#034795] to-[#2f6db3] rounded-[20px] p-5 text-white flex items-center justify-between">
             <div>
               <p className="text-xs font-bold opacity-80 uppercase tracking-wider">Special Offer</p>
               <p className="text-xl font-bold mt-1 tracking-tight">{activeBanner.title}</p>
@@ -86,8 +86,8 @@ export default async function HomePage() {
       {recentBookings.length > 0 && (
         <section>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-bold text-[#1b1d21] tracking-[-0.4px]">Active Bookings</h2>
-            <Link href="/orders" className="text-sm text-[#fd6b22] font-medium">See all →</Link>
+            <h2 className="text-lg font-bold text-[#001353] tracking-[-0.4px]">Active Bookings</h2>
+            <Link href="/orders" className="text-sm text-[#034795] font-medium">See all →</Link>
           </div>
           <div className="grid gap-3">
             {recentBookings.map((b) => (
@@ -111,8 +111,8 @@ export default async function HomePage() {
       {/* Categories */}
       <section>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-bold text-[#1b1d21] tracking-[-0.4px]">Our Services</h2>
-          <Link href="/services" className="text-sm text-[#fd6b22] font-medium">View all →</Link>
+          <h2 className="text-lg font-bold text-[#001353] tracking-[-0.4px]">Our Services</h2>
+          <Link href="/services" className="text-sm text-[#034795] font-medium">View all →</Link>
         </div>
         <div className="grid grid-cols-4 sm:grid-cols-5 lg:grid-cols-8 gap-3">
           {categories.map((cat) => (
@@ -131,8 +131,8 @@ export default async function HomePage() {
       {/* Featured Services */}
       <section>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-bold text-[#1b1d21] tracking-[-0.4px]">Featured Services</h2>
-          <Link href="/services?featured=true" className="text-sm text-[#fd6b22] font-medium">See all →</Link>
+          <h2 className="text-lg font-bold text-[#001353] tracking-[-0.4px]">Featured Services</h2>
+          <Link href="/services?featured=true" className="text-sm text-[#034795] font-medium">See all →</Link>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {featuredServices.map((s) => (
@@ -159,19 +159,19 @@ export default async function HomePage() {
       {/* Quick links */}
       <section className="grid grid-cols-2 gap-4">
         {[
-          { href: "/services?category=house-shifting", icon: "🏠", label: "House Shifting", desc: "Move your home safely", color: "#fd6b22" },
-          { href: "/services?category=home-cleaning", icon: "🧹", label: "Home Cleaning", desc: "Spotless results", color: "#4fbf67" },
-          { href: "/services?category=electrical", icon: "⚡", label: "Electrical", desc: "Expert electricians", color: "#ffb800" },
-          { href: "/services?category=plumbing", icon: "🔧", label: "Plumbing", desc: "Fix it right away", color: "#2196f3" },
+          { href: "/services?category=house-shifting", icon: "🏠", label: "House Shifting", desc: "Move your home safely", color: "#034795" },
+          { href: "/services?category=home-cleaning", icon: "🧹", label: "Home Cleaning", desc: "Spotless results", color: "#1a8f5c" },
+          { href: "/services?category=electrical", icon: "⚡", label: "Electrical", desc: "Expert electricians", color: "#e0972f" },
+          { href: "/services?category=plumbing", icon: "🔧", label: "Plumbing", desc: "Fix it right away", color: "#fb6f27" },
         ].map((item) => (
           <Link key={item.href} href={item.href}>
-            <div className="bg-white rounded-[20px] border border-[#e8e6ea] p-5 flex items-center gap-4 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition-all">
+            <div className="bg-white rounded-[20px] border border-[#ddddee] p-5 flex items-center gap-4 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition-all">
               <div className="w-12 h-12 rounded-[14px] flex items-center justify-center text-2xl shrink-0" style={{ background: `${item.color}20` }}>
                 {item.icon}
               </div>
               <div>
-                <p className="font-bold text-sm text-[#1b1d21]">{item.label}</p>
-                <p className="text-xs text-[#8f92a1]">{item.desc}</p>
+                <p className="font-bold text-sm text-[#001353]">{item.label}</p>
+                <p className="text-xs text-[#5b6480]">{item.desc}</p>
               </div>
             </div>
           </Link>
