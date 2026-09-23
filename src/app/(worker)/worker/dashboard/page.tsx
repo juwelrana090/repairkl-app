@@ -1,3 +1,4 @@
+import AppIcon from "@/components/ui/AppIcon";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getSession } from "@/lib/auth/session";
@@ -60,14 +61,14 @@ export default async function WorkerDashboardPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-[#001353] tracking-[-0.5px]">
-            Welcome, {worker.user.fullName.split(" ")[0]}! 👋
+            Welcome, {worker.user.fullName.split(" ")[0]}!
           </h1>
           <div className="flex items-center gap-3 mt-1">
             <span className="text-sm text-[#5b6480]">{worker.speciality}</span>
             <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${worker.isAvailable ? "bg-green-100 text-green-600" : "bg-gray-100 text-gray-600"}`}>
-              {worker.isAvailable ? "🟢 Available" : "🔴 Unavailable"}
+              <span className="inline-flex items-center gap-1.5"><span className={`w-2 h-2 rounded-full ${worker.isAvailable ? "bg-green-500" : "bg-red-500"}`} />{worker.isAvailable ? "Available" : "Unavailable"}</span>
             </span>
-            {worker.isVerified && <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-blue-100 text-blue-600">✓ Verified</span>}
+            {worker.isVerified && <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-blue-100 text-blue-600"><AppIcon name="check" className="w-3 h-3 -mt-0.5" /> Verified</span>}
           </div>
         </div>
         <Link href="/worker/profile" className="bg-[#eeeef6] text-[#001353] px-4 py-2.5 rounded-[12px] text-sm font-bold hover:bg-[#ddddee]">
@@ -77,10 +78,10 @@ export default async function WorkerDashboardPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard label="Total Jobs" value={totalJobs} icon="📋" color="#034795" />
-        <StatCard label="This Month" value={monthJobs} icon="📅" change={`${monthJobs} done`} changeType="up" color="#1a8f5c" />
-        <StatCard label="Total Earned" value={`RM${(Number(totalEarned._sum.amount ?? 0) / 1000).toFixed(1)}K`} icon="💰" color="#e0972f" />
-        <StatCard label="Month Earned" value={`RM${Number(monthEarned._sum.amount ?? 0).toLocaleString()}`} icon="📈" color="#fb6f27" />
+        <StatCard label="Total Jobs" value={totalJobs} icon="clipboard" color="#034795" />
+        <StatCard label="This Month" value={monthJobs} icon="calendar" change={`${monthJobs} done`} changeType="up" color="#1a8f5c" />
+        <StatCard label="Total Earned" value={`RM${(Number(totalEarned._sum.amount ?? 0) / 1000).toFixed(1)}K`} icon="wallet" color="#e0972f" />
+        <StatCard label="Month Earned" value={`RM${Number(monthEarned._sum.amount ?? 0).toLocaleString()}`} icon="trendingUp" color="#fb6f27" />
       </div>
 
       {/* Rating & Stats */}
@@ -91,7 +92,7 @@ export default async function WorkerDashboardPage() {
           <div className="flex items-center gap-4">
             <div className="w-20 h-20 rounded-full bg-[#eaf0f8] flex flex-col items-center justify-center">
               <p className="text-2xl font-bold text-[#034795]">{worker.rating.toFixed(1)}</p>
-              <p className="text-[10px] text-[#034795]">⭐ Rating</p>
+              <p className="text-[10px] text-[#034795]"><AppIcon name="star" className="w-3 h-3 -mt-0.5" filled /> Rating</p>
             </div>
             <div className="flex-1 space-y-2">
               <div className="flex justify-between text-sm">

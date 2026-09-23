@@ -37,14 +37,14 @@ export const metadata: Metadata = {
     locale: "en_MY",
     siteName: "RepairKL",
     title: "RepairKL – Trusted Home Appliance Repair in KL",
-    description: "Book professional appliance repair services instantly",
-    images: ["/og-image.png"],
+    description: "Fridge, washing machine, dryer and aircond repair in Kuala Lumpur and Selangor by verified technicians.",
+    images: ["/images/hero/fridge-repairbg.jpg.jpg"],
   },
   twitter: {
     card: "summary_large_image",
-    title: "RepairKL – Appliance Repair",
-    description: "Book professional appliance repair services instantly",
-    images: ["/og-image.png"],
+    title: "RepairKL – Appliance Repair in Kuala Lumpur",
+    description: "Fridge, washing machine, dryer and aircond repair in Kuala Lumpur and Selangor by verified technicians.",
+    images: ["/images/hero/fridge-repairbg.jpg.jpg"],
   },
   robots: { index: true, follow: true },
 };
@@ -55,7 +55,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${dmSans.variable}`}>
+    <html lang="en-MY" className={`${dmSans.variable}`}>
       <body
         className="min-h-screen bg-white font-[family-name:var(--font-dm-sans)] antialiased"
         suppressHydrationWarning

@@ -1,4 +1,5 @@
 "use client";
+import AppIcon from "@/components/ui/AppIcon";
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -42,7 +43,7 @@ export default function ContactForm() {
   if (submitted) {
     return (
       <div className="bg-[#e6f5ee] border-2 border-[#1a8f5c]/30 rounded-[24px] p-10 text-center">
-        <div className="text-5xl mb-4">🎉</div>
+        <div className="mb-4 text-[var(--color-primary)]"><AppIcon name="checkCircle" className="w-14 h-14 mx-auto" /></div>
         <h3 className="font-black text-2xl text-[#001353] mb-2">Message Sent!</h3>
         <p className="text-[#5b6480] mb-6">
           Thanks for reaching out, {form.name.split(" ")[0]}. We&apos;ll get back to you at <strong>{form.email}</strong> within 2 business hours.

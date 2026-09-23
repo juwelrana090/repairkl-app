@@ -1,3 +1,4 @@
+import AppIcon from "@/components/ui/AppIcon";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getSession } from "@/lib/auth/session";
@@ -24,16 +25,16 @@ export default async function NotificationsPage() {
   });
 
   const typeIcons: Record<string, string> = {
-    BOOKING_CONFIRMED: "✅",
-    BOOKING_CANCELLED: "❌",
-    WORKER_ASSIGNED: "👷",
-    SERVICE_STARTED: "🔧",
-    SERVICE_COMPLETED: "🎉",
-    PAYMENT_RECEIVED: "💳",
-    REVIEW_REMINDER: "⭐",
-    PROMOTION: "🎁",
-    SUPPORT_REPLY: "💬",
-    SYSTEM: "🔔",
+    BOOKING_CONFIRMED: "checkCircle",
+    BOOKING_CANCELLED: "xCircle",
+    WORKER_ASSIGNED: "hardHat",
+    SERVICE_STARTED: "wrench",
+    SERVICE_COMPLETED: "party",
+    PAYMENT_RECEIVED: "creditCard",
+    REVIEW_REMINDER: "star",
+    PROMOTION: "gift",
+    SUPPORT_REPLY: "message",
+    SYSTEM: "bell",
   };
 
   return (
@@ -47,7 +48,7 @@ export default async function NotificationsPage() {
 
       {notifications.length === 0 ? (
         <div className="text-center py-20">
-          <span className="text-5xl block mb-4">🔔</span>
+          <span className="block mb-4 text-[var(--color-primary)]"><AppIcon name="bell" className="w-12 h-12 mx-auto" /></span>
           <p className="font-bold text-[#001353]">No notifications yet</p>
           <p className="text-sm text-[#5b6480] mt-2">We&apos;ll notify you when something important happens</p>
         </div>
@@ -59,7 +60,7 @@ export default async function NotificationsPage() {
               className={`bg-white rounded-[16px] border p-4 flex items-start gap-4 transition-all ${!n.isRead ? "border-[#034795]/30 bg-[#f5f8fc]" : "border-[#ddddee]"}`}
             >
               <div className={`w-10 h-10 rounded-full flex items-center justify-center text-xl shrink-0 ${!n.isRead ? "bg-[#eaf0f8]" : "bg-[#eeeef6]"}`}>
-                {typeIcons[n.type] ?? "🔔"}
+                <AppIcon name={typeIcons[n.type] ?? "bell"} className="w-5 h-5" />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-2">

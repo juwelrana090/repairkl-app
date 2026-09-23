@@ -1,3 +1,4 @@
+import AppIcon from "@/components/ui/AppIcon";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { generateMeta, serviceSchema } from "@/lib/seo";
@@ -103,7 +104,7 @@ export default async function ServicePage({
 
           <div className="flex items-center gap-4 text-sm">
             <div className="flex items-center gap-1">
-              <span className="text-yellow-500">★</span>
+              <span className="text-yellow-500"><AppIcon name="star" className="w-4 h-4" filled /></span>
               <span className="font-medium">{service.rating.toFixed(1)}</span>
               <span className="text-[#5b6480]">
                 ({service.reviewCount} reviews)
@@ -170,7 +171,7 @@ export default async function ServicePage({
                     <div className="flex items-center gap-1">
                       {Array.from({ length: review.rating }).map((_, i) => (
                         <span key={i} className="text-yellow-500 text-xs">
-                          ★
+                          <AppIcon name="star" className="w-3 h-3" filled />
                         </span>
                       ))}
                     </div>

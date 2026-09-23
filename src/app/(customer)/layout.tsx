@@ -1,3 +1,4 @@
+import AppIcon from "@/components/ui/AppIcon";
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth/session";
 import Navbar from "@/components/layout/Navbar";
@@ -38,14 +39,14 @@ function MobileBottomNav() {
     <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-[#ddddee] px-6 py-3 z-30">
       <div className="flex items-center justify-around">
         {[
-          { href: "/home", icon: "🏠", label: "Home" },
-          { href: "/services", icon: "🔧", label: "Services" },
-          { href: "/orders", icon: "📋", label: "Orders" },
-          { href: "/notifications", icon: "🔔", label: "Alerts" },
-          { href: "/profile", icon: "👤", label: "Profile" },
+          { href: "/home", icon: "home", label: "Home" },
+          { href: "/services", icon: "wrench", label: "Services" },
+          { href: "/orders", icon: "clipboard", label: "Orders" },
+          { href: "/notifications", icon: "bell", label: "Alerts" },
+          { href: "/profile", icon: "user", label: "Profile" },
         ].map((item) => (
           <a key={item.href} href={item.href} className="flex flex-col items-center gap-1 text-[#5b6480]">
-            <span className="text-xl">{item.icon}</span>
+            <AppIcon name={item.icon} className="w-5 h-5" />
             <span className="text-[9px] font-medium">{item.label}</span>
           </a>
         ))}

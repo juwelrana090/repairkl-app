@@ -1,3 +1,4 @@
+import AppIcon from "@/components/ui/AppIcon";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
@@ -89,8 +90,9 @@ export default async function SupportCustomersPage({
               <Link
                 href={`mailto:${c.email}`}
                 className="h-8 w-8 bg-[#fb6f27] rounded-[8px] flex items-center justify-center text-white text-sm"
+                aria-label="Email customer"
               >
-                ✉
+                <AppIcon name="mail" className="w-4 h-4" />
               </Link>
             </div>
           </div>

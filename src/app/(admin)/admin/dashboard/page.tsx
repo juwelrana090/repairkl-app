@@ -53,10 +53,10 @@ export default async function AdminDashboardPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard label="Total Users" value={totalUsers.toLocaleString()} icon="👥" change="+12%" changeType="up" color="#034795" />
-        <StatCard label="Total Bookings" value={totalBookings.toLocaleString()} icon="📋" change={bookingGrowth} changeType="up" color="#1a8f5c" />
-        <StatCard label="Total Revenue" value={`RM${(Number(totalRevenue._sum.amount) / 1000).toFixed(0)}K`} icon="💰" change="+8%" changeType="up" color="#e0972f" />
-        <StatCard label="Active Workers" value={activeWorkers} icon="👷" color="#fb6f27" />
+        <StatCard label="Total Users" value={totalUsers.toLocaleString()} icon="users" change="+12%" changeType="up" color="#034795" />
+        <StatCard label="Total Bookings" value={totalBookings.toLocaleString()} icon="clipboard" change={bookingGrowth} changeType="up" color="#1a8f5c" />
+        <StatCard label="Total Revenue" value={`RM${(Number(totalRevenue._sum.amount) / 1000).toFixed(0)}K`} icon="wallet" change="+8%" changeType="up" color="#e0972f" />
+        <StatCard label="Active Workers" value={activeWorkers} icon="hardHat" color="#fb6f27" />
       </div>
 
       {/* Month stats */}

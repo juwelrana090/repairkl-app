@@ -1,4 +1,5 @@
 "use client";
+import AppIcon from "@/components/ui/AppIcon";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -66,16 +67,16 @@ export default function AdminServicesClient({ services: initial }: { services: S
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-1">
-                      <span className="text-yellow-400 text-xs">★</span>
+                      <span className="text-yellow-400"><AppIcon name="star" className="w-3.5 h-3.5" filled /></span>
                       <span className="text-sm text-[#001353]">{s.rating.toFixed(1)}</span>
                       <span className="text-xs text-[#5b6480]">({s.reviewCount})</span>
                     </div>
                   </td>
                   <td className="px-4 py-3 text-sm text-center font-bold text-[#001353]">{s.bookingCount}</td>
                   <td className="px-4 py-3">
-                    <button onClick={() => toggle(s.id, "isFeatured", s.isFeatured)}
+                    <button onClick={() => toggle(s.id, "isFeatured", s.isFeatured)} aria-label={s.isFeatured ? "Unfeature service" : "Feature service"}
                       className={twMerge("w-8 h-8 rounded-full text-sm", s.isFeatured ? "text-yellow-500 bg-yellow-50" : "text-[#c9c9de] bg-[#eeeef6]")}>
-                      {s.isFeatured ? "⭐" : "☆"}
+                      <AppIcon name="star" filled={s.isFeatured} className="w-4 h-4" />
                     </button>
                   </td>
                   <td className="px-4 py-3">

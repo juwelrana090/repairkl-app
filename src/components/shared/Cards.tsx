@@ -1,3 +1,4 @@
+import AppIcon from "@/components/ui/AppIcon";
 import Image from "next/image";
 import Link from "next/link";
 import { RatingStars } from "@/components/ui";
@@ -144,8 +145,8 @@ export function BookingCard({
           </span>
         </div>
         <div className="flex items-center gap-4 text-xs text-[#5b6480]">
-          <span>📅 {new Date(booking.scheduledDate).toLocaleDateString("en-MY", { day: "numeric", month: "short", year: "numeric" })}</span>
-          <span>🕐 {booking.scheduledTime}</span>
+          <span className="inline-flex items-center gap-1.5"><AppIcon name="calendar" className="w-3.5 h-3.5" /> {new Date(booking.scheduledDate).toLocaleDateString("en-MY", { day: "numeric", month: "short", year: "numeric" })}</span>
+          <span className="inline-flex items-center gap-1.5"><AppIcon name="clock" className="w-3.5 h-3.5" /> {booking.scheduledTime}</span>
         </div>
         <div className="flex items-center justify-between mt-3 pt-3 border-t border-[#ddddee]">
           <span className="text-base font-bold text-[#034795]">RM{Number(booking.totalAmount).toLocaleString()}</span>
@@ -217,8 +218,8 @@ export function StatCard({
   return (
     <div className="bg-white rounded-[20px] border border-[#ddddee] p-5">
       <div className="flex items-start justify-between mb-4">
-        <div className="w-12 h-12 rounded-[14px] flex items-center justify-center text-2xl" style={{ background: `${color}15` }}>
-          {icon}
+        <div className="w-12 h-12 rounded-[14px] flex items-center justify-center text-2xl" style={{ background: `${color}15`, color }}>
+          <AppIcon name={icon} className="w-6 h-6" />
         </div>
         {change && (
           <span className={twMerge("text-xs font-bold px-2 py-1 rounded-full",

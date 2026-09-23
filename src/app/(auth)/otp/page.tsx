@@ -49,7 +49,7 @@ function OtpForm() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Invalid OTP");
-      showToast("Phone verified! 🎉", "success");
+      showToast("Phone verified!", "success");
       router.push("/login");
     } catch (err: unknown) {
       showToast(err instanceof Error ? err.message : "Verification failed", "error");

@@ -1,8 +1,26 @@
 import type { Metadata } from "next";
 
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://repairkl.com";
+export const SITE_URL =
+  process.env.NEXT_PUBLIC_APP_URL ?? "https://repairkl.com";
+const BASE_URL = SITE_URL;
 const SITE_NAME = "RepairKL";
-const TAGLINE = "Your Trusted Home Appliance Repair Service in KL";
+const TAGLINE = "Home Appliance Repair in Kuala Lumpur";
+
+// Existing images used for social previews and schema (no missing files).
+export const DEFAULT_OG_IMAGE = "/images/hero/fridge-repairbg.jpg.jpg";
+export const LOGO_PATH = "/images/logo/logo.png";
+
+// Areas used in structured data (keep in sync with SERVICE_AREAS in serviceContent.ts)
+const AREA_SERVED = [
+  "Kuala Lumpur",
+  "Selangor",
+  "Petaling Jaya",
+  "Subang Jaya",
+  "Shah Alam",
+  "Cheras",
+  "Ampang",
+  "Puchong",
+];
 
 // ─── generateMeta ─────────────────────────────────────────────────────────────
 export function generateMeta(options: {
@@ -14,10 +32,10 @@ export function generateMeta(options: {
   keywords?: string[];
 }): Metadata {
   const url = options.path ? `${BASE_URL}${options.path}` : BASE_URL;
-  const image = options.image ?? `${BASE_URL}/og-image.png`;
+  const image = options.image ?? `${BASE_URL}${DEFAULT_OG_IMAGE}`;
 
   return {
-    title: options.title,
+    title: { absolute: options.title },
     description: options.description,
     keywords: options.keywords,
     alternates: { canonical: url },
@@ -28,18 +46,23 @@ export function generateMeta(options: {
       description: options.description,
       siteName: SITE_NAME,
       locale: "en_MY",
-      images: [{ url: image, width: 1200, height: 630, alt: options.title }],
+      images: [{ url: image, alt: options.title }],
     },
     twitter: {
       card: "summary_large_image",
       title: options.title,
       description: options.description,
       images: [image],
-      site: "@repairkl",
     },
     robots: options.noIndex
       ? { index: false, follow: false }
-      : { index: true, follow: true, "max-snippet": -1, "max-image-preview": "large", "max-video-preview": -1 },
+      : {
+          index: true,
+          follow: true,
+          "max-snippet": -1,
+          "max-image-preview": "large",
+          "max-video-preview": -1,
+        },
   };
 }
 
@@ -47,57 +70,91 @@ export function generateMeta(options: {
 export function localBusinessSchema() {
   return {
     "@context": "https://schema.org",
-    "@type": "LocalBusiness",
+    "@type": "HomeAndConstructionBusiness",
     "@id": `${BASE_URL}/#business`,
     name: SITE_NAME,
-    description: `${SITE_NAME} — ${TAGLINE}. Book professional fridge, washing machine, dryer and air-conditioner repair in Kuala Lumpur.`,
+    description: `${SITE_NAME} — ${TAGLINE}. Fridge, washing machine, dryer and aircond repair, servicing and installation across Kuala Lumpur and Selangor.`,
     url: BASE_URL,
-    logo: `${BASE_URL}/logo.png`,
-    image: `${BASE_URL}/og-image.png`,
+    logo: `${BASE_URL}${LOGO_PATH}`,
+    image: `${BASE_URL}${DEFAULT_OG_IMAGE}`,
     telephone: "+601174347814",
     email: "hello@repairkl.com",
     address: {
       "@type": "PostalAddress",
-      streetAddress: "Kuala Lumpur",
       addressLocality: "Kuala Lumpur",
-      addressRegion: "Wilayah Persekutuan",
+      addressRegion: "Wilayah Persekutuan Kuala Lumpur",
       postalCode: "50000",
       addressCountry: "MY",
     },
-    geo: { "@type": "GeoCoordinates", latitude: 3.1390, longitude: 101.6869 },
+    geo: { "@type": "GeoCoordinates", latitude: 3.139, longitude: 101.6869 },
+    areaServed: AREA_SERVED.map((name) => ({ "@type": "City", name })),
     openingHoursSpecification: {
       "@type": "OpeningHoursSpecification",
-      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+      // Matches the hours shown on the site: Sat–Thu, 8AM–10PM
+      dayOfWeek: [
+        "Saturday",
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+      ],
       opens: "08:00",
-      closes: "20:00",
+      closes: "22:00",
     },
-    sameAs: [
-      "https://facebook.com/repairkl",
-      "https://instagram.com/repairkl",
+    contactPoint: {
+      "@type": "ContactPoint",
+      telephone: "+601174347814",
+      contactType: "customer service",
+      areaServed: "MY",
+      availableLanguage: ["English", "Malay"],
+    },
+    knowsAbout: [
+      "Washing machine repair",
+      "Refrigerator repair",
+      "Clothes dryer repair",
+      "Air conditioner servicing",
+      "Air conditioner installation",
     ],
-    priceRange: "RM",
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: "4.9",
-      reviewCount: "1200",
-      bestRating: "5",
-    },
   };
 }
 
-export function serviceSchema(service: { name: string; description: string; url: string }) {
+export function websiteSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${BASE_URL}/#website`,
+    name: SITE_NAME,
+    url: BASE_URL,
+    inLanguage: "en-MY",
+    publisher: { "@id": `${BASE_URL}/#business` },
+  };
+}
+
+export function serviceSchema(service: {
+  name: string;
+  description: string;
+  url: string;
+  image?: string;
+  areaServed?: string[];
+}) {
   return {
     "@context": "https://schema.org",
     "@type": "Service",
+    name: service.name,
     serviceType: service.name,
     description: service.description,
+    url: service.url,
+    ...(service.image ? { image: service.image } : {}),
     provider: {
-      "@type": "LocalBusiness",
+      "@id": `${BASE_URL}/#business`,
+      "@type": "HomeAndConstructionBusiness",
       name: SITE_NAME,
       url: BASE_URL,
     },
-    areaServed: { "@type": "City", name: "Kuala Lumpur" },
-    url: service.url,
+    areaServed: (service.areaServed ?? ["Kuala Lumpur", "Selangor"]).map(
+      (name) => ({ "@type": "Place", name }),
+    ),
   };
 }
 

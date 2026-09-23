@@ -44,10 +44,10 @@ export default async function SupportDashboardPage() {
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard label="Total Tickets" value={totalTickets} icon="🎫" color="#fb6f27" />
-        <StatCard label="Open Tickets" value={openTickets} icon="📬" change="Needs attention" changeType="down" color="#034795" />
-        <StatCard label="Resolved Today" value={resolvedToday} icon="✅" color="#1a8f5c" />
-        <StatCard label="My Tickets" value={myTickets} icon="👤" color="#001353" />
+        <StatCard label="Total Tickets" value={totalTickets} icon="ticket" color="#fb6f27" />
+        <StatCard label="Open Tickets" value={openTickets} icon="inbox" change="Needs attention" changeType="down" color="#034795" />
+        <StatCard label="Resolved Today" value={resolvedToday} icon="checkCircle" color="#1a8f5c" />
+        <StatCard label="My Tickets" value={myTickets} icon="user" color="#001353" />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

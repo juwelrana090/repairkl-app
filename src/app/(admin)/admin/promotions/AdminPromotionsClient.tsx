@@ -45,7 +45,7 @@ export default function AdminPromotionsClient({ promos: initial }: { promos: Pro
       setPromos([data.promo, ...promos]);
       setShowForm(false);
       setForm({ code: "", title: "", discountType: "percentage", discountValue: "", minOrderValue: "0", usageLimit: "", validFrom: new Date().toISOString().split("T")[0], validUntil: "2026-12-31" });
-      showToast("Promo code created! 🎁", "success");
+      showToast("Promo code created!", "success");
     } catch (err: any) { showToast(err.message, "error"); }
     finally { setLoading(false); }
   };

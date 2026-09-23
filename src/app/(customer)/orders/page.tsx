@@ -1,3 +1,4 @@
+import AppIcon from "@/components/ui/AppIcon";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getSession } from "@/lib/auth/session";
@@ -56,7 +57,7 @@ export default async function OrdersPage({
       <div className="mt-6 flex flex-col gap-3">
         {bookings.length === 0 ? (
           <div className="text-center py-16">
-            <span className="text-5xl block mb-4">📋</span>
+            <span className="block mb-4 text-[var(--color-primary)]"><AppIcon name="clipboard" className="w-12 h-12 mx-auto" /></span>
             <p className="font-bold text-[#001353] text-lg">No orders yet</p>
             <p className="text-sm text-[#5b6480] mt-2 mb-6">Book your first service to get started</p>
             <Link href="/services" className="bg-[#034795] text-white px-6 py-3 rounded-[14px] font-bold text-sm">

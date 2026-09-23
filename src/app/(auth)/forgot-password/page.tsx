@@ -1,4 +1,5 @@
 "use client";
+import AppIcon from "@/components/ui/AppIcon";
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -45,7 +46,7 @@ export default function ForgotPasswordPage() {
 
       {sent ? (
         <div className="text-center py-8">
-          <div className="w-16 h-16 bg-[#eaf0f8] rounded-full flex items-center justify-center text-3xl mx-auto mb-4">📱</div>
+          <div className="w-16 h-16 bg-[#eaf0f8] rounded-full flex items-center justify-center text-3xl mx-auto mb-4 text-[var(--color-primary)]"><AppIcon name="smartphone" className="w-8 h-8" /></div>
           <p className="font-bold text-[#001353] mb-2">Code Sent!</p>
           <p className="text-sm text-[#5b6480]">Check your phone for the reset code.</p>
         </div>

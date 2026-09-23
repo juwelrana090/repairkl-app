@@ -1,3 +1,4 @@
+import AppIcon from "@/components/ui/AppIcon";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
@@ -7,60 +8,60 @@ import { generateMeta, faqSchema, breadcrumbSchema } from "@/lib/seo";
 
 export const metadata: Metadata = {
   ...generateMeta({
-    title: "Frequently Asked Questions – RepairKL",
-    description: "Answers to common questions about booking home services on RepairKL. Learn about pricing, cancellation, payment methods, worker verification and more.",
+    title: "Appliance Repair FAQ – RepairKL Kuala Lumpur",
+    description: "Answers about booking appliance repair in KL: same-day service, brands, parts, warranty, payment and the areas we cover for fridge, washer, dryer and aircond.",
     path: "/faq",
-    keywords: ["repairkl FAQ", "home service questions", "how to book cleaning service", "repairkl pricing"],
+    keywords: ["appliance repair FAQ", "repairkl FAQ", "appliance repair Kuala Lumpur", "washing machine repair questions", "aircond service questions"],
   }),
 };
 
 const FAQ_SECTIONS = [
   {
     category: "Booking",
-    emoji: "📅",
+    emoji: "calendar",
     faqs: [
-      { q: "How do I book a service?", a: "Send us a WhatsApp message at +60 11-7434 7814 with your appliance, the problem and your area. We'll confirm a time slot and assign a verified technician. It usually takes just a few minutes." },
-      { q: "How far in advance do I need to book?", a: "You can book same-day services up to 1 hour in advance for many service types. For house shifting and large jobs, we recommend booking at least 24–48 hours ahead to ensure worker availability." },
-      { q: "Can I book a recurring service?", a: "Yes! For cleaning and maintenance services, you can set up weekly, bi-weekly or monthly recurring bookings at a discounted rate from the RepairKL app." },
-      { q: "Is there a minimum booking value?", a: "There is no minimum booking value. Some promotions may have a minimum order requirement, which is shown clearly before applying." },
+      { q: "How do I book an appliance repair?", a: "Send us a WhatsApp message at +60 11-7434 7814 with your appliance, the problem and your area. We'll confirm a time slot and assign a verified technician. It usually takes just a few minutes." },
+      { q: "Do you offer same-day appliance repair?", a: "Yes, for most areas in Kuala Lumpur and Selangor. Book before 12pm for the best chance of a same-day slot." },
+      { q: "What details should I send when booking?", a: "Tell us the appliance type and brand, the model number if you have it, what the problem is (for example an error code, noise or leak), your area, and your preferred time. A photo or short video helps the technician prepare." },
+      { q: "Can I reschedule or cancel my booking?", a: "Yes. Just message us on WhatsApp as early as possible and we'll move or cancel your appointment." },
     ],
   },
   {
-    category: "Pricing & Payment",
-    emoji: "💳",
+    category: "Repairs & Parts",
+    emoji: "wrench",
     faqs: [
-      { q: "How does pricing work?", a: "All prices are shown upfront before you confirm. You'll see the package price, any applicable taxes, and your final total. There are never hidden charges." },
-      { q: "What payment methods do you accept?", a: "We accept Touch 'n Go, GrabPay, Boost, debit and credit cards (Visa/Mastercard), and cash on delivery. Payment is processed after the service is completed to your satisfaction." },
-      { q: "Can I apply a promo code?", a: "Yes! Enter your promo code at checkout. First-time customers get 40% off (code: FIRST40). You can also subscribe to our newsletter for exclusive codes." },
-      { q: "When am I charged?", a: "Payment is processed after the service is successfully completed. If you pay cash, you pay the worker directly at the end of the job." },
+      { q: "Which appliances do you repair?", a: "We repair fridges and freezers, front-load and top-load washing machines, tumble dryers and washer-dryers, and we service, repair and install air-conditioners." },
+      { q: "Which brands do you repair?", a: "All major brands sold in Malaysia, including Samsung, LG, Panasonic, Sharp, Hitachi, Toshiba, Electrolux, Bosch, Daikin, Mitsubishi Electric, York, Midea and more." },
+      { q: "Do you use genuine parts?", a: "We use genuine or quality-compatible replacement parts, and the technician tells you which option is being used before fitting it." },
+      { q: "How long does a repair take?", a: "Many repairs are completed in a single visit, often within one to two hours. If a special part must be ordered, we'll tell you the expected time before we proceed." },
+      { q: "Is it worth repairing my appliance or should I replace it?", a: "After diagnosis, the technician will give you an honest recommendation based on the appliance's age, condition and the repair needed." },
     ],
   },
   {
-    category: "Workers & Quality",
-    emoji: "👷",
+    category: "Cost & Payment",
+    emoji: "creditCard",
     faqs: [
-      { q: "How are your workers verified?", a: "Every worker goes through a multi-step verification: National ID check, background screening, skills assessment, in-person interview, and a trial period. Only the top 30% of applicants are approved." },
-      { q: "Are your workers insured?", a: "Yes. Every RepairKL worker carries comprehensive liability insurance. If any accidental damage occurs during a service, you are fully covered. Simply report it within 24 hours via the app." },
-      { q: "What if I'm not happy with the service?", a: "We offer a satisfaction guarantee. If you're not completely happy, contact us within 24 hours and we'll either re-do the service at no cost or give you a full refund." },
-      { q: "Can I request the same worker again?", a: "Yes! If you leave a positive review for a worker, you can mark them as a favourite and request them for future bookings when they are available." },
+      { q: "How is the repair cost decided?", a: "Every job starts with a diagnosis. Your technician explains the fault and gives you a full quote to approve before any work begins, so there are no surprise charges." },
+      { q: "What payment methods do you accept?", a: "Cash, online banking (FPX), Touch 'n Go eWallet, and credit or debit cards." },
+      { q: "When do I pay?", a: "You pay after the repair is completed and tested in front of you." },
     ],
   },
   {
-    category: "Cancellation & Rescheduling",
-    emoji: "🔄",
+    category: "Technicians & Warranty",
+    emoji: "shield",
     faqs: [
-      { q: "Can I cancel my booking?", a: "You can cancel for free up to 24 hours before your scheduled service. Cancellations within 24 hours may incur a small cancellation fee. Cancellations can be made directly in the app." },
-      { q: "Can I reschedule my booking?", a: "Yes, free rescheduling is available up to 4 hours before the service. Late rescheduling is subject to worker availability." },
-      { q: "What if the worker cancels?", a: "If a worker cancels, we'll immediately assign a replacement and notify you. If no replacement is available, you'll receive a full refund." },
+      { q: "Are your technicians verified?", a: "Yes. Every technician is background-checked, trained and insured before their first job with RepairKL." },
+      { q: "Do you offer a warranty on repairs?", a: "Yes. All repairs come with a minimum 1-month warranty on labour. Replacement parts carry their own manufacturer warranty." },
+      { q: "What if the same problem comes back?", a: "If the same fault returns within the warranty period, contact us on WhatsApp and we'll send a technician to fix it again at no labour cost." },
+      { q: "What if something is damaged during the repair?", a: "Our technicians are insured. Report any issue to us within 24 hours and we'll resolve it." },
     ],
   },
   {
-    category: "Coverage & Availability",
-    emoji: "📍",
+    category: "Coverage",
+    emoji: "pin",
     faqs: [
-      { q: "Which cities do you serve?", a: "We currently operate in Kuala Lumpur, Penang, and Johor Bahru. We're expanding to Rajshahi and Khulna in 2025." },
-      { q: "What areas in Kuala Lumpur are covered?", a: "We cover all major areas of Kuala Lumpur including Gulshan, Banani, Dhanmondi, Uttara, Mirpur, Mohammadpur, Wari, Rampura and surrounding areas. Enter your address at checkout to confirm availability." },
-      { q: "Are services available on public holidays?", a: "Most services are available on public holidays, though availability may be limited. You can check availability for a specific date by selecting it at checkout." },
+      { q: "Which areas do you cover?", a: "We cover Kuala Lumpur and the Klang Valley, including KLCC, Mont Kiara, Bangsar, Cheras, Setapak, Kepong, Ampang, Petaling Jaya, Subang Jaya, Puchong, Shah Alam and Cyberjaya. Message us to confirm your exact location." },
+      { q: "Are you available on weekends and public holidays?", a: "We're open Saturday to Thursday, 8AM to 10PM. Availability on public holidays may be limited, so book early." },
     ],
   },
 ];
@@ -100,7 +101,7 @@ export default function FaqPage() {
             <span className="text-[#034795]">Questions</span>
           </h1>
           <p className="text-white/60 text-xl max-w-xl mx-auto">
-            Everything you need to know about booking home services on RepairKL.
+            Everything you need to know about booking fridge, washing machine, dryer and aircond repair with RepairKL.
           </p>
         </div>
       </section>
@@ -113,7 +114,7 @@ export default function FaqPage() {
             {FAQ_SECTIONS.map((s) => (
               <a key={s.category} href={`#${s.category.toLowerCase().replace(/[& ]+/g, "-")}`}
                 className="px-4 py-2 rounded-full bg-[#f5f5fa] border border-[#ddddee] text-sm font-semibold text-[#5b6480] hover:border-[#034795] hover:text-[#034795] transition-all">
-                {s.emoji} {s.category}
+                <AppIcon name={s.emoji} className="w-4 h-4" /> {s.category}
               </a>
             ))}
           </div>
@@ -122,7 +123,7 @@ export default function FaqPage() {
             {FAQ_SECTIONS.map((section) => (
               <div key={section.category} id={section.category.toLowerCase().replace(/[& ]+/g, "-")} className="scroll-mt-24">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="w-10 h-10 bg-[#eaf0f8] rounded-[12px] flex items-center justify-center text-xl">{section.emoji}</div>
+                  <div className="w-10 h-10 bg-[#eaf0f8] rounded-[12px] flex items-center justify-center text-xl text-[var(--color-primary)]"><AppIcon name={section.emoji} className="w-5 h-5" /></div>
                   <h2 className="text-xl font-black text-[#001353]">{section.category}</h2>
                 </div>
                 <div className="space-y-3">
@@ -147,7 +148,7 @@ export default function FaqPage() {
       {/* ─── STILL STUCK ── */}
       <section className="py-16 bg-[#f5f5fa]">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="text-5xl mb-4">🤝</div>
+          <div className="mb-4 text-[var(--color-primary)]"><AppIcon name="handshake" className="w-14 h-14 mx-auto" /></div>
           <h2 className="text-3xl font-black text-[#001353] tracking-[-0.8px] mb-4">Still Have Questions?</h2>
           <p className="text-[#5b6480] mb-8">Our support team is available Sat–Thu 8AM–10PM and can answer any question in minutes.</p>
           <div className="flex flex-wrap justify-center gap-4">

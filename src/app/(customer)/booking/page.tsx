@@ -1,4 +1,5 @@
 "use client";
+import AppIcon from "@/components/ui/AppIcon";
 import { useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
@@ -11,21 +12,21 @@ import { twMerge } from "tailwind-merge";
 const STEPS = ["Details", "Schedule", "Address", "Confirm"];
 
 const HOUSE_SIZES = [
-  { id: "2bed1kitchen", label: "2 Bedrooms", sub: "1 Kitchen", emoji: "🏡" },
-  { id: "3bed1kitchen", label: "3 Bedrooms", sub: "1 Kitchen", emoji: "🏠" },
-  { id: "4bed2kitchen", label: "4 Bedrooms", sub: "2 Kitchen", emoji: "🏘" },
+  { id: "2bed1kitchen", label: "2 Bedrooms", sub: "1 Kitchen", emoji: "home" },
+  { id: "3bed1kitchen", label: "3 Bedrooms", sub: "1 Kitchen", emoji: "home" },
+  { id: "4bed2kitchen", label: "4 Bedrooms", sub: "2 Kitchen", emoji: "building" },
 ];
 
 const FURNITURE_ITEMS = [
-  { key: "bed", label: "Bed", emoji: "🛏️" },
-  { key: "sofa", label: "Sofa", emoji: "🛋️" },
-  { key: "chair", label: "Chair", emoji: "🪑" },
-  { key: "almira", label: "Almira", emoji: "🗄️" },
-  { key: "ac", label: "AC", emoji: "❄️" },
-  { key: "fridge", label: "Fridge", emoji: "🧊" },
-  { key: "oven", label: "Oven", emoji: "🍳" },
-  { key: "tv", label: "TV", emoji: "📺" },
-  { key: "wardrobe", label: "Wardrobe", emoji: "👗" },
+  { key: "bed", label: "Bed", emoji: "bed" },
+  { key: "sofa", label: "Sofa", emoji: "sofa" },
+  { key: "chair", label: "Chair", emoji: "armchair" },
+  { key: "almira", label: "Almira", emoji: "archive" },
+  { key: "ac", label: "AC", emoji: "snowflake" },
+  { key: "fridge", label: "Fridge", emoji: "fridge" },
+  { key: "oven", label: "Oven", emoji: "cookingPot" },
+  { key: "tv", label: "TV", emoji: "tv" },
+  { key: "wardrobe", label: "Wardrobe", emoji: "shirt" },
 ];
 
 const TIME_SLOTS = ["07:00 AM", "09:00 AM", "11:00 AM", "12:00 PM", "02:00 PM", "04:00 PM"];
@@ -87,7 +88,7 @@ function BookingWizard() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Booking failed");
-      showToast("Booking confirmed! 🎉", "success");
+      showToast("Booking confirmed!", "success");
       router.push(`/orders/${data.booking.id}`);
     } catch (err: unknown) {
       showToast(err instanceof Error ? err.message : "Booking failed", "error");
@@ -115,7 +116,7 @@ function BookingWizard() {
                 : i === step ? "bg-[#034795] text-white"
                 : "bg-[#ddddee] text-[#5b6480]"
               )}>
-                {i < step ? "✓" : i + 1}
+                {i < step ? <AppIcon name="check" className="w-4 h-4" /> : i + 1}
               </div>
               {i < STEPS.length - 1 && (
                 <div className={twMerge("h-0.5 w-16 sm:w-24 transition-all", i < step ? "bg-[#1a8f5c]" : "bg-[#ddddee]")} />
@@ -150,7 +151,7 @@ function BookingWizard() {
                       className={twMerge("p-4 rounded-[16px] border-2 flex flex-col items-center gap-2 transition-all",
                         houseSize === h.id ? "border-[#034795] bg-[#eaf0f8]" : "border-[#ddddee] bg-white"
                       )}>
-                      <span className="text-3xl">{h.emoji}</span>
+                      <span className="text-[var(--color-primary)]"><AppIcon name={h.emoji} className="w-8 h-8" /></span>
                       <div className="text-center">
                         <p className="text-xs font-bold text-[#001353]">{h.label}</p>
                         <p className="text-[10px] text-[#5b6480]">{h.sub}</p>
@@ -161,8 +162,8 @@ function BookingWizard() {
               </div>
 
               <div>
-                <h3 className="font-bold text-[#001353] mb-1">Furnitures {totalItems > 0 && <span className="text-xs text-[#034795] ml-2">{totalItems} selected ✕</span>}</h3>
-                <p className="text-xs text-[#5b6480] mb-3">Approximate furnitures ℹ️</p>
+                <h3 className="font-bold text-[#001353] mb-1">Furnitures {totalItems > 0 && <span className="text-xs text-[#034795] ml-2">{totalItems} selected <AppIcon name="x" className="w-3 h-3 -mt-0.5" /></span>}</h3>
+                <p className="text-xs text-[#5b6480] mb-3">Approximate furnitures</p>
                 <div className="grid grid-cols-4 sm:grid-cols-5 gap-3">
                   {FURNITURE_ITEMS.map((item) => {
                     const count = furnitures[item.key] ?? 0;
@@ -173,7 +174,7 @@ function BookingWizard() {
                           className={twMerge("w-full aspect-square rounded-full flex flex-col items-center justify-center gap-1 border-2 transition-all",
                             count > 0 ? "border-[#034795] bg-[#eaf0f8]" : "border-[#ddddee] bg-white"
                           )}>
-                          <span className="text-xl">{item.emoji}</span>
+                          <span className="text-[var(--color-primary)]"><AppIcon name={item.emoji} className="w-5 h-5" /></span>
                         </button>
                         {count > 0 && (
                           <div className="absolute -top-1 -right-1 w-5 h-5 bg-[#034795] rounded-full flex items-center justify-center text-[10px] text-white font-bold">
@@ -190,13 +191,13 @@ function BookingWizard() {
               <div>
                 <h3 className="font-bold text-[#001353] mb-3">Additional</h3>
                 {[
-                  { key: "packedBoxes", label: "Packed Boxes", sub: "Weight below 10kg", value: packedBoxes, set: setPackedBoxes, emoji: "📦" },
-                  { key: "workers", label: "Workers", sub: "RM500/hr each", value: workers, set: setWorkers, emoji: "👷" },
-                  { key: "electricians", label: "Electricians", sub: "RM600/hr each", value: electricians, set: setElectricians, emoji: "⚡" },
+                  { key: "packedBoxes", label: "Packed Boxes", sub: "Weight below 10kg", value: packedBoxes, set: setPackedBoxes, emoji: "package" },
+                  { key: "workers", label: "Workers", sub: "RM500/hr each", value: workers, set: setWorkers, emoji: "hardHat" },
+                  { key: "electricians", label: "Electricians", sub: "RM600/hr each", value: electricians, set: setElectricians, emoji: "zap" },
                 ].map((item) => (
                   <div key={item.key} className="flex items-center justify-between py-4 border-b border-[#ddddee] last:border-0">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-full bg-[#eeeef6] flex items-center justify-center text-xl">{item.emoji}</div>
+                      <div className="w-12 h-12 rounded-full bg-[#eeeef6] flex items-center justify-center text-xl text-[var(--color-primary)]"><AppIcon name={item.emoji} className="w-6 h-6" /></div>
                       <div>
                         <p className="font-bold text-sm text-[#001353]">{item.label}</p>
                         <p className="text-xs text-[#c9c9de]">{item.sub}</p>
@@ -259,7 +260,7 @@ function BookingWizard() {
             placeholder="123 Main Street, Kuala Lumpur"
           />
           <div className="bg-[#eeeef6] rounded-[16px] p-4 text-sm text-[#5b6480]">
-            <p className="font-bold text-[#001353] mb-2">📍 Location Tips</p>
+            <p className="font-bold text-[#001353] mb-2"><AppIcon name="pin" className="w-4 h-4 mr-1.5 -mt-0.5" /> Location Tips</p>
             <ul className="space-y-1">
               <li>• Provide full street address including floor/flat</li>
               <li>• Include any landmarks nearby</li>
@@ -298,7 +299,7 @@ function BookingWizard() {
               onClick={async () => {
                 if (!promoCode) return;
                 const res = await fetch(`/api/promotions/validate?code=${promoCode}`);
-                if (res.ok) { setPromoApplied(true); showToast("Promo applied! 🎉", "success"); }
+                if (res.ok) { setPromoApplied(true); showToast("Promo applied!", "success"); }
                 else showToast("Invalid promo code", "error");
               }}
               className="h-14 px-5 bg-[#001353] text-white rounded-[16px] text-sm font-bold shrink-0"
@@ -309,7 +310,7 @@ function BookingWizard() {
 
           {promoApplied && (
             <div className="bg-green-50 text-green-700 rounded-[12px] px-4 py-3 text-sm font-medium flex items-center gap-2">
-              <span>✅</span> Promo code applied!
+              <AppIcon name="checkCircle" className="w-4 h-4" /> Promo code applied!
             </div>
           )}
 

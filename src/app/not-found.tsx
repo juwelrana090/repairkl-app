@@ -1,3 +1,4 @@
+import AppIcon from "@/components/ui/AppIcon";
 import Link from "next/link";
 import type { Metadata } from "next";
 
@@ -10,7 +11,7 @@ export default function NotFound() {
         <div className="relative inline-block mb-8">
           <span className="text-9xl font-black text-[#034795] opacity-10 select-none">404</span>
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-7xl">🏠</span>
+            <span className="text-[var(--color-primary)]"><AppIcon name="home" className="w-16 h-16" /></span>
           </div>
         </div>
         <h1 className="text-3xl font-black text-[#001353] tracking-[-1px] mb-3">

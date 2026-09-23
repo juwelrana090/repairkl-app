@@ -1,3 +1,4 @@
+import AppIcon from "@/components/ui/AppIcon";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getSession } from "@/lib/auth/session";
@@ -47,7 +48,7 @@ export default async function ProfilePage() {
             <p className="text-white/60 text-sm mt-0.5">{user.email}</p>
             <div className="flex items-center gap-2 mt-1">
               <span className="text-xs bg-[#034795] px-2 py-0.5 rounded-full font-bold capitalize">{user.role.toLowerCase()}</span>
-              {user.isPhoneVerified && <span className="text-xs bg-[#1a8f5c] px-2 py-0.5 rounded-full font-bold">✓ Verified</span>}
+              {user.isPhoneVerified && <span className="text-xs bg-[#1a8f5c] px-2 py-0.5 rounded-full font-bold"><AppIcon name="check" className="w-3 h-3 -mt-0.5" /> Verified</span>}
             </div>
           </div>
         </div>
@@ -70,13 +71,13 @@ export default async function ProfilePage() {
       {/* Links */}
       <div className="bg-white rounded-[24px] border border-[#ddddee] divide-y divide-[#ddddee] mb-6 overflow-hidden">
         {[
-          { href: "/orders", icon: "📋", label: "My Orders", sub: `${stats._count} total` },
-          { href: "/saved", icon: "❤️", label: "Saved Services", sub: "View favorites" },
-          { href: "/notifications", icon: "🔔", label: "Notifications", sub: "Manage alerts" },
-          { href: "/support/new", icon: "🎧", label: "Support", sub: "Get help" },
+          { href: "/orders", icon: "clipboard", label: "My Orders", sub: `${stats._count} total` },
+          { href: "/saved", icon: "heart", label: "Saved Services", sub: "View favorites" },
+          { href: "/notifications", icon: "bell", label: "Notifications", sub: "Manage alerts" },
+          { href: "/support/new", icon: "headphones", label: "Support", sub: "Get help" },
         ].map((item) => (
           <a key={item.href} href={item.href} className="flex items-center gap-4 px-5 py-4 hover:bg-[#f5f5fa] transition-colors">
-            <div className="w-10 h-10 rounded-[12px] bg-[#eaf0f8] flex items-center justify-center text-lg shrink-0">{item.icon}</div>
+            <div className="w-10 h-10 rounded-[12px] bg-[#eaf0f8] flex items-center justify-center text-lg shrink-0 text-[var(--color-primary)]"><AppIcon name={item.icon} className="w-5 h-5" /></div>
             <div className="flex-1">
               <p className="font-medium text-sm text-[#001353]">{item.label}</p>
               <p className="text-xs text-[#5b6480]">{item.sub}</p>

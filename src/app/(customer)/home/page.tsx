@@ -1,3 +1,4 @@
+import AppIcon from "@/components/ui/AppIcon";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getSession } from "@/lib/auth/session";
@@ -59,9 +60,9 @@ export default async function HomePage() {
         <div className="bg-gradient-to-br from-[#001353] to-[#0f2a73] rounded-[24px] p-6 text-white relative overflow-hidden">
           <div className="absolute -right-6 -top-6 w-32 h-32 bg-[#034795]/20 rounded-full" />
           <div className="absolute -right-2 -bottom-8 w-20 h-20 bg-[#034795]/10 rounded-full" />
-          <p className="text-sm text-white/60 mb-1">📍 {location}</p>
+          <p className="text-sm text-white/60 mb-1"><AppIcon name="pin" className="w-3.5 h-3.5 mr-1 -mt-0.5" /> {location}</p>
           <h1 className="text-2xl font-bold leading-tight tracking-[-0.5px]">
-            Hello, {firstName}! 👋
+            Hello, {firstName}!
           </h1>
           <p className="text-white/60 text-sm mt-1 mb-4">What service do you need today?</p>
           <HomeSearchBar />
@@ -77,7 +78,7 @@ export default async function HomePage() {
               <p className="text-xl font-bold mt-1 tracking-tight">{activeBanner.title}</p>
               {activeBanner.subtitle && <p className="text-sm opacity-80 mt-1">{activeBanner.subtitle}</p>}
             </div>
-            <div className="text-4xl">🎁</div>
+            <div><AppIcon name="gift" className="w-10 h-10" /></div>
           </div>
         </section>
       )}
@@ -159,15 +160,15 @@ export default async function HomePage() {
       {/* Quick links */}
       <section className="grid grid-cols-2 gap-4">
         {[
-          { href: "/services?category=house-shifting", icon: "🏠", label: "House Shifting", desc: "Move your home safely", color: "#034795" },
-          { href: "/services?category=home-cleaning", icon: "🧹", label: "Home Cleaning", desc: "Spotless results", color: "#1a8f5c" },
-          { href: "/services?category=electrical", icon: "⚡", label: "Electrical", desc: "Expert electricians", color: "#e0972f" },
-          { href: "/services?category=plumbing", icon: "🔧", label: "Plumbing", desc: "Fix it right away", color: "#fb6f27" },
+          { href: "/services?category=house-shifting", icon: "home", label: "House Shifting", desc: "Move your home safely", color: "#034795" },
+          { href: "/services?category=home-cleaning", icon: "sparkles", label: "Home Cleaning", desc: "Spotless results", color: "#1a8f5c" },
+          { href: "/services?category=electrical", icon: "zap", label: "Electrical", desc: "Expert electricians", color: "#e0972f" },
+          { href: "/services?category=plumbing", icon: "wrench", label: "Plumbing", desc: "Fix it right away", color: "#fb6f27" },
         ].map((item) => (
           <Link key={item.href} href={item.href}>
             <div className="bg-white rounded-[20px] border border-[#ddddee] p-5 flex items-center gap-4 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition-all">
-              <div className="w-12 h-12 rounded-[14px] flex items-center justify-center text-2xl shrink-0" style={{ background: `${item.color}20` }}>
-                {item.icon}
+              <div className="w-12 h-12 rounded-[14px] flex items-center justify-center text-2xl shrink-0" style={{ background: `${item.color}20`, color: item.color }}>
+                <AppIcon name={item.icon} className="w-6 h-6" />
               </div>
               <div>
                 <p className="font-bold text-sm text-[#001353]">{item.label}</p>

@@ -1,3 +1,4 @@
+import AppIcon from "@/components/ui/AppIcon";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getSession } from "@/lib/auth/session";
@@ -41,7 +42,7 @@ export default async function WorkerProfilePage() {
             <h1 className="text-xl font-bold">{user.fullName}</h1>
             <p className="text-white/60 text-sm">{worker.speciality}</p>
             <div className="flex items-center gap-2 mt-1">
-              <span className="text-xs bg-[#1a8f5c] px-2 py-0.5 rounded-full font-bold">✓ Verified</span>
+              <span className="text-xs bg-[#1a8f5c] px-2 py-0.5 rounded-full font-bold"><AppIcon name="check" className="w-3 h-3 -mt-0.5" /> Verified</span>
               <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${worker.isAvailable ? "bg-green-600" : "bg-gray-600"}`}>
                 {worker.isAvailable ? "Available" : "Unavailable"}
               </span>

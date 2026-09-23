@@ -1,4 +1,5 @@
 "use client";
+import AppIcon from "@/components/ui/AppIcon";
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -79,7 +80,7 @@ export default function RegisterPage() {
           value={form.password}
           onChange={set("password")}
           error={errors.password}
-          rightIcon={<button type="button" onClick={() => setShowPass(!showPass)}>{showPass ? "🙈" : "👁️"}</button>}
+          rightIcon={<button type="button" onClick={() => setShowPass(!showPass)}><AppIcon name={showPass ? "eyeOff" : "eye"} className="w-5 h-5" /></button>}
         />
         <Input
           label="Confirm Password"
@@ -88,7 +89,7 @@ export default function RegisterPage() {
           onChange={set("confirmPassword")}
           error={errors.confirmPassword}
           variant={!passMismatch && form.confirmPassword ? "success" : undefined}
-          rightIcon={<button type="button" onClick={() => setShowConfirm(!showConfirm)}>{showConfirm ? "🙈" : "👁️"}</button>}
+          rightIcon={<button type="button" onClick={() => setShowConfirm(!showConfirm)}><AppIcon name={showConfirm ? "eyeOff" : "eye"} className="w-5 h-5" /></button>}
         />
 
         <label className="flex items-start gap-3 cursor-pointer mt-1">

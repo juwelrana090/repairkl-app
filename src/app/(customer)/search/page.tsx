@@ -1,3 +1,4 @@
+import AppIcon from "@/components/ui/AppIcon";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { ServiceCard } from "@/components/shared/Cards";
@@ -38,12 +39,12 @@ export default async function SearchPage({
 
       {!q ? (
         <div className="text-center py-20">
-          <span className="text-5xl block mb-4">🔍</span>
+          <span className="block mb-4 text-[var(--color-primary)]"><AppIcon name="search" className="w-12 h-12 mx-auto" /></span>
           <p className="text-[#5b6480]">Search for a service above</p>
         </div>
       ) : services.length === 0 ? (
         <div className="text-center py-20">
-          <span className="text-5xl block mb-4">😔</span>
+          <span className="block mb-4 text-[var(--color-primary)]"><AppIcon name="frown" className="w-12 h-12 mx-auto" /></span>
           <p className="font-bold text-[#001353]">No services found</p>
           <p className="text-sm text-[#5b6480] mt-2">Try a different search term</p>
         </div>

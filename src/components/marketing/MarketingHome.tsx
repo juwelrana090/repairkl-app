@@ -231,47 +231,48 @@ const SERVICES: {
     name: "Fridge Repair",
     desc: "Not cooling, leaking or a noisy compressor. Single-door, two-door and side-by-side models.",
     issues: ["Not cooling", "Water leak", "Ice build-up"],
-    href: "/our-services#fridge-repair",
+    href: "/our-services/fridge-repair",
   },
   {
     icon: "washer",
     name: "Washing Machine Repair",
     desc: "Front and top loaders that won't spin, won't drain or show an error code.",
     issues: ["Not spinning", "Not draining", "Error codes"],
-    href: "/our-services#washing-machine-repair",
+    href: "/our-services/washing-machine-repair",
   },
   {
     icon: "dryer",
     name: "Dryer Repair",
     desc: "Dryers that don't heat, overheat or trip the breaker. Same-day slots in most areas.",
     issues: ["No heat", "Overheating", "Tripping"],
-    href: "/our-services#dryer-repair",
+    href: "/our-services/dryer-repair",
   },
   {
     icon: "ac",
     name: "Aircond Service",
     desc: "Filter cleaning, chemical wash and gas top-up for wall-mounted and cassette units.",
     issues: ["Chemical wash", "Gas top-up", "Water drip"],
-    href: "/our-services#aircond-service",
+    href: "/our-services/aircond-service",
   },
   {
     icon: "wrench",
     name: "Aircond Installation",
     desc: "Complete installation with piping, wiring and a full test run. 1.0 HP to 2.5 HP.",
     issues: ["New unit", "Relocation", "Piping"],
-    href: "/our-services#aircond-installation",
+    href: "/our-services/aircond-installation",
   },
 ];
 
-const BRANDS = [
-  "Samsung",
-  "LG",
-  "Panasonic",
-  "Sharp",
-  "Daikin",
-  "Mitsubishi",
-  "Hitachi",
-  "Toshiba",
+// Logos live in /public/images/brands (trimmed, transparent, 100px tall WebP).
+const BRANDS: { name: string; logo: string; width: number; tall?: boolean }[] = [
+  { name: "Samsung", logo: "/images/brands/samsung.webp", width: 589 },
+  { name: "LG", logo: "/images/brands/lg.webp", width: 218, tall: true },
+  { name: "Panasonic", logo: "/images/brands/panasonic.webp", width: 618 },
+  { name: "Sharp", logo: "/images/brands/sharp.webp", width: 654 },
+  { name: "Daikin", logo: "/images/brands/daikin.webp", width: 438 },
+  { name: "Mitsubishi", logo: "/images/brands/mitsubishi.webp", width: 582 },
+  { name: "Hitachi", logo: "/images/brands/hitachi.webp", width: 543 },
+  { name: "Toshiba", logo: "/images/brands/toshiba.webp", width: 568 },
 ];
 
 const HOW_IT_WORKS = [
@@ -457,7 +458,7 @@ export default async function MarketingHome() {
               </div>
 
               <h1 className="text-[2.6rem] sm:text-6xl lg:text-[4.25rem] font-bold tracking-[-0.03em] leading-[1.04] mb-6 max-w-[14ch]">
-                Appliance repair, done right the first time.
+                Appliance repair in Kuala Lumpur, done right the first time.
               </h1>
 
               <p className="text-white/75 text-lg leading-relaxed max-w-[52ch] mb-9">
@@ -560,16 +561,31 @@ export default async function MarketingHome() {
           <p className="text-sm text-[#5b6480] shrink-0">
             We repair all major brands
           </p>
-          <ul className="flex flex-wrap items-center gap-x-8 gap-y-3">
-            {BRANDS.map((b) => (
-              <li
-                key={b}
-                className="text-lg font-bold tracking-tight text-[#001353]/35"
-              >
-                {b}
-              </li>
-            ))}
-          </ul>
+          <div className="brand-marquee relative flex-1 min-w-0 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
+            <ul className="brand-track flex w-max items-center">
+              {[...BRANDS, ...BRANDS].map((b, i) => {
+                const isClone = i >= BRANDS.length;
+                return (
+                  <li
+                    key={`${b.name}-${i}`}
+                    aria-hidden={isClone ? true : undefined}
+                    className="shrink-0 h-12 px-6 sm:px-8 flex items-center"
+                  >
+                    <img
+                      src={b.logo}
+                      alt={isClone ? "" : `${b.name} logo`}
+                      width={b.width}
+                      height={100}
+                      loading="lazy"
+                      decoding="async"
+                      draggable={false}
+                      className={`${b.tall ? "h-10" : "h-7"} w-auto max-w-none select-none transition duration-300 md:grayscale md:opacity-60 md:hover:grayscale-0 md:hover:opacity-100`}
+                    />
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
         </div>
       </section>
 
@@ -990,6 +1006,17 @@ export default async function MarketingHome() {
         @keyframes heroIn {
           from { opacity: 0; transform: translateY(16px); }
           to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes brandScroll {
+          from { transform: translateX(0); }
+          to   { transform: translateX(-50%); }
+        }
+        .brand-track { animation: brandScroll 32s linear infinite; }
+        .brand-marquee:hover .brand-track { animation-play-state: paused; }
+        @media (prefers-reduced-motion: reduce) {
+          .brand-track { animation: none; width: auto; flex-wrap: wrap; justify-content: center; row-gap: 0.75rem; }
+          .brand-track > li[aria-hidden="true"] { display: none; }
+          .brand-marquee { mask-image: none; }
         }
       `}</style>
     </>

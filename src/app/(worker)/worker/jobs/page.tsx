@@ -1,3 +1,4 @@
+import AppIcon from "@/components/ui/AppIcon";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getSession } from "@/lib/auth/session";
@@ -73,7 +74,7 @@ export default async function WorkerJobsPage({
       {/* Jobs */}
       {assignments.length === 0 ? (
         <div className="text-center py-20">
-          <span className="text-5xl block mb-4">📋</span>
+          <span className="block mb-4 text-[var(--color-primary)]"><AppIcon name="clipboard" className="w-12 h-12 mx-auto" /></span>
           <p className="font-bold text-[#001353]">No jobs found</p>
           <p className="text-sm text-[#5b6480] mt-2">Jobs will appear here when assigned</p>
         </div>

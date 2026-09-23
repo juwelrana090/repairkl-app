@@ -1,34 +1,58 @@
-import { MetadataRoute } from "next";
-import { prisma } from "@/lib/prisma";
+import type { MetadataRoute } from "next";
+import { SERVICES } from "@/lib/serviceContent";
 
 const BASE = process.env.NEXT_PUBLIC_APP_URL ?? "https://repairkl.com";
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  // Static marketing pages
+export default function sitemap(): MetadataRoute.Sitemap {
+  const now = new Date();
+
   const staticPages: MetadataRoute.Sitemap = [
-    { url: BASE, lastModified: new Date(), changeFrequency: "weekly", priority: 1 },
-    { url: `${BASE}/about`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${BASE}/our-services`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
-    { url: `${BASE}/contact`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
-    { url: `${BASE}/faq`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
+    { url: BASE, lastModified: now, changeFrequency: "weekly", priority: 1 },
+    {
+      url: `${BASE}/our-services`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.9,
+    },
+    {
+      url: `${BASE}/about`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },
+    {
+      url: `${BASE}/faq`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },
+    {
+      url: `${BASE}/contact`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },
+    {
+      url: `${BASE}/privacy`,
+      lastModified: now,
+      changeFrequency: "yearly",
+      priority: 0.2,
+    },
+    {
+      url: `${BASE}/terms`,
+      lastModified: now,
+      changeFrequency: "yearly",
+      priority: 0.2,
+    },
   ];
 
-  // Dynamic service pages
-  let servicePages: MetadataRoute.Sitemap = [];
-  try {
-    const services = await prisma.service.findMany({
-      where: { isActive: true },
-      select: { slug: true, updatedAt: true },
-    });
-    servicePages = services.map((s) => ({
-      url: `${BASE}/services/${s.slug}`,
-      lastModified: s.updatedAt,
-      changeFrequency: "weekly" as const,
-      priority: 0.7,
-    }));
-  } catch {
-    // DB not available during build — skip dynamic pages
-  }
+  // Public service landing pages (/our-services/[slug])
+  const servicePages: MetadataRoute.Sitemap = SERVICES.map((s) => ({
+    url: `${BASE}/our-services/${s.slug}`,
+    lastModified: now,
+    changeFrequency: "monthly" as const,
+    priority: 0.9,
+  }));
 
   return [...staticPages, ...servicePages];
 }

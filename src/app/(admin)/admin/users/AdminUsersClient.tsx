@@ -1,4 +1,5 @@
 "use client";
+import AppIcon from "@/components/ui/AppIcon";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { StatusBadge, showToast } from "@/components/ui";
@@ -101,8 +102,8 @@ export default function AdminUsersClient({
                   <td className="px-4 py-3 text-sm text-[#5b6480]">{u.city}</td>
                   <td className="px-4 py-3">
                     <div className="flex gap-1">
-                      {u.isEmailVerified && <span title="Email" className="text-xs bg-green-100 text-green-600 px-1.5 py-0.5 rounded font-bold">✉</span>}
-                      {u.isPhoneVerified && <span title="Phone" className="text-xs bg-blue-100 text-blue-600 px-1.5 py-0.5 rounded font-bold">📱</span>}
+                      {u.isEmailVerified && <span title="Email" className="text-xs bg-green-100 text-green-600 px-1.5 py-0.5 rounded font-bold inline-flex items-center"><AppIcon name="mail" className="w-3 h-3" /></span>}
+                      {u.isPhoneVerified && <span title="Phone" className="text-xs bg-blue-100 text-blue-600 px-1.5 py-0.5 rounded font-bold inline-flex items-center"><AppIcon name="smartphone" className="w-3 h-3" /></span>}
                     </div>
                   </td>
                   <td className="px-4 py-3">

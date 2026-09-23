@@ -25,7 +25,7 @@ export default function WorkerProfileForm({ data }: { data: WorkerData }) {
         body: JSON.stringify(form),
       });
       if (!res.ok) throw new Error();
-      showToast("Profile updated! ✅", "success");
+      showToast("Profile updated!", "success");
     } catch { showToast("Update failed", "error"); }
     finally { setLoading(false); }
   };

@@ -1,4 +1,5 @@
 "use client";
+import AppIcon from "@/components/ui/AppIcon";
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -6,10 +7,10 @@ import { showToast } from "@/components/ui";
 import { twMerge } from "tailwind-merge";
 
 const SECTIONS = [
-  { id: "general", label: "General", icon: "⚙️" },
-  { id: "notifications", label: "Notifications", icon: "🔔" },
-  { id: "payment", label: "Payment", icon: "💳" },
-  { id: "security", label: "Security", icon: "🔒" },
+  { id: "general", label: "General", icon: "settings" },
+  { id: "notifications", label: "Notifications", icon: "bell" },
+  { id: "payment", label: "Payment", icon: "creditCard" },
+  { id: "security", label: "Security", icon: "lock" },
 ];
 
 export default function AdminSettingsClient() {
@@ -33,7 +34,7 @@ export default function AdminSettingsClient() {
     setSaving(true);
     await new Promise((r) => setTimeout(r, 800));
     setSaving(false);
-    showToast("Settings saved! ✅", "success");
+    showToast("Settings saved!", "success");
   };
 
   const setG = (k: keyof typeof general) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
@@ -48,7 +49,7 @@ export default function AdminSettingsClient() {
             className={twMerge("flex items-center gap-2 px-3 py-2.5 rounded-[12px] text-sm font-medium transition-all text-left",
               active === s.id ? "bg-[#eaf0f8] text-[#034795] font-bold" : "text-[#5b6480] hover:bg-[#eeeef6]"
             )}>
-            <span>{s.icon}</span>{s.label}
+            <AppIcon name={s.icon} className="w-4 h-4" />{s.label}
           </button>
         ))}
       </div>

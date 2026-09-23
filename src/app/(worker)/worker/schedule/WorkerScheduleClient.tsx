@@ -1,4 +1,5 @@
 "use client";
+import AppIcon from "@/components/ui/AppIcon";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { StatusBadge, showToast } from "@/components/ui";
@@ -101,7 +102,7 @@ export default function WorkerScheduleClient({
                   <p className="font-medium text-sm text-[#001353]">{job.serviceName}</p>
                   <p className="text-xs text-[#5b6480]">{job.customerName}</p>
                   <p className="text-xs text-[#034795] font-medium mt-1">
-                    📅 {new Date(job.scheduledDate).toLocaleDateString()} at {job.scheduledTime}
+                    <AppIcon name="calendar" className="w-3.5 h-3.5 mr-1 -mt-0.5" /> {new Date(job.scheduledDate).toLocaleDateString()} at {job.scheduledTime}
                   </p>
                 </div>
                 <StatusBadge status={job.status} />

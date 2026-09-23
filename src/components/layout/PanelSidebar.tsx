@@ -1,4 +1,5 @@
 "use client";
+import AppIcon from "@/components/ui/AppIcon";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -12,29 +13,29 @@ type NavItem = {
 };
 
 const ADMIN_NAV: NavItem[] = [
-  { href: "/admin/dashboard", label: "Dashboard", icon: "📊" },
-  { href: "/admin/users", label: "Users", icon: "👥" },
-  { href: "/admin/workers", label: "Workers", icon: "🔧" },
-  { href: "/admin/services", label: "Services", icon: "🏠" },
-  { href: "/admin/bookings", label: "Bookings", icon: "📋" },
-  { href: "/admin/promotions", label: "Promotions", icon: "🎁" },
-  { href: "/admin/reports", label: "Reports", icon: "📈" },
-  { href: "/admin/settings", label: "Settings", icon: "⚙️" },
+  { href: "/admin/dashboard", label: "Dashboard", icon: "chart" },
+  { href: "/admin/users", label: "Users", icon: "users" },
+  { href: "/admin/workers", label: "Workers", icon: "wrench" },
+  { href: "/admin/services", label: "Services", icon: "home" },
+  { href: "/admin/bookings", label: "Bookings", icon: "clipboard" },
+  { href: "/admin/promotions", label: "Promotions", icon: "gift" },
+  { href: "/admin/reports", label: "Reports", icon: "trendingUp" },
+  { href: "/admin/settings", label: "Settings", icon: "settings" },
 ];
 
 const WORKER_NAV: NavItem[] = [
-  { href: "/worker/dashboard", label: "Dashboard", icon: "📊" },
-  { href: "/worker/jobs", label: "My Jobs", icon: "📋" },
-  { href: "/worker/schedule", label: "Schedule", icon: "📅" },
-  { href: "/worker/earnings", label: "Earnings", icon: "💰" },
-  { href: "/worker/profile", label: "Profile", icon: "👤" },
+  { href: "/worker/dashboard", label: "Dashboard", icon: "chart" },
+  { href: "/worker/jobs", label: "My Jobs", icon: "clipboard" },
+  { href: "/worker/schedule", label: "Schedule", icon: "calendar" },
+  { href: "/worker/earnings", label: "Earnings", icon: "wallet" },
+  { href: "/worker/profile", label: "Profile", icon: "user" },
 ];
 
 const SUPPORT_NAV: NavItem[] = [
-  { href: "/support/dashboard", label: "Dashboard", icon: "📊" },
-  { href: "/support/tickets", label: "Tickets", icon: "🎫" },
-  { href: "/support/customers", label: "Customers", icon: "👥" },
-  { href: "/support/bookings", label: "Bookings", icon: "📋" },
+  { href: "/support/dashboard", label: "Dashboard", icon: "chart" },
+  { href: "/support/tickets", label: "Tickets", icon: "ticket" },
+  { href: "/support/customers", label: "Customers", icon: "users" },
+  { href: "/support/bookings", label: "Bookings", icon: "clipboard" },
 ];
 
 const NAV_BY_ROLE: Record<string, NavItem[]> = {
@@ -118,7 +119,7 @@ export default function PanelSidebar({
                   style={active ? { background: `${color}20`, color } : {}}
                   title={collapsed ? item.label : undefined}
                 >
-                  <span className="text-base shrink-0">{item.icon}</span>
+                  <AppIcon name={item.icon} className="w-5 h-5" />
                   {!collapsed && (
                     <>
                       <span className="flex-1">{item.label}</span>
@@ -153,7 +154,7 @@ export default function PanelSidebar({
             </div>
             <form action="/api/auth/logout" method="POST">
               <button type="submit" className="w-7 h-7 rounded-lg bg-white/10 flex items-center justify-center hover:bg-white/20 text-xs">
-                🚪
+                <AppIcon name="logOut" className="w-4 h-4" />
               </button>
             </form>
           </div>

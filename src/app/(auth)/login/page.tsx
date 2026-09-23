@@ -1,4 +1,5 @@
 "use client";
+import AppIcon from "@/components/ui/AppIcon";
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -40,7 +41,7 @@ export default function LoginPage() {
       if (!res.ok) throw new Error(data.error ?? "Login failed");
 
       setUser(data.user);
-      showToast("Welcome back! 👋", "success");
+      showToast("Welcome back!", "success");
 
       const roleMap: Record<string, string> = {
         ADMIN: "/admin/dashboard",
@@ -85,7 +86,7 @@ export default function LoginPage() {
           autoComplete="current-password"
           rightIcon={
             <button type="button" onClick={() => setShowPass(!showPass)}>
-              {showPass ? "🙈" : "👁️"}
+              <AppIcon name={showPass ? "eyeOff" : "eye"} className="w-5 h-5" />
             </button>
           }
         />

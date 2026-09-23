@@ -1,4 +1,5 @@
 "use client";
+import AppIcon from "@/components/ui/AppIcon";
 import { useEffect } from "react";
 
 export default function Error({
@@ -15,7 +16,7 @@ export default function Error({
   return (
     <div className="min-h-screen bg-white flex items-center justify-center px-4">
       <div className="text-center max-w-md">
-        <span className="text-7xl block mb-6">⚠️</span>
+        <span className="block mb-6 text-amber-500"><AppIcon name="alert" className="w-16 h-16 mx-auto" /></span>
         <h1 className="text-2xl font-bold text-[#001353] tracking-[-0.5px] mb-3">
           Something went wrong
         </h1>

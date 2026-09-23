@@ -1,4 +1,5 @@
 "use client";
+import AppIcon from "@/components/ui/AppIcon";
 import { useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -104,7 +105,7 @@ function ResetPasswordForm() {
             type={showPass ? "text" : "password"}
             value={form.password}
             onChange={(e) => setForm({ ...form, password: e.target.value })}
-            rightIcon={<button type="button" onClick={() => setShowPass(!showPass)}>{showPass ? "🙈" : "👁️"}</button>}
+            rightIcon={<button type="button" onClick={() => setShowPass(!showPass)}><AppIcon name={showPass ? "eyeOff" : "eye"} className="w-5 h-5" /></button>}
           />
           <Input
             label="Confirm Password"

@@ -1,3 +1,4 @@
+import AppIcon from "@/components/ui/AppIcon";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getSession } from "@/lib/auth/session";
@@ -66,7 +67,7 @@ export default async function SupportTicketsPage({
         </div>
         {(sp.status || sp.priority) && (
           <Link href="/support/tickets" className="ml-auto text-xs text-[#034795] font-bold flex items-center">
-            Clear filters ✕
+            Clear filters <AppIcon name="x" className="w-3.5 h-3.5" />
           </Link>
         )}
       </div>

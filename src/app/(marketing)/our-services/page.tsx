@@ -8,7 +8,7 @@ import {
   FEATURE_ICONS,
   type ServiceAsset,
 } from "@/lib/brandAssets";
-import { bookingLink, whatsappLink } from "@/lib/whatsapp";
+import { bookingLink } from "@/lib/whatsapp";
 import WhatsAppIcon from "@/components/marketing/WhatsAppIcon";
 
 export const metadata: Metadata = {
@@ -376,14 +376,10 @@ export default async function OurServicesPage() {
                         Book {cat.name}
                       </a>
                       <a
-                        href={whatsappLink(
-                          `Hi RepairKL, I have a question about ${cat.name.toLowerCase()}.`,
-                        )}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                        href={`/our-services/${cat.slug}`}
                         className="border border-[#c9c9de] hover:border-[#001353] text-[#001353] font-bold px-6 py-3.5 rounded-xl transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#034795] focus-visible:ring-offset-2"
                       >
-                        Ask a question
+                        {cat.name} details
                       </a>
                     </div>
                   </div>

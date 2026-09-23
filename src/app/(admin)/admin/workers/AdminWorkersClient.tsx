@@ -1,4 +1,5 @@
 "use client";
+import AppIcon from "@/components/ui/AppIcon";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { RatingStars, showToast } from "@/components/ui";
@@ -54,7 +55,7 @@ export default function AdminWorkersClient({ workers }: { workers: Worker[] }) {
                 <div className="flex items-start justify-between">
                   <p className="font-bold text-[#001353] text-sm">{w.fullName}</p>
                   <div className="flex gap-1 shrink-0">
-                    {w.isVerified && <span className="text-[9px] bg-blue-100 text-blue-600 px-1.5 py-0.5 rounded font-bold">✓</span>}
+                    {w.isVerified && <span className="text-[9px] bg-blue-100 text-blue-600 px-1.5 py-0.5 rounded font-bold inline-flex items-center"><AppIcon name="check" className="w-2.5 h-2.5" /></span>}
                     <span className={twMerge("text-[9px] px-1.5 py-0.5 rounded font-bold", w.isAvailable ? "bg-green-100 text-green-600" : "bg-gray-100 text-gray-500")}>
                       {w.isAvailable ? "Free" : "Busy"}
                     </span>
@@ -88,7 +89,7 @@ export default function AdminWorkersClient({ workers }: { workers: Worker[] }) {
                 w.isVerified ? "bg-blue-50 text-blue-600 hover:bg-blue-100" : "bg-[#eeeef6] text-[#5b6480] hover:bg-[#ddddee]"
               )}
             >
-              {loading === w.id ? "Updating..." : w.isVerified ? "✓ Verified — Click to Unverify" : "Verify Worker"}
+              {loading === w.id ? "Updating..." : w.isVerified ? "Verified — Click to Unverify" : "Verify Worker"}
             </button>
           </div>
         ))}

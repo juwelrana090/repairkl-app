@@ -1,3 +1,4 @@
+import AppIcon from "@/components/ui/AppIcon";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { ServiceCard } from "@/components/shared/Cards";
@@ -66,7 +67,7 @@ export default async function ServicesPage({
       {/* Grid */}
       {services.length === 0 ? (
         <div className="flex flex-col items-center py-20 text-center">
-          <span className="text-5xl mb-4">🔍</span>
+          <span className="mb-4 text-[var(--color-primary)]"><AppIcon name="search" className="w-12 h-12" /></span>
           <p className="text-lg font-bold text-[#001353]">No services found</p>
           <p className="text-sm text-[#5b6480] mt-2">Try a different category or search term</p>
         </div>

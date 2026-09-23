@@ -1,3 +1,4 @@
+import AppIcon from "@/components/ui/AppIcon";
 import Link from "next/link";
 import WhatsAppChat from "@/components/marketing/WhatsAppChat";
 import WhatsAppLinkInterceptor from "@/components/marketing/WhatsAppLinkInterceptor";
@@ -6,14 +7,14 @@ import { SOCIAL_LINKS } from "@/lib/social";
 import { bookingLink, whatsappLink, PHONE_DISPLAY } from "@/lib/whatsapp";
 
 const SERVICES = [
-  { name: "Fridge Repair", href: "/our-services#fridge-repair" },
+  { name: "Fridge Repair", href: "/our-services/fridge-repair" },
   {
     name: "Washing Machine Repair",
-    href: "/our-services#washing-machine-repair",
+    href: "/our-services/washing-machine-repair",
   },
-  { name: "Dryer Repair", href: "/our-services#dryer-repair" },
-  { name: "Air-Conditioner Service", href: "/our-services#aircond-service" },
-  { name: "AC Installation", href: "/our-services#aircond-installation" },
+  { name: "Dryer Repair", href: "/our-services/dryer-repair" },
+  { name: "Air-Conditioner Service", href: "/our-services/aircond-service" },
+  { name: "AC Installation", href: "/our-services/aircond-installation" },
 ];
 
 const QUICK_LINKS: { name: string; href: string; external?: boolean }[] = [
@@ -100,7 +101,7 @@ export default function PublicFooter() {
                   href="mailto:hello@repairkl.com"
                   className="flex items-center gap-3 text-sm text-white/70 hover:text-white transition-colors"
                 >
-                  <span className="text-base">📧</span>
+                  <AppIcon name="mail" className="w-4 h-4" />
                   <span>hello@repairkl.com</span>
                 </a>
                 <a
@@ -113,7 +114,7 @@ export default function PublicFooter() {
                   <span>{PHONE_DISPLAY}</span>
                 </a>
                 <div className="flex items-center gap-3 text-sm text-white/70">
-                  <span className="text-base">📍</span>
+                  <AppIcon name="pin" className="w-4 h-4" />
                   <span>Kuala Lumpur, Malaysia</span>
                 </div>
               </div>
@@ -223,7 +224,7 @@ export default function PublicFooter() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex flex-col sm:flex-row items-center justify-between gap-2">
             <p className="text-xs text-white/40">
               © {new Date().getFullYear()} RepairKL. All rights reserved. Built
-              with ❤️ in Malaysia.
+              with <AppIcon name="heart" className="w-3.5 h-3.5 text-red-500 -mt-0.5" filled /> in Malaysia.
             </p>
             <div className="flex gap-4">
               <Link

@@ -1,23 +1,24 @@
 "use client";
+import AppIcon from "@/components/ui/AppIcon";
 import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 
 const SLIDES = [
   {
-    emoji: "📦",
+    emoji: "package",
     bg: "from-[#5b8fd0] via-[#034795] to-[#001353]",
     title: "Easy Process",
     subtitle: "Find all your house needs in one place. We provide every service to make your home experience smooth.",
   },
   {
-    emoji: "⚡",
+    emoji: "zap",
     bg: "from-[#034795] via-[#2f6db3] to-[#5b8fd0]",
     title: "Fast & Reliable",
     subtitle: "Our verified professionals arrive on time and get the job done right, every single time.",
   },
   {
-    emoji: "🛡️",
+    emoji: "shield",
     bg: "from-[#1a8f5c] via-[#2fae74] to-[#147349]",
     title: "Safe & Trusted",
     subtitle: "Every service provider is background-checked and trained to ensure your peace of mind.",
@@ -56,15 +57,15 @@ export default function OnboardingPage() {
           {/* Main illustration */}
           <div className="w-56 h-56 rounded-full bg-white/15 flex items-center justify-center">
             <div className="w-44 h-44 rounded-full bg-white/20 flex items-center justify-center">
-              <span className="text-7xl drop-shadow-lg">{slide.emoji}</span>
+              <span className="text-white drop-shadow-lg"><AppIcon name={slide.emoji} className="w-20 h-20" strokeWidth={1.5} /></span>
             </div>
           </div>
           {/* Floating cards */}
           <div className="absolute top-16 left-6 bg-white/20 backdrop-blur-sm rounded-2xl px-4 py-2">
-            <p className="text-white text-xs font-bold">🏠 1,200+ Services</p>
+            <p className="text-white text-xs font-bold"><AppIcon name="home" className="w-3.5 h-3.5 mr-1 -mt-0.5" /> 1,200+ Services</p>
           </div>
           <div className="absolute bottom-24 right-6 bg-white/20 backdrop-blur-sm rounded-2xl px-4 py-2">
-            <p className="text-white text-xs font-bold">⭐ 4.9 Rating</p>
+            <p className="text-white text-xs font-bold"><AppIcon name="star" className="w-3.5 h-3.5 mr-1 -mt-0.5" filled /> 4.9 Rating</p>
           </div>
         </div>
 

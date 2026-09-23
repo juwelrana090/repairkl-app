@@ -134,7 +134,7 @@ export default function WhatsAppChat() {
           <div className="bg-[#efeae2] px-4 py-5 space-y-3 max-h-[46vh] overflow-y-auto">
             <div className="max-w-[85%] bg-white rounded-2xl rounded-tl-sm px-3.5 py-2.5 shadow-sm">
               <p className="text-sm text-[#001353] leading-relaxed">
-                Hi there 👋 Welcome to RepairKL.
+                Hi there, welcome to RepairKL.
                 <br />
                 Which appliance needs fixing? Pick one below or type your
                 message.

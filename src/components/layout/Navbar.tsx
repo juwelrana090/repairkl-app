@@ -1,4 +1,5 @@
 "use client";
+import AppIcon from "@/components/ui/AppIcon";
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
@@ -100,26 +101,26 @@ export default function Navbar({
                       <p className="text-xs text-[#5b6480] mt-0.5 capitalize">{user.role.toLowerCase()} Account</p>
                     </div>
                     <Link href={profileHref} className="menu-drop-item" onClick={() => setMenuOpen(false)}>
-                      👤 My Profile
+                      <AppIcon name="user" className="w-4 h-4 mr-2" /> My Profile
                     </Link>
                     {user.role === "ADMIN" && (
                       <Link href="/admin/dashboard" className="menu-drop-item" onClick={() => setMenuOpen(false)}>
-                        ⚙️ Admin Panel
+                        <AppIcon name="settings" className="w-4 h-4 mr-2" /> Admin Panel
                       </Link>
                     )}
                     {user.role === "SUPPORT" && (
                       <Link href="/support/dashboard" className="menu-drop-item" onClick={() => setMenuOpen(false)}>
-                        🎧 Support Panel
+                        <AppIcon name="headphones" className="w-4 h-4 mr-2" /> Support Panel
                       </Link>
                     )}
                     {user.role === "WORKER" && (
                       <Link href="/worker/dashboard" className="menu-drop-item" onClick={() => setMenuOpen(false)}>
-                        🔧 Worker Panel
+                        <AppIcon name="wrench" className="w-4 h-4 mr-2" /> Worker Panel
                       </Link>
                     )}
                     <form action="/api/auth/logout" method="POST">
                       <button type="submit" className="menu-drop-item w-full text-left text-[#d64545]">
-                        🚪 Sign Out
+                        <AppIcon name="logOut" className="w-4 h-4 mr-2" /> Sign Out
                       </button>
                     </form>
                   </div>

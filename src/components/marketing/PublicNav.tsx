@@ -1,4 +1,5 @@
 "use client";
+import AppIcon from "@/components/ui/AppIcon";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -46,7 +47,7 @@ export default function PublicNav() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-10 flex items-center justify-between text-xs text-white/80">
           <div className="flex items-center gap-6">
             <span className="hidden sm:flex items-center gap-1.5">
-              📧 hello@repairkl.com
+              <AppIcon name="mail" className="w-3.5 h-3.5" /> hello@repairkl.com
             </span>
             <a
               href={whatsappLink()}
@@ -59,7 +60,7 @@ export default function PublicNav() {
               {PHONE_DISPLAY}
             </a>
             <span className="hidden md:flex items-center gap-1.5">
-              🕐 Sat–Thu 8AM–10PM
+              <AppIcon name="clock" className="w-3.5 h-3.5" /> Sat–Thu 8AM–10PM
             </span>
           </div>
           <div className="flex items-center gap-3">

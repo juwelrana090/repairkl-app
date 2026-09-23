@@ -83,10 +83,10 @@ export default async function AdminReportsPage() {
 
       {/* KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard label="Total Revenue" value={`RM${(Number(totalRevenue._sum.amount ?? 0) / 1000).toFixed(0)}K`} icon="💰" color="#034795" change="+8% vs last month" changeType="up" />
-        <StatCard label="Total Bookings" value={totalBookings.toLocaleString()} icon="📋" color="#1a8f5c" change="+12%" changeType="up" />
-        <StatCard label="Total Customers" value={totalCustomers.toLocaleString()} icon="👥" color="#fb6f27" />
-        <StatCard label="Active Workers" value={totalWorkers} icon="👷" color="#e0972f" />
+        <StatCard label="Total Revenue" value={`RM${(Number(totalRevenue._sum.amount ?? 0) / 1000).toFixed(0)}K`} icon="wallet" color="#034795" change="+8% vs last month" changeType="up" />
+        <StatCard label="Total Bookings" value={totalBookings.toLocaleString()} icon="clipboard" color="#1a8f5c" change="+12%" changeType="up" />
+        <StatCard label="Total Customers" value={totalCustomers.toLocaleString()} icon="users" color="#fb6f27" />
+        <StatCard label="Active Workers" value={totalWorkers} icon="hardHat" color="#e0972f" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

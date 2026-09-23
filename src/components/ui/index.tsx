@@ -1,4 +1,5 @@
 "use client";
+import AppIcon from "@/components/ui/AppIcon";
 import { twMerge } from "tailwind-merge";
 import { useState, useEffect, useCallback, useRef } from "react";
 
@@ -156,8 +157,8 @@ export function Toaster() {
           )}
         >
           <p className="flex-1 text-sm font-medium">{t.message}</p>
-          <button onClick={() => remove(t.id)} className="opacity-70 hover:opacity-100 shrink-0 mt-0.5">
-            ✕
+          <button onClick={() => remove(t.id)} className="opacity-70 hover:opacity-100 shrink-0 mt-0.5" aria-label="Dismiss">
+            <AppIcon name="x" className="w-4 h-4" />
           </button>
         </div>
       ))}
@@ -212,7 +213,7 @@ export function Modal({
               onClick={onClose}
               className="w-8 h-8 rounded-full bg-[#eeeef6] flex items-center justify-center hover:bg-[#ddddee] text-[#001353]"
             >
-              ✕
+              <AppIcon name="x" className="w-4 h-4" />
             </button>
           </div>
         )}

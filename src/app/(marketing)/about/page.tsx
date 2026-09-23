@@ -1,3 +1,4 @@
+import AppIcon from "@/components/ui/AppIcon";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
@@ -7,26 +8,26 @@ import { generateMeta, localBusinessSchema, breadcrumbSchema } from "@/lib/seo";
 
 export const metadata: Metadata = {
   ...generateMeta({
-    title: "About Us – RepairKL Home Services",
-    description: "Learn about RepairKL — Malaysia's most trusted home service platform. Our story, mission, team and commitment to quality home services since 2021.",
+    title: "About RepairKL – Appliance Repair Experts in Kuala Lumpur",
+    description: "RepairKL is a Kuala Lumpur appliance repair company. Verified technicians for fridge, washing machine, dryer and aircond repair across KL and Selangor since 2021.",
     path: "/about",
-    keywords: ["about repairkl", "home service company Malaysia", "repairkl team", "repairkl mission"],
+    keywords: ["about repairkl", "appliance repair company Kuala Lumpur", "appliance repair Malaysia", "repairkl technicians"],
   }),
 };
 
 const TIMELINE = [
-  { year: "2021", title: "Founded in Kuala Lumpur", desc: "RepairKL launched with just 5 service workers and a vision to make home services effortless." },
-  { year: "2022", title: "1,000 Bookings Hit", desc: "We crossed our first major milestone and expanded to cleaning and electrical services." },
-  { year: "2023", title: "Penang Expansion", desc: "Moved into our second city with 100+ verified workers and 8 service categories." },
+  { year: "2021", title: "Founded in Kuala Lumpur", desc: "RepairKL launched with a small team of appliance technicians and a simple goal: make appliance repair in KL honest and easy to book." },
+  { year: "2022", title: "1,000 Repairs Completed", desc: "We crossed our first major milestone and added aircond servicing and installation to our fridge, washer and dryer repairs." },
+  { year: "2023", title: "Klang Valley Coverage", desc: "Expanded from Kuala Lumpur across Selangor with 100+ verified technicians." },
   { year: "2024", title: "Mobile App Launch", desc: "Our React Native app launched on iOS and Android, bringing bookings under 2 minutes." },
-  { year: "2025", title: "50K+ Customers", desc: "Reached 50,000 happy customers with a consistent 4.9★ satisfaction rating." },
+  { year: "2025", title: "50K+ Customers", desc: "Reached 50,000 happy customers with a consistent 4.9-star satisfaction rating." },
 ];
 
 const VALUES = [
-  { icon: "🏆", title: "Quality First", desc: "We never compromise on the quality of our workers or the quality of your experience." },
-  { icon: "🤝", title: "Trust & Transparency", desc: "Upfront pricing, no hidden fees, honest timelines. Always." },
-  { icon: "💚", title: "Community Impact", desc: "We create dignified employment opportunities for skilled workers across Malaysia." },
-  { icon: "🚀", title: "Continuous Innovation", desc: "We keep improving our platform based on feedback from customers and workers alike." },
+  { icon: "trophy", title: "Quality First", desc: "We never compromise on the skill of our technicians or the quality of every repair." },
+  { icon: "handshake", title: "Trust & Transparency", desc: "Upfront pricing, no hidden fees, honest timelines. Always." },
+  { icon: "heart", title: "Community Impact", desc: "We create steady, fairly paid work for skilled appliance technicians across Malaysia." },
+  { icon: "rocket", title: "Continuous Innovation", desc: "We keep improving our service based on feedback from customers and technicians alike." },
 ];
 
 const TEAM = [
@@ -67,10 +68,10 @@ export default function AboutPage() {
           </nav>
           <h1 className="text-5xl lg:text-7xl font-black text-white tracking-[-2px] leading-tight mb-6">
             We&apos;re on a Mission to<br />
-            <span className="text-[#034795]">Fix Home Services</span>
+            <span className="text-[#034795]">Make Appliance Repair Simple</span>
           </h1>
           <p className="text-white/60 text-xl max-w-2xl mx-auto leading-relaxed">
-            Since 2021, we&apos;ve been making it easy for families across Malaysia to access quality, affordable home services — with complete peace of mind.
+            Since 2021, we&apos;ve helped households across Kuala Lumpur and Selangor get fridges, washing machines, dryers and airconds fixed properly — by verified technicians, with a clear quote first.
           </p>
         </div>
       </section>
@@ -85,18 +86,18 @@ export default function AboutPage() {
                 Born Out of Frustration, <br />Built with Purpose
               </h2>
               <div className="space-y-4 text-[#5b6480] leading-relaxed">
-                <p>RepairKL was born in 2021 when our founders spent three weeks trying to find a reliable house-shifting service in Kuala Lumpur — calling dozens of providers, getting different prices every time, and ultimately having a terrible experience.</p>
+                <p>RepairKL was born in 2021 when our founders spent weeks trying to get a broken washing machine fixed in Kuala Lumpur — calling dozens of repair shops, getting different prices every time, and waiting days for technicians who never showed up.</p>
                 <p>We realised the problem wasn&apos;t a lack of skilled workers. Malaysia has hundreds of thousands of capable professionals. The problem was that there was no trusted platform connecting them with customers in a transparent, fair way.</p>
-                <p>So we built one. Starting with house shifting, we quickly expanded to 8 service categories and 3 cities. Today, over 50,000 families trust RepairKL for their home service needs.</p>
+                <p>So we built one. Starting with washing machine and fridge repair, we added dryer repair, aircond servicing and aircond installation. Today, thousands of households across the Klang Valley trust RepairKL with their home appliances.</p>
               </div>
             </div>
             {/* Stats grid */}
             <div className="grid grid-cols-2 gap-4">
               {[
                 { n: "50K+", l: "Happy Customers", color: "#034795", bg: "#eaf0f8" },
-                { n: "500+", l: "Verified Workers", color: "#1a8f5c", bg: "#e6f5ee" },
+                { n: "500+", l: "Verified Technicians", color: "#1a8f5c", bg: "#e6f5ee" },
                 { n: "1,200+", l: "Bookings/Month", color: "#fb6f27", bg: "#fff1e9" },
-                { n: "4.9★", l: "Average Rating", color: "#e0972f", bg: "#fdf5e8" },
+                { n: "4.9/5", l: "Average Rating", color: "#e0972f", bg: "#fdf5e8" },
               ].map((stat) => (
                 <div key={stat.l} className="rounded-[20px] p-6 text-center" style={{ background: stat.bg }}>
                   <div className="text-4xl font-black mb-1" style={{ color: stat.color }}>{stat.n}</div>
@@ -118,7 +119,7 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {VALUES.map((v) => (
               <div key={v.title} className="bg-white rounded-[24px] border border-[#ddddee] p-7 text-center hover:shadow-lg transition-shadow">
-                <div className="w-16 h-16 bg-[#eaf0f8] rounded-full flex items-center justify-center text-3xl mx-auto mb-5">{v.icon}</div>
+                <div className="w-16 h-16 bg-[#eaf0f8] rounded-full flex items-center justify-center text-3xl mx-auto mb-5 text-[var(--color-primary)]"><AppIcon name={v.icon} className="w-7 h-7" /></div>
                 <h3 className="font-bold text-[#001353] mb-3">{v.title}</h3>
                 <p className="text-[#5b6480] text-sm leading-relaxed">{v.desc}</p>
               </div>
@@ -183,7 +184,7 @@ export default function AboutPage() {
           <h2 className="text-4xl font-black text-white tracking-[-1.2px] mb-5">
             Ready to Experience <br />the RepairKL Difference?
           </h2>
-          <p className="text-white/60 mb-8">Join 50,000+ families who have already made the switch to smarter home services.</p>
+          <p className="text-white/60 mb-8">Book a verified technician for your fridge, washing machine, dryer or aircond on WhatsApp.</p>
           <div className="flex justify-center gap-4 flex-wrap">
             <a
               href={bookingLink()}

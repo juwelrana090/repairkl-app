@@ -1,3 +1,4 @@
+import AppIcon from "@/components/ui/AppIcon";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getSession } from "@/lib/auth/session";
@@ -38,7 +39,7 @@ export default async function SavedPage() {
 
       {saved.length === 0 ? (
         <div className="flex flex-col items-center py-20 text-center">
-          <span className="text-6xl mb-4">❤️</span>
+          <span className="mb-4 text-red-500"><AppIcon name="heart" className="w-14 h-14" filled /></span>
           <h2 className="text-xl font-bold text-[#001353] mb-2">No saved services yet</h2>
           <p className="text-sm text-[#5b6480] mb-6">Browse services and tap the heart icon to save your favorites.</p>
           <Link href="/services" className="bg-[#034795] text-white font-bold px-6 py-3 rounded-[14px] text-sm">

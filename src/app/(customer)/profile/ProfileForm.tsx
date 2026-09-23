@@ -24,7 +24,7 @@ export default function ProfileForm({ user }: { user: UserData }) {
         body: JSON.stringify(form),
       });
       if (!res.ok) throw new Error("Failed to update");
-      showToast("Profile updated! ✅", "success");
+      showToast("Profile updated!", "success");
     } catch {
       showToast("Update failed", "error");
     } finally {

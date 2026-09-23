@@ -8,10 +8,10 @@ import WhatsAppIcon from "@/components/marketing/WhatsAppIcon";
 
 export const metadata: Metadata = {
   ...generateMeta({
-    title: "Contact Us – RepairKL Home Services",
-    description: "Get in touch with RepairKL. Call, email or fill in our contact form. Our support team is available Saturday–Thursday 8AM–10PM.",
+    title: "Contact RepairKL – Appliance Repair in Kuala Lumpur",
+    description: "WhatsApp or call RepairKL on +60 11-7434 7814 to book fridge, washing machine, dryer or aircond repair in KL and Selangor. Open Sat–Thu, 8AM–10PM.",
     path: "/contact",
-    keywords: ["contact repairkl", "repairkl customer support", "home service help", "repairkl phone number email"],
+    keywords: ["contact repairkl", "appliance repair Kuala Lumpur contact", "repairkl whatsapp", "repairkl phone number"],
   }),
 };
 

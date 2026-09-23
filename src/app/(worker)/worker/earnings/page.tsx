@@ -1,3 +1,4 @@
+import AppIcon from "@/components/ui/AppIcon";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getSession } from "@/lib/auth/session";
@@ -56,10 +57,10 @@ export default async function WorkerEarningsPage() {
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard label="Total Earned" value={`RM${(Number(totalEarned._sum.amount ?? 0) / 1000).toFixed(1)}K`} icon="💰" color="#1a8f5c" />
-        <StatCard label="This Month" value={`RM${monthTotal.toLocaleString()}`} icon="📅" change={`${growth}% vs last`} changeType="up" color="#034795" />
-        <StatCard label="Last Month" value={`RM${lastMonthTotal.toLocaleString()}`} icon="📊" color="#fb6f27" />
-        <StatCard label="Pending Payout" value={`RM${Number(unpaid._sum.amount ?? 0).toLocaleString()}`} icon="⏳" color="#e0972f" />
+        <StatCard label="Total Earned" value={`RM${(Number(totalEarned._sum.amount ?? 0) / 1000).toFixed(1)}K`} icon="wallet" color="#1a8f5c" />
+        <StatCard label="This Month" value={`RM${monthTotal.toLocaleString()}`} icon="calendar" change={`${growth}% vs last`} changeType="up" color="#034795" />
+        <StatCard label="Last Month" value={`RM${lastMonthTotal.toLocaleString()}`} icon="chart" color="#fb6f27" />
+        <StatCard label="Pending Payout" value={`RM${Number(unpaid._sum.amount ?? 0).toLocaleString()}`} icon="hourglass" color="#e0972f" />
       </div>
 
       {/* Monthly breakdown */}
@@ -95,7 +96,7 @@ export default async function WorkerEarningsPage() {
             {allEarnings.map((e) => (
               <div key={e.id} className="py-3 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full bg-green-50 flex items-center justify-center text-base">💰</div>
+                  <div className="w-9 h-9 rounded-full bg-green-50 flex items-center justify-center text-base text-green-600"><AppIcon name="wallet" className="w-4 h-4" /></div>
                   <div>
                     <p className="text-sm font-medium text-[#001353]">Job Earning</p>
                     <p className="text-xs text-[#5b6480]">{new Date(e.createdAt).toLocaleDateString("en-MY", { day: "numeric", month: "short", year: "numeric" })}</p>
