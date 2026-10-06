@@ -31,20 +31,24 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "RepairKL" }],
   creator: "RepairKL",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "https://repairkl.com"),
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_APP_URL ?? "https://repairkl.com",
+  ),
   openGraph: {
     type: "website",
     locale: "en_MY",
     siteName: "RepairKL",
     title: "RepairKL – Trusted Home Appliance Repair in KL",
-    description: "Fridge, washing machine, dryer and aircond repair in Kuala Lumpur and Selangor by verified technicians.",
-    images: ["/images/hero/fridge-repairbg.jpg.jpg"],
+    description:
+      "Fridge, washing machine, dryer and aircond repair in Kuala Lumpur and Selangor by verified technicians.",
+    images: ["/images/hero/fridge-repairbg.jpg"],
   },
   twitter: {
     card: "summary_large_image",
     title: "RepairKL – Appliance Repair in Kuala Lumpur",
-    description: "Fridge, washing machine, dryer and aircond repair in Kuala Lumpur and Selangor by verified technicians.",
-    images: ["/images/hero/fridge-repairbg.jpg.jpg"],
+    description:
+      "Fridge, washing machine, dryer and aircond repair in Kuala Lumpur and Selangor by verified technicians.",
+    images: ["/images/hero/fridge-repairbg.jpg"],
   },
   robots: { index: true, follow: true },
 };

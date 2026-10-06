@@ -7,7 +7,7 @@ const SITE_NAME = "RepairKL";
 const TAGLINE = "Home Appliance Repair in Kuala Lumpur";
 
 // Existing images used for social previews and schema (no missing files).
-export const DEFAULT_OG_IMAGE = "/images/hero/fridge-repairbg.jpg.jpg";
+export const DEFAULT_OG_IMAGE = "/images/hero/fridge-repairbg.jpg";
 export const LOGO_PATH = "/images/logo/logo.png";
 
 // Areas used in structured data (keep in sync with SERVICE_AREAS in serviceContent.ts)

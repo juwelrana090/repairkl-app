@@ -38,10 +38,16 @@ export const metadata: Metadata = {
    ───────────────────────────────────────────────────────────────────────── */
 const IMAGES = {
   heroSlides: [
-    { src: "/images/hero/fridge-repairbg.jpg.jpg", position: "center right" },
-    { src: "/images/hero/washing-machine-repair.png", position: "center right" },
+    { src: "/images/hero/fridge-repairbg.jpg", position: "center right" },
+    {
+      src: "/images/hero/washing-machine-repair.jpg",
+      position: "center right",
+    },
     { src: "/images/hero/dryer-repair.jpg", position: "center right" },
-    { src: "/images/hero/air-conditioner-service.webp", position: "center right" },
+    {
+      src: "/images/hero/air-conditioner-service.jpg",
+      position: "center right",
+    },
     { src: "/images/hero/ac-Installation.jpg", position: "center right" },
   ],
   about: "/images/about-technician.jpg", // technician at a customer's home
@@ -264,16 +270,17 @@ const SERVICES: {
 ];
 
 // Logos live in /public/images/brands (trimmed, transparent, 100px tall WebP).
-const BRANDS: { name: string; logo: string; width: number; tall?: boolean }[] = [
-  { name: "Samsung", logo: "/images/brands/samsung.webp", width: 589 },
-  { name: "LG", logo: "/images/brands/lg.webp", width: 218, tall: true },
-  { name: "Panasonic", logo: "/images/brands/panasonic.webp", width: 618 },
-  { name: "Sharp", logo: "/images/brands/sharp.webp", width: 654 },
-  { name: "Daikin", logo: "/images/brands/daikin.webp", width: 438 },
-  { name: "Mitsubishi", logo: "/images/brands/mitsubishi.webp", width: 582 },
-  { name: "Hitachi", logo: "/images/brands/hitachi.webp", width: 543 },
-  { name: "Toshiba", logo: "/images/brands/toshiba.webp", width: 568 },
-];
+const BRANDS: { name: string; logo: string; width: number; tall?: boolean }[] =
+  [
+    { name: "Samsung", logo: "/images/brands/samsung.webp", width: 589 },
+    { name: "LG", logo: "/images/brands/lg.webp", width: 218, tall: true },
+    { name: "Panasonic", logo: "/images/brands/panasonic.webp", width: 618 },
+    { name: "Sharp", logo: "/images/brands/sharp.webp", width: 654 },
+    { name: "Daikin", logo: "/images/brands/daikin.webp", width: 438 },
+    { name: "Mitsubishi", logo: "/images/brands/mitsubishi.webp", width: 582 },
+    { name: "Hitachi", logo: "/images/brands/hitachi.webp", width: 543 },
+    { name: "Toshiba", logo: "/images/brands/toshiba.webp", width: 568 },
+  ];
 
 const HOW_IT_WORKS = [
   {
@@ -521,7 +528,13 @@ export default async function MarketingHome() {
                         className="group flex items-center gap-3.5 rounded-2xl bg-white/[0.06] hover:bg-white px-4 py-3 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#034795]"
                       >
                         <span className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shrink-0">
-                          <Image src={getServiceIcon(s.name)} alt="" width={28} height={28} className="w-7 h-7 object-contain" />
+                          <Image
+                            src={getServiceIcon(s.name)}
+                            alt=""
+                            width={28}
+                            height={28}
+                            className="w-7 h-7 object-contain"
+                          />
                         </span>
                         <span className="flex-1 font-semibold text-white group-hover:text-[#001353] transition-colors">
                           {s.name}
@@ -631,7 +644,13 @@ export default async function MarketingHome() {
                     i === 0 ? "bg-[#eaf0f8] lg:bg-white" : "bg-[#eaf0f8]"
                   }`}
                 >
-                  <Image src={getServiceIcon(s.name)} alt="" width={40} height={40} className="w-10 h-10 object-contain" />
+                  <Image
+                    src={getServiceIcon(s.name)}
+                    alt=""
+                    width={40}
+                    height={40}
+                    className="w-10 h-10 object-contain"
+                  />
                 </span>
                 <h3
                   className={`text-xl font-bold mb-2 ${

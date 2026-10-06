@@ -23,17 +23,17 @@ export const SERVICE_ASSETS = {
   },
   dryer: {
     icon: `${ICONS}/washing-machine.png`,
-    image: `${PHOTOS}/Dryer-Repair.webp`,
+    image: `${PHOTOS}/Dryer-Repair.jpg`,
     alt: "Technician testing a clothes dryer",
   },
   acService: {
     icon: `${ICONS}/maintenance.png`,
-    image: `${PHOTOS}/Air-Conditioner-Service.webp`,
+    image: `${PHOTOS}/Air-Conditioner-Service.jpg`,
     alt: "Technician servicing a wall-mounted air conditioner",
   },
   acInstall: {
     icon: `${ICONS}/installation.png`,
-    image: `${PHOTOS}/AC-Installation.webp`,
+    image: `${PHOTOS}/AC-Installation.jpg`,
     alt: "Technician installing an air conditioner",
   },
 } satisfies Record<string, ServiceAsset>;
