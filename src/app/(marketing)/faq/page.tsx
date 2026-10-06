@@ -29,7 +29,7 @@ const FAQ_SECTIONS = [
     faqs: [
       {
         q: "How do I book an appliance repair?",
-        a: "Send us a WhatsApp message at +60 11-7434 7814 with your appliance, the problem and your area. We'll confirm a time slot and assign a verified technician. It usually takes just a few minutes.",
+        a: "Send us a WhatsApp message at +60 11-5580 4809 with your appliance, the problem and your area. We'll confirm a time slot and assign a verified technician. It usually takes just a few minutes.",
       },
       {
         q: "Do you offer same-day appliance repair?",

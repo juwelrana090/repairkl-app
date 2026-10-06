@@ -30,6 +30,7 @@
 - [2025-06-06] Fixed login redirect now works correctly
 - [2025-06-06] Created SVG logo files (logo.svg, logo-white.svg, icon.svg)
 - [2025-06-06] Updated contact +601127272745, repairkl.com, hello@repairkl.com
+- [2026-10-07] Phone updated to +601155804809 everywhere (whatsapp.ts, seo/index.ts schema, contact/faq pages, .env.example, CLAUDE.md, seed, admin settings)
 
 ## Current Status
 
@@ -56,7 +57,7 @@ All core infrastructure verified and working:
 
 - **Name**: RepairKL
 - **Purpose**: Home appliance repair booking in Malaysia
-- **Contact**: +601127272745 | hello@repairkl.com
+- **Contact**: +601155804809 | hello@repairkl.com
 - **Domain**: repairkl.com
 - **Currency**: RM (Malaysian Ringgit)
 - **Cookie**: repairkl_token

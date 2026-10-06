@@ -306,7 +306,7 @@ async function main() {
     create: {
       fullName: "Ahmad Razak",
       email: "customer@repairkl.com",
-      phone: "+60123456789",
+      phone: "+601155804809",
       passwordHash: hashedPassword,
       isEmailVerified: true,
       isPhoneVerified: true,
@@ -329,7 +329,7 @@ async function main() {
     create: {
       fullName: "Admin RepairKL",
       email: "admin@repairkl.com",
-      phone: "+601127272745",
+      phone: "+601155804809",
       passwordHash: hashedPassword,
       isEmailVerified: true,
       isPhoneVerified: true,

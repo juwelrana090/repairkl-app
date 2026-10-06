@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   ...generateMeta({
     title: "Contact RepairKL – Appliance Repair in Kuala Lumpur",
     description:
-      "WhatsApp or call RepairKL on +60 11-7434 7814 to book fridge, washing machine, dryer or aircond repair in KL and Selangor. Open Sat–Thu, 8AM–10PM.",
+      "WhatsApp or call RepairKL on +60 11-5580 4809 to book fridge, washing machine, dryer or aircond repair in KL and Selangor. Open Sat–Thu, 8AM–10PM.",
     path: "/contact",
     keywords: [
       "contact repairkl",
@@ -34,7 +34,7 @@ const CONTACT_INFO = [
   {
     icon: "/images/icons/mobile.png",
     title: "Call Us",
-    value: "+60 11-7434 7814",
+    value: "+60 11-5580 4809",
     subtitle: "Sat–Thu, 8AM–10PM",
     href: PHONE_TEL,
     color: "#1a8f5c",
@@ -43,7 +43,7 @@ const CONTACT_INFO = [
   {
     icon: "/images/icons/whatsapp.png",
     title: "WhatsApp",
-    value: "+60 11-7434 7814",
+    value: "+60 11-5580 4809",
     subtitle: "Instant replies 8AM–10PM",
     href: whatsappLink(),
     color: "#25d366",

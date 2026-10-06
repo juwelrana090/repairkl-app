@@ -77,7 +77,7 @@ export function localBusinessSchema() {
     url: BASE_URL,
     logo: `${BASE_URL}${LOGO_PATH}`,
     image: `${BASE_URL}${DEFAULT_OG_IMAGE}`,
-    telephone: "+601174347814",
+    telephone: "+601155804809",
     email: "hello@repairkl.com",
     address: {
       "@type": "PostalAddress",
@@ -104,7 +104,7 @@ export function localBusinessSchema() {
     },
     contactPoint: {
       "@type": "ContactPoint",
-      telephone: "+601174347814",
+      telephone: "+601155804809",
       contactType: "customer service",
       areaServed: "MY",
       availableLanguage: ["English", "Malay"],

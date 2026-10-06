@@ -19,7 +19,7 @@ export default function AdminSettingsClient() {
 
   const [general, setGeneral] = useState({
     appName: "RepairKL", supportEmail: "support@repairkl.com",
-    supportPhone: "+601127272745", taxRate: "5",
+    supportPhone: "+601155804809", taxRate: "5",
     workerCommission: "70", minBookingHours: "24",
     currency: "MYT", timezone: "Asia/Kuala Lumpur",
   });

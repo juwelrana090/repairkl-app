@@ -99,7 +99,7 @@ import { prisma } from "@/lib/prisma";
 ## Business Info
 - **Name**: RepairKL
 - **Purpose**: Home appliance repair booking in Malaysia
-- **Contact**: +601127272745 | hello@repairkl.com
+- **Contact**: +601155804809 | hello@repairkl.com
 - **Domain**: repairkl.com
 - **Currency**: RM (Malaysian Ringgit)
 - **Cookie**: repairkl_token
