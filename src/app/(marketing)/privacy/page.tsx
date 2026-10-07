@@ -1,15 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { generateMeta } from "@/lib/seo";
+import { buildPageMetadata } from "@/lib/seo/pageMeta";
 
-export const metadata: Metadata = {
-  ...generateMeta({
-    title: "Privacy Policy – RepairKL",
-    description: "RepairKL's privacy policy. Learn how we collect, use and protect your personal data.",
-    path: "/privacy",
-    noIndex: false,
-  }),
-};
+export const metadata: Metadata = buildPageMetadata("privacy");
 
 export default function PrivacyPage() {
   const lastUpdated = "June 1, 2025";

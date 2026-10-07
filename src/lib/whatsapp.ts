@@ -1,8 +1,11 @@
 // Single source of truth for RepairKL's WhatsApp / phone contact.
 
-export const WHATSAPP_NUMBER = "601155804809"; // international format, digits only
+// Override the number via NEXT_PUBLIC_CONTACT_PHONE (international format,
+// digits only). Keep PHONE_DISPLAY in sync with whatever number is active.
+const envNumber = (process.env.NEXT_PUBLIC_CONTACT_PHONE || "").replace(/\D/g, "");
+export const WHATSAPP_NUMBER = envNumber || "601155804809"; // international format, digits only
 export const PHONE_DISPLAY = "+60 11-5580 4809";
-export const PHONE_TEL = "tel:+601155804809";
+export const PHONE_TEL = `tel:+${WHATSAPP_NUMBER}`;
 
 export const DEFAULT_BOOKING_MESSAGE =
   "Hi RepairKL, I'd like to book an appliance repair.";

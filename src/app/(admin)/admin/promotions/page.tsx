@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import AdminPromotionsClient from "./AdminPromotionsClient";
+import { buildPageMetadata } from "@/lib/seo/pageMeta";
 
-export const metadata: Metadata = { title: "Promotions – Admin" };
+export const metadata: Metadata = buildPageMetadata("admin.promotions");
 
 export default async function AdminPromotionsPage() {
   const promos = await prisma.promotion.findMany({ orderBy: { createdAt: "desc" } });

@@ -3,7 +3,16 @@ import jwt from "jsonwebtoken";
 
 const SESSION_COOKIE = "repairkl_session";
 const TOKEN_COOKIE = "repairkl_token";
-const JWT_SECRET = process.env.JWT_SECRET ?? "repairkl-secret-change-in-production";
+
+function resolveJwtSecret(): string {
+  const secret = process.env.JWT_SECRET;
+  if (!secret && process.env.NODE_ENV === "production") {
+    throw new Error("JWT_SECRET must be set in production");
+  }
+  return secret ?? "repairkl-dev-secret-change-me";
+}
+
+const JWT_SECRET = resolveJwtSecret();
 const SESSION_DURATION = 60 * 60 * 24 * 7; // 7 days
 
 export interface SessionPayload {

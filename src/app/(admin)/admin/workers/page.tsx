@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { RatingStars } from "@/components/ui";
 import AdminWorkersClient from "./AdminWorkersClient";
+import { buildPageMetadata } from "@/lib/seo/pageMeta";
 
-export const metadata: Metadata = { title: "Workers – Admin" };
+export const metadata: Metadata = buildPageMetadata("admin.workers");
 
 export default async function AdminWorkersPage() {
   const workers = await prisma.worker.findMany({

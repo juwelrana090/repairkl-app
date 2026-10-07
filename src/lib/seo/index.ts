@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { z } from "zod";
 
 export const SITE_URL =
   process.env.NEXT_PUBLIC_APP_URL ?? "https://repairkl.com";
@@ -6,8 +7,9 @@ const BASE_URL = SITE_URL;
 const SITE_NAME = "RepairKL";
 const TAGLINE = "Home Appliance Repair in Kuala Lumpur";
 
-// Existing images used for social previews and schema (no missing files).
-export const DEFAULT_OG_IMAGE = "/images/hero/fridge-repairbg.jpg";
+// Default social-preview image (1200x630). Kept in sync with the file in
+// /public/images/og/ — see Step 2 of the SEO plan.
+export const DEFAULT_OG_IMAGE = "/images/og/default-1200x630.jpg";
 export const LOGO_PATH = "/images/logo/logo.png";
 
 // Areas used in structured data (keep in sync with SERVICE_AREAS in serviceContent.ts)
@@ -22,47 +24,89 @@ const AREA_SERVED = [
   "Puchong",
 ];
 
-// ─── generateMeta ─────────────────────────────────────────────────────────────
-export function generateMeta(options: {
-  title: string;
-  description: string;
-  path?: string;
-  image?: string;
-  noIndex?: boolean;
-  keywords?: string[];
-}): Metadata {
-  const url = options.path ? `${BASE_URL}${options.path}` : BASE_URL;
-  const image = options.image ?? `${BASE_URL}${DEFAULT_OG_IMAGE}`;
+// ─── generateMeta (Zod-validated) ────────────────────────────────────────────
+// Single metadata factory for every page. Titles are plain strings — the root
+// layout template appends "| RepairKL", so never include the brand suffix here.
+export const metaInputSchema = z.object({
+  /**
+   * Required for pages; omitted by group layouts so their pages inherit the
+   * root title template ("%s | RepairKL") — a layout-level plain-string title
+   * would reset it for the whole subtree.
+   */
+  title: z.string().min(1).max(120).optional(),
+  description: z.string().min(1).max(320).optional(),
+  /** Site-relative path (e.g. "/about") or absolute URL. */
+  canonical: z.string().optional(),
+  robots: z
+    .object({
+      index: z.boolean().optional(),
+      follow: z.boolean().optional(),
+    })
+    .optional(),
+  og: z
+    .object({
+      title: z.string().min(1).optional(),
+      description: z.string().min(1).optional(),
+      image: z.string().optional(),
+    })
+    .optional(),
+  twitter: z
+    .object({
+      card: z.enum(["summary", "summary_large_image"]).optional(),
+      image: z.string().optional(),
+    })
+    .optional(),
+  keywords: z.array(z.string()).optional(),
+  type: z.enum(["website", "article", "profile"]).optional(),
+  /** Convenience shortcut for robots: { index: false, follow: false }. */
+  noIndex: z.boolean().optional(),
+});
+
+export type MetaInput = z.infer<typeof metaInputSchema>;
+
+function absoluteUrl(url: string): string {
+  return url.startsWith("http") ? url : `${BASE_URL}${url}`;
+}
+
+export function generateMeta(input: MetaInput): Metadata {
+  const options = metaInputSchema.parse(input);
+  const url = options.canonical ? absoluteUrl(options.canonical) : BASE_URL;
+  const image = absoluteUrl(options.og?.image ?? DEFAULT_OG_IMAGE);
+  const robots = options.noIndex
+    ? { index: false, follow: false }
+    : {
+        index: true,
+        follow: true,
+        "max-snippet": -1,
+        "max-image-preview": "large" as const,
+        "max-video-preview": -1,
+        ...(options.robots ?? {}),
+      };
 
   return {
-    title: { absolute: options.title },
+    // Omit `title` entirely (not `title: undefined`) when unset — a present
+    // key makes Next treat the segment as title-defining and kills template
+    // inheritance for the subtree.
+    ...(options.title !== undefined ? { title: options.title } : {}),
     description: options.description,
     keywords: options.keywords,
-    alternates: { canonical: url },
+    alternates: options.canonical ? { canonical: url } : undefined,
     openGraph: {
-      type: "website",
+      type: options.type ?? "website",
       url,
-      title: options.title,
-      description: options.description,
+      title: options.og?.title ?? options.title,
+      description: options.og?.description ?? options.description,
       siteName: SITE_NAME,
       locale: "en_MY",
-      images: [{ url: image, alt: options.title }],
+      images: [{ url: image, alt: options.og?.title ?? options.title }],
     },
     twitter: {
-      card: "summary_large_image",
-      title: options.title,
-      description: options.description,
-      images: [image],
+      card: options.twitter?.card ?? "summary_large_image",
+      title: options.og?.title ?? options.title,
+      description: options.og?.description ?? options.description,
+      images: [absoluteUrl(options.twitter?.image ?? options.og?.image ?? DEFAULT_OG_IMAGE)],
     },
-    robots: options.noIndex
-      ? { index: false, follow: false }
-      : {
-          index: true,
-          follow: true,
-          "max-snippet": -1,
-          "max-image-preview": "large",
-          "max-video-preview": -1,
-        },
+    robots,
   };
 }
 

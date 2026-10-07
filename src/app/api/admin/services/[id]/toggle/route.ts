@@ -22,9 +22,23 @@ export async function POST(
       return NextResponse.json({ error: "Service not found" }, { status: 404 });
     }
 
+    // Respect the field the client asked to toggle (isActive | isFeatured);
+    // previously this always flipped isActive, so starring a service hid it.
+    const body = (await request.json().catch(() => ({}))) as Record<string, unknown>;
+    const data: { isActive?: boolean; isFeatured?: boolean } = {};
+    if (typeof body.isActive === "boolean") data.isActive = body.isActive;
+    if (typeof body.isFeatured === "boolean") data.isFeatured = body.isFeatured;
+
+    if (Object.keys(data).length === 0) {
+      return NextResponse.json(
+        { error: "Provide a boolean isActive or isFeatured." },
+        { status: 400 },
+      );
+    }
+
     const updatedService = await prisma.service.update({
       where: { id },
-      data: { isActive: !service.isActive },
+      data,
     });
 
     return NextResponse.json({ data: updatedService });

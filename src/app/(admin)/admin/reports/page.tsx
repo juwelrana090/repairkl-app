@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { StatCard } from "@/components/shared/Cards";
+import { buildPageMetadata } from "@/lib/seo/pageMeta";
 
-export const metadata: Metadata = { title: "Reports – Admin" };
+
+export const metadata: Metadata = buildPageMetadata("admin.reports");
 
 export default async function AdminReportsPage() {
   const now = new Date();

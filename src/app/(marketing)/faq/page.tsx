@@ -4,23 +4,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { whatsappLink } from "@/lib/whatsapp";
 import WhatsAppIcon from "@/components/marketing/WhatsAppIcon";
-import { generateMeta, faqSchema, breadcrumbSchema } from "@/lib/seo";
+import { faqSchema, breadcrumbSchema } from "@/lib/seo";
+import { buildPageMetadata } from "@/lib/seo/pageMeta";
 
-export const metadata: Metadata = {
-  ...generateMeta({
-    title: "Appliance Repair FAQ – RepairKL Kuala Lumpur",
-    description:
-      "Answers about booking appliance repair in KL: same-day service, brands, parts, warranty, payment and the areas we cover for fridge, washer, dryer and aircond.",
-    path: "/faq",
-    keywords: [
-      "appliance repair FAQ",
-      "repairkl FAQ",
-      "appliance repair Kuala Lumpur",
-      "washing machine repair questions",
-      "aircond service questions",
-    ],
-  }),
-};
+export const metadata: Metadata = buildPageMetadata("faq");
 
 const FAQ_SECTIONS = [
   {

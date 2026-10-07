@@ -7,7 +7,7 @@ import { showToast } from "@/components/ui";
 import { twMerge } from "tailwind-merge";
 
 interface Service {
-  id: string; name: string; slug: string; categoryName: string; categoryColor: string;
+  id: string; name: string; slug: string; categoryName: string; categoryColor: string; categorySlug: string;
   basePrice: number; priceUnit: string; rating: number; reviewCount: number;
   isActive: boolean; isFeatured: boolean; bookingCount: number; packageCount: number;
 }
@@ -87,8 +87,9 @@ export default function AdminServicesClient({ services: initial }: { services: S
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex gap-1">
-                      <Link href={`/services/${s.slug}`} target="_blank" className="text-xs px-2 py-1 bg-[#eeeef6] rounded text-[#5b6480] hover:bg-[#ddddee]">View</Link>
-                      <Link href={`/admin/services/${s.id}/edit`} className="text-xs px-2 py-1 bg-[#eaf0f8] rounded text-[#034795] hover:bg-[#d3dff0]">Edit</Link>
+                      {/* Public marketing pages are per-category (/our-services/[categorySlug]);
+                          DB service slugs (e.g. "fridge-repair-general") have no public page until Step 15 */}
+                      <Link href={`/our-services/${s.categorySlug}`} target="_blank" className="text-xs px-2 py-1 bg-[#eeeef6] rounded text-[#5b6480] hover:bg-[#ddddee]">View</Link>
                     </div>
                   </td>
                 </tr>

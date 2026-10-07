@@ -3,8 +3,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getSession } from "@/lib/auth/session";
 import { prisma } from "@/lib/prisma";
+import { buildPageMetadata } from "@/lib/seo/pageMeta";
 
-export const metadata: Metadata = { title: "Notifications – RepairKL" };
+
+export const metadata: Metadata = buildPageMetadata("customer.notifications");
 
 export default async function NotificationsPage() {
   const session = await getSession();

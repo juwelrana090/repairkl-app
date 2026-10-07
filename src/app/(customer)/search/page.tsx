@@ -3,8 +3,10 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { ServiceCard } from "@/components/shared/Cards";
 import { Suspense } from "react";
+import { buildPageMetadata } from "@/lib/seo/pageMeta";
 
-export const metadata: Metadata = { title: "Search – RepairKL" };
+
+export const metadata: Metadata = buildPageMetadata("customer.search");
 
 export default async function SearchPage({
   searchParams,

@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import AdminSettingsClient from "./AdminSettingsClient";
+import { buildPageMetadata } from "@/lib/seo/pageMeta";
 
-export const metadata: Metadata = { title: "Settings – Admin" };
+export const metadata: Metadata = buildPageMetadata("admin.settings");
 
 export default function AdminSettingsPage() {
   return (

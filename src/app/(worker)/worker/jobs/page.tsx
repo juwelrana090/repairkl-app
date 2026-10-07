@@ -4,8 +4,10 @@ import Link from "next/link";
 import { getSession } from "@/lib/auth/session";
 import { prisma } from "@/lib/prisma";
 import { StatusBadge } from "@/components/ui";
+import { buildPageMetadata } from "@/lib/seo/pageMeta";
 
-export const metadata: Metadata = { title: "My Jobs – Worker" };
+
+export const metadata: Metadata = buildPageMetadata("worker.jobs");
 
 export default async function WorkerJobsPage({
   searchParams,

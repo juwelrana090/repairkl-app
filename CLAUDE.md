@@ -75,11 +75,16 @@ import { prisma } from "@/lib/prisma";
 3. `/orders/[id]` → booking detail
 
 ## Design System
-- Primary: `#fd6b22` (orange), Dark: `#1b1d21`, Success: `#4fbf67`
+- Primary: `#034795` (blue), Dark/Ink: `#001353`, Accent: `#fb6f27` (orange)
 - Font: DM Sans (400/500/700)
 - Border radius: 16px (buttons), 20-32px (cards)
-- Border color: `#e8e6ea`
-- Muted text: `#8f92a1`
+- Border color: `#ddddee`
+- Muted text: `#5b6480`
+
+## Content Sources
+- Marketing service pages content: `src/lib/serviceContent.ts`
+- Social profiles (hidden until real URLs replace `#`): `src/lib/social.ts`
+- WhatsApp/phone single source: `src/lib/whatsapp.ts` (override via `NEXT_PUBLIC_CONTACT_PHONE`)
 
 ## Role-Based Routing
 | Role | Default Route |

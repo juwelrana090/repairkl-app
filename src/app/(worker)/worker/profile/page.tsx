@@ -5,8 +5,9 @@ import { getSession } from "@/lib/auth/session";
 import { prisma } from "@/lib/prisma";
 import { RatingStars } from "@/components/ui";
 import WorkerProfileForm from "./WorkerProfileForm";
+import { buildPageMetadata } from "@/lib/seo/pageMeta";
 
-export const metadata: Metadata = { title: "My Profile – Worker" };
+export const metadata: Metadata = buildPageMetadata("worker.profile");
 
 export default async function WorkerProfilePage() {
   const session = await getSession();

@@ -63,26 +63,28 @@ export default function PublicNav() {
               <AppIcon name="clock" className="w-3.5 h-3.5" /> Sat–Thu 8AM–10PM
             </span>
           </div>
-          <div className="flex items-center gap-3">
-            {SOCIAL_LINKS.map((s) => (
-              <a
-                key={s.name}
-                href={s.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={`RepairKL on ${s.name}`}
-                className="w-6 h-6 rounded-md flex items-center justify-center hover:opacity-80 transition-opacity"
-              >
-                <img
-                  src={s.icon}
-                  alt=""
-                  width={24}
-                  height={24}
-                  className="w-6 h-6 object-contain"
-                />
-              </a>
-            ))}
-          </div>
+          {SOCIAL_LINKS.length > 0 && (
+            <div className="flex items-center gap-3">
+              {SOCIAL_LINKS.map((s) => (
+                <a
+                  key={s.name}
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`RepairKL on ${s.name}`}
+                  className="w-6 h-6 rounded-md flex items-center justify-center hover:opacity-80 transition-opacity"
+                >
+                  <img
+                    src={s.icon}
+                    alt=""
+                    width={24}
+                    height={24}
+                    className="w-6 h-6 object-contain"
+                  />
+                </a>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 

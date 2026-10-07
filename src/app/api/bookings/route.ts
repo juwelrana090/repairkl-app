@@ -58,7 +58,7 @@ export async function POST(req: Request) {
     const taxAmount = discountedAmount * taxRate;
     const totalAmount = discountedAmount + taxAmount;
 
-    const bookingCode = `SHF-${Date.now().toString(36).toUpperCase()}-${nanoid(4).toUpperCase()}`;
+    const bookingCode = `RKL-${Date.now().toString(36).toUpperCase()}-${nanoid(4).toUpperCase()}`;
 
     const booking = await prisma.booking.create({
       data: {

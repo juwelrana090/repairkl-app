@@ -1,11 +1,14 @@
 import AppIcon from "@/components/ui/AppIcon";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth/session";
 import Navbar from "@/components/layout/Navbar";
 import { prisma } from "@/lib/prisma";
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/seo/pageMeta";
 
-export const metadata: Metadata = { title: "RepairKL" };
+
+export const metadata: Metadata = buildPageMetadata("customer");
 
 export default async function CustomerLayout({ children }: { children: React.ReactNode }) {
   const session = await getSession();
@@ -45,10 +48,10 @@ function MobileBottomNav() {
           { href: "/notifications", icon: "bell", label: "Alerts" },
           { href: "/profile", icon: "user", label: "Profile" },
         ].map((item) => (
-          <a key={item.href} href={item.href} className="flex flex-col items-center gap-1 text-[#5b6480]">
+          <Link key={item.href} href={item.href} className="flex flex-col items-center gap-1 text-[#5b6480]">
             <AppIcon name={item.icon} className="w-5 h-5" />
             <span className="text-[9px] font-medium">{item.label}</span>
-          </a>
+          </Link>
         ))}
       </div>
     </nav>

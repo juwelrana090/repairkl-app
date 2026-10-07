@@ -42,7 +42,6 @@ export const FEATURE_ICONS = {
   booking: `${ICONS}/booking.png`, // calendar with check
   verified: `${ICONS}/verified.png`, // green shield with check
   secured: `${ICONS}/secured.png`, // green shield with plus
-  badge: `${ICONS}/social-media.png`, // blue verified badge
   wallet: `${ICONS}/wallet.png`, // wallet
 } as const;
 

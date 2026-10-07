@@ -50,7 +50,7 @@ export const SERVICES: ServiceContent[] = [
     slug: "washing-machine-repair",
     name: "Washing Machine Repair",
     h1: "Washing Machine Repair in Kuala Lumpur",
-    metaTitle: "Washing Machine Repair in Kuala Lumpur | RepairKL",
+    metaTitle: "Washing Machine Repair in Kuala Lumpur",
     metaDescription:
       "Front-load and top-load washing machine repair in KL and Selangor. Leaks, no spin, error codes, wiring and motor faults fixed by certified technicians.",
     keywords: [
@@ -206,7 +206,7 @@ export const SERVICES: ServiceContent[] = [
     slug: "fridge-repair",
     name: "Fridge Repair",
     h1: "Fridge Repair in Kuala Lumpur",
-    metaTitle: "Fridge & Refrigerator Repair in Kuala Lumpur | RepairKL",
+    metaTitle: "Fridge & Refrigerator Repair in Kuala Lumpur",
     metaDescription:
       "Fridge not cooling, leaking or noisy? Certified refrigerator repair in KL and Selangor for all brands, including inverter, side-by-side and multi-door models.",
     keywords: [
@@ -362,7 +362,7 @@ export const SERVICES: ServiceContent[] = [
     slug: "dryer-repair",
     name: "Dryer Repair",
     h1: "Dryer Repair in Kuala Lumpur",
-    metaTitle: "Clothes Dryer Repair in Kuala Lumpur | RepairKL",
+    metaTitle: "Clothes Dryer Repair in Kuala Lumpur",
     metaDescription:
       "Dryer not heating, not tumbling or overheating? Vented, condenser and heat pump dryer repair in KL and Selangor by certified technicians.",
     keywords: [
@@ -512,7 +512,7 @@ export const SERVICES: ServiceContent[] = [
     slug: "aircond-service",
     name: "Air-Conditioner Service",
     h1: "Aircond Service & Repair in Kuala Lumpur",
-    metaTitle: "Aircond Service & Chemical Wash in KL | RepairKL",
+    metaTitle: "Aircond Service & Chemical Wash in KL",
     metaDescription:
       "Aircond servicing, chemical wash, gas top-up and repair in Kuala Lumpur and Selangor. Wall-mounted, cassette and inverter units from all major brands.",
     keywords: [
@@ -664,7 +664,7 @@ export const SERVICES: ServiceContent[] = [
     slug: "aircond-installation",
     name: "AC Installation",
     h1: "Aircond Installation in Kuala Lumpur",
-    metaTitle: "Aircond Installation in Kuala Lumpur | RepairKL",
+    metaTitle: "Aircond Installation in Kuala Lumpur",
     metaDescription:
       "Professional aircond installation and relocation in KL and Selangor. Wall mounting, copper piping, wiring, drainage and full test run for 1HP to 3HP units.",
     keywords: [

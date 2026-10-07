@@ -1,14 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { generateMeta } from "@/lib/seo";
+import { buildPageMetadata } from "@/lib/seo/pageMeta";
 
-export const metadata: Metadata = {
-  ...generateMeta({
-    title: "Terms of Service – RepairKL",
-    description: "RepairKL's Terms of Service. Read our terms and conditions for using the platform as a customer or worker.",
-    path: "/terms",
-  }),
-};
+export const metadata: Metadata = buildPageMetadata("terms");
 
 export default function TermsPage() {
   const lastUpdated = "June 1, 2025";

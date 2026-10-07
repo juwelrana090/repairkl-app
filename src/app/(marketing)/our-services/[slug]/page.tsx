@@ -34,8 +34,8 @@ export async function generateMetadata({
   return generateMeta({
     title: service.metaTitle,
     description: service.metaDescription,
-    path: `/our-services/${service.slug}`,
-    image: `${SITE_URL}${service.asset.image}`,
+    canonical: `/our-services/${service.slug}`,
+    og: { image: service.asset.image },
     keywords: service.keywords,
   });
 }

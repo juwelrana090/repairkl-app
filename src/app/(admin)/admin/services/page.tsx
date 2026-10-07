@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import Image from "next/image";
 import { getServiceIcon } from "@/lib/brandAssets";
 import { prisma } from "@/lib/prisma";
 import { RatingStars } from "@/components/ui";
 import AdminServicesClient from "./AdminServicesClient";
+import { buildPageMetadata } from "@/lib/seo/pageMeta";
 
-export const metadata: Metadata = { title: "Services – Admin" };
+export const metadata: Metadata = buildPageMetadata("admin.services");
 
 export default async function AdminServicesPage() {
   const [services, categories] = await Promise.all([
@@ -27,9 +27,6 @@ export default async function AdminServicesPage() {
           <h1 className="text-2xl font-bold text-[#001353] tracking-[-0.5px]">Services</h1>
           <p className="text-sm text-[#5b6480] mt-1">{services.length} total services</p>
         </div>
-        <Link href="/admin/services/new" className="bg-[#034795] text-white px-4 py-2.5 rounded-[12px] text-sm font-bold hover:bg-[#023a7a] transition-colors">
-          + Add Service
-        </Link>
       </div>
 
       {/* Category summary */}
@@ -55,6 +52,7 @@ export default async function AdminServicesPage() {
           slug: s.slug,
           categoryName: s.category.name,
           categoryColor: s.category.color,
+          categorySlug: s.category.slug,
           basePrice: Number(s.basePrice),
           priceUnit: s.priceUnit,
           rating: s.rating,

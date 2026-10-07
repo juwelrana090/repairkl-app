@@ -328,18 +328,21 @@ model Review {
 
 model SupportTicket {
   id          String         @id @default(cuid()) @db.VarChar(36)
-  customerId  String
+  customerId  String?
   agentId     String?
   bookingId   String?
   subject     String
   status      TicketStatus   @default(OPEN)
   priority    TicketPriority @default(MEDIUM)
   category    String?
+  guestName   String?
+  guestEmail  String?
+  guestPhone  String?
   resolvedAt  DateTime?
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
 
-  customer    User            @relation("CustomerTickets", fields: [customerId], references: [id])
+  customer    User?           @relation("CustomerTickets", fields: [customerId], references: [id])
   agent       User?           @relation("AgentTickets", fields: [agentId], references: [id])
   messages    TicketMessage[]
 
@@ -349,12 +352,12 @@ model SupportTicket {
 model TicketMessage {
   id        String        @id @default(cuid()) @db.VarChar(36)
   ticketId  String
-  senderId  String
+  senderId  String?
   message   String
   isInternal Boolean      @default(false)
   createdAt DateTime      @default(now())
   ticket    SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
-  sender    User          @relation(fields: [senderId], references: [id])
+  sender    User?         @relation(fields: [senderId], references: [id])
 
   @@map("ticket_messages")
 }

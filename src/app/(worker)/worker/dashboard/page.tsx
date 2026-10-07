@@ -5,8 +5,10 @@ import { getSession } from "@/lib/auth/session";
 import { prisma } from "@/lib/prisma";
 import { StatCard } from "@/components/shared/Cards";
 import { StatusBadge } from "@/components/ui";
+import { buildPageMetadata } from "@/lib/seo/pageMeta";
 
-export const metadata: Metadata = { title: "Worker Dashboard – RepairKL" };
+
+export const metadata: Metadata = buildPageMetadata("worker.dashboard");
 
 export default async function WorkerDashboardPage() {
   const session = await getSession();

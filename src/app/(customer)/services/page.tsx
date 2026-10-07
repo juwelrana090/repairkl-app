@@ -3,11 +3,10 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { ServiceCard } from "@/components/shared/Cards";
 import ServicesFilter from "./ServicesFilter";
+import { buildPageMetadata } from "@/lib/seo/pageMeta";
 
-export const metadata: Metadata = {
-  title: "Services – RepairKL",
-  description: "Browse all home services available near you",
-};
+
+export const metadata: Metadata = buildPageMetadata("customer.services");
 
 export default async function ServicesPage({
   searchParams,

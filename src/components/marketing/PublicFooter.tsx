@@ -172,28 +172,12 @@ export default function PublicFooter() {
               </ul>
             </div>
 
-            {/* Newsletter */}
-            <div>
-              <h3 className="font-bold text-white text-sm uppercase tracking-widest mb-5 pb-3 border-b border-white/10">
-                Stay Updated
-              </h3>
-              <p className="text-sm text-white/60 mb-4 leading-relaxed">
-                Get exclusive offers and service tips straight to your inbox.
-              </p>
-              <form className="flex flex-col gap-2">
-                <input
-                  type="email"
-                  placeholder="Enter your email"
-                  className="w-full h-11 px-4 rounded-[10px] bg-white/10 border border-white/10 text-white text-sm placeholder:text-white/40 outline-none focus:border-[#034795] transition-colors"
-                />
-                <button className="w-full h-11 bg-[#034795] hover:bg-[#023a7a] text-white font-bold text-sm rounded-[10px] transition-colors">
-                  Subscribe
-                </button>
-              </form>
-              <div className="mt-6">
-                <p className="text-xs text-white/40 uppercase tracking-wider mb-3">
+            {/* Social — only rendered once real profile URLs exist in lib/social */}
+            {SOCIAL_LINKS.length > 0 && (
+              <div>
+                <h3 className="font-bold text-white text-sm uppercase tracking-widest mb-5 pb-3 border-b border-white/10">
                   Follow Us
-                </p>
+                </h3>
                 <div className="flex gap-2">
                   {SOCIAL_LINKS.map((s) => (
                     <a
@@ -215,7 +199,7 @@ export default function PublicFooter() {
                   ))}
                 </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
 

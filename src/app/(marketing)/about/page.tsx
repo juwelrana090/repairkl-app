@@ -4,22 +4,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { bookingLink } from "@/lib/whatsapp";
 import WhatsAppIcon from "@/components/marketing/WhatsAppIcon";
-import { generateMeta, localBusinessSchema, breadcrumbSchema } from "@/lib/seo";
+import { localBusinessSchema, breadcrumbSchema } from "@/lib/seo";
+import { buildPageMetadata } from "@/lib/seo/pageMeta";
 
-export const metadata: Metadata = {
-  ...generateMeta({
-    title: "About RepairKL – Appliance Repair Experts in Kuala Lumpur",
-    description:
-      "RepairKL is a Kuala Lumpur appliance repair company. Verified technicians for fridge, washing machine, dryer and aircond repair across KL and Selangor since 2021.",
-    path: "/about",
-    keywords: [
-      "about repairkl",
-      "appliance repair company Kuala Lumpur",
-      "appliance repair Malaysia",
-      "repairkl technicians",
-    ],
-  }),
-};
+export const metadata: Metadata = buildPageMetadata("about");
 
 const TIMELINE = [
   {

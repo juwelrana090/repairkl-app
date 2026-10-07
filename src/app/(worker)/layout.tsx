@@ -1,7 +1,11 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth/session";
 import { prisma } from "@/lib/prisma";
 import PanelSidebar from "@/components/layout/PanelSidebar";
+import { buildPageMetadata } from "@/lib/seo/pageMeta";
+
+export const metadata: Metadata = buildPageMetadata("worker");
 
 export default async function WorkerLayout({ children }: { children: React.ReactNode }) {
   const session = await getSession();

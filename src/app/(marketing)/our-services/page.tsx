@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { generateMeta, serviceSchema, breadcrumbSchema } from "@/lib/seo";
+import { serviceSchema, breadcrumbSchema } from "@/lib/seo";
+import { buildPageMetadata } from "@/lib/seo/pageMeta";
 import {
   SERVICE_ASSETS,
   FEATURE_ICONS,
@@ -11,21 +12,7 @@ import {
 import { bookingLink } from "@/lib/whatsapp";
 import WhatsAppIcon from "@/components/marketing/WhatsAppIcon";
 
-export const metadata: Metadata = {
-  ...generateMeta({
-    title: "Appliance Repair Services in KL | RepairKL",
-    description:
-      "Professional fridge repair, washing machine repair, dryer repair, air-conditioner service and AC installation in Kuala Lumpur. All brands, same-day service available.",
-    path: "/our-services",
-    keywords: [
-      "fridge repair Kuala Lumpur",
-      "washing machine repair Malaysia",
-      "dryer repair KL",
-      "AC service Kuala Lumpur",
-      "appliance repair Malaysia",
-    ],
-  }),
-};
+export const metadata: Metadata = buildPageMetadata("our-services");
 
 type Category = {
   slug: string;

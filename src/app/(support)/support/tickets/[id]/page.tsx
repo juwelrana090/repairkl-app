@@ -74,9 +74,9 @@ export default async function TicketDetailPage({
         <div className="grid md:grid-cols-2 gap-6 mb-6">
           <div>
             <h3 className="font-bold text-[#001353] mb-2">Customer</h3>
-            <p className="text-[#5b6480]">{ticket.customer.fullName}</p>
-            <p className="text-sm text-[#5b6480]">{ticket.customer.email}</p>
-            <p className="text-sm text-[#5b6480]">{ticket.customer.phone}</p>
+            <p className="text-[#5b6480]">{ticket.customer?.fullName ?? ticket.guestName ?? "Guest"}</p>
+            <p className="text-sm text-[#5b6480]">{ticket.customer?.email ?? ticket.guestEmail ?? "—"}</p>
+            <p className="text-sm text-[#5b6480]">{ticket.customer?.phone ?? ticket.guestPhone ?? "—"}</p>
           </div>
           {ticket.agent && (
             <div>
@@ -94,18 +94,18 @@ export default async function TicketDetailPage({
           {ticket.messages.map((message) => (
             <div
               key={message.id}
-              className={`flex ${message.sender.role === "CUSTOMER" ? "justify-start" : "justify-end"}`}
+              className={`flex ${(message.sender?.role ?? "CUSTOMER") === "CUSTOMER" ? "justify-start" : "justify-end"}`}
             >
               <div
                 className={`max-w-md p-3 rounded-xl ${
-                  message.sender.role === "CUSTOMER"
+                  (message.sender?.role ?? "CUSTOMER") === "CUSTOMER"
                     ? "bg-[#eeeef6]"
                     : "bg-[#034795] text-white"
                 }`}
               >
                 <div className="flex items-center gap-2 mb-1">
                   <span className="font-medium text-sm">
-                    {message.sender.fullName}
+                    {message.sender?.fullName ?? "Customer"}
                   </span>
                   {message.isInternal && (
                     <span className="text-xs bg-black/20 px-2 py-0.5 rounded">

@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { StatusBadge } from "@/components/ui";
 import AdminUsersClient from "./AdminUsersClient";
+import { buildPageMetadata } from "@/lib/seo/pageMeta";
 
-export const metadata: Metadata = { title: "Users – Admin" };
+export const metadata: Metadata = buildPageMetadata("admin.users");
 
 export default async function AdminUsersPage({
   searchParams,

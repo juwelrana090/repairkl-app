@@ -30,7 +30,14 @@ export default async function WorkerJobDetailPage({
     },
   });
 
-  if (!assignment || assignment.booking.customerId !== session.userId) {
+  // Guard by assignment: the job is visible to the worker it was assigned to,
+  // not to whoever is the customer on the booking.
+  const worker = await prisma.worker.findUnique({
+    where: { userId: session.userId },
+    select: { id: true },
+  });
+
+  if (!assignment || !worker || assignment.workerId !== worker.id) {
     redirect("/worker/jobs");
   }
 

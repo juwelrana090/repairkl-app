@@ -3,6 +3,7 @@ import { DM_Sans } from "next/font/google";
 import "./globals.css";
 import { QueryProvider } from "@/lib/query/QueryProvider";
 import { Toaster } from "@/components/ui/Toaster";
+import { DEFAULT_OG_IMAGE } from "@/lib/seo";
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
@@ -41,14 +42,14 @@ export const metadata: Metadata = {
     title: "RepairKL – Trusted Home Appliance Repair in KL",
     description:
       "Fridge, washing machine, dryer and aircond repair in Kuala Lumpur and Selangor by verified technicians.",
-    images: ["/images/hero/fridge-repairbg.jpg"],
+    images: [DEFAULT_OG_IMAGE],
   },
   twitter: {
     card: "summary_large_image",
     title: "RepairKL – Appliance Repair in Kuala Lumpur",
     description:
       "Fridge, washing machine, dryer and aircond repair in Kuala Lumpur and Selangor by verified technicians.",
-    images: ["/images/hero/fridge-repairbg.jpg"],
+    images: [DEFAULT_OG_IMAGE],
   },
   robots: { index: true, follow: true },
 };

@@ -4,8 +4,9 @@ import Link from "next/link";
 import { getSession } from "@/lib/auth/session";
 import { prisma } from "@/lib/prisma";
 import { StatusBadge } from "@/components/ui";
+import { buildPageMetadata } from "@/lib/seo/pageMeta";
 
-export const metadata: Metadata = { title: "Tickets – Support" };
+export const metadata: Metadata = buildPageMetadata("support.tickets");
 
 export default async function SupportTicketsPage({
   searchParams,
@@ -91,8 +92,8 @@ export default async function SupportTicketsPage({
                   <tr key={t.id} className="hover:bg-[#f5f5fa] transition-colors">
                     <td className="px-4 py-3 text-xs text-[#5b6480] font-mono">{t.id.slice(-6).toUpperCase()}</td>
                     <td className="px-4 py-3">
-                      <p className="text-sm font-medium text-[#001353]">{t.customer.fullName}</p>
-                      <p className="text-xs text-[#5b6480]">{t.customer.email}</p>
+                      <p className="text-sm font-medium text-[#001353]">{t.customer?.fullName ?? t.guestName ?? "Guest"}</p>
+                      <p className="text-xs text-[#5b6480]">{t.customer?.email ?? t.guestEmail ?? "—"}</p>
                     </td>
                     <td className="px-4 py-3 max-w-[200px]">
                       <p className="text-sm text-[#001353] truncate">{t.subject}</p>

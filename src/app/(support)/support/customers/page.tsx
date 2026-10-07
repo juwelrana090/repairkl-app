@@ -2,8 +2,9 @@ import AppIcon from "@/components/ui/AppIcon";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { buildPageMetadata } from "@/lib/seo/pageMeta";
 
-export const metadata: Metadata = { title: "Customers – Support" };
+export const metadata: Metadata = buildPageMetadata("support.customers");
 
 export default async function SupportCustomersPage({
   searchParams,

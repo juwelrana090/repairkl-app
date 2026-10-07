@@ -4,8 +4,10 @@ import { getSession } from "@/lib/auth/session";
 import { prisma } from "@/lib/prisma";
 import { StatCard } from "@/components/shared/Cards";
 import { StatusBadge } from "@/components/ui";
+import { buildPageMetadata } from "@/lib/seo/pageMeta";
 
-export const metadata: Metadata = { title: "Support Dashboard – RepairKL" };
+
+export const metadata: Metadata = buildPageMetadata("support.dashboard");
 
 export default async function SupportDashboardPage() {
   const session = await getSession();
@@ -83,7 +85,7 @@ export default async function SupportDashboardPage() {
             <tbody className="divide-y divide-[#ddddee]">
               {recentTickets.map((t) => (
                 <tr key={t.id} className="hover:bg-[#f5f5fa]">
-                  <td className="py-3 text-sm font-medium text-[#001353]">{t.customer.fullName}</td>
+                  <td className="py-3 text-sm font-medium text-[#001353]">{t.customer?.fullName ?? t.guestName ?? "Guest"}</td>
                   <td className="py-3 text-sm text-[#5b6480] max-w-[200px] truncate">{t.subject}</td>
                   <td className="py-3">
                     <span className={`text-xs font-bold px-2 py-1 rounded-full ${

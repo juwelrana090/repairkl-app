@@ -4,8 +4,10 @@ import Link from "next/link";
 import { getSession } from "@/lib/auth/session";
 import { prisma } from "@/lib/prisma";
 import ProfileForm from "./ProfileForm";
+import { buildPageMetadata } from "@/lib/seo/pageMeta";
 
-export const metadata: Metadata = { title: "My Profile – RepairKL" };
+
+export const metadata: Metadata = buildPageMetadata("customer.profile");
 
 export default async function ProfilePage() {
   const session = await getSession();

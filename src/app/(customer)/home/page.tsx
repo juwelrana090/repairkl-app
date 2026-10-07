@@ -7,11 +7,10 @@ import { ServiceCard } from "@/components/shared/Cards";
 import { CategoryCard } from "@/components/shared/Cards";
 import { BookingCard } from "@/components/shared/Cards";
 import HomeSearchBar from "./HomeSearchBar";
+import { buildPageMetadata } from "@/lib/seo/pageMeta";
 
-export const metadata: Metadata = {
-  title: "Home – RepairKL",
-  description: "Book trusted home services near you",
-};
+
+export const metadata: Metadata = buildPageMetadata("customer.home");
 
 export default async function HomePage() {
   const session = await getSession();

@@ -2,9 +2,17 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { jwtVerify } from "jose";
 
-const SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET ?? "repairkl-secret-change-in-production",
-);
+function resolveJwtSecret(): Uint8Array {
+  const secret = process.env.JWT_SECRET;
+  if (!secret && process.env.NODE_ENV === "production") {
+    throw new Error("JWT_SECRET must be set in production");
+  }
+  return new TextEncoder().encode(
+    secret ?? "repairkl-dev-secret-change-me",
+  );
+}
+
+const SECRET = resolveJwtSecret();
 
 const PUBLIC_PATHS = [
   "/",

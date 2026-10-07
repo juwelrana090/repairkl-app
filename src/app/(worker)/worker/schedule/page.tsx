@@ -3,8 +3,9 @@ import Link from "next/link";
 import { getSession } from "@/lib/auth/session";
 import { prisma } from "@/lib/prisma";
 import WorkerScheduleClient from "./WorkerScheduleClient";
+import { buildPageMetadata } from "@/lib/seo/pageMeta";
 
-export const metadata: Metadata = { title: "My Schedule – Worker" };
+export const metadata: Metadata = buildPageMetadata("worker.schedule");
 
 export default async function WorkerSchedulePage() {
   const session = await getSession();

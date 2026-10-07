@@ -4,8 +4,10 @@ import Link from "next/link";
 import { getSession } from "@/lib/auth/session";
 import { prisma } from "@/lib/prisma";
 import { StatCard } from "@/components/shared/Cards";
+import { buildPageMetadata } from "@/lib/seo/pageMeta";
 
-export const metadata: Metadata = { title: "Earnings – Worker" };
+
+export const metadata: Metadata = buildPageMetadata("worker.earnings");
 
 export default async function WorkerEarningsPage() {
   const session = await getSession();

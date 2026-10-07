@@ -3,6 +3,7 @@ import AppIcon from "@/components/ui/AppIcon";
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { PHONE_DISPLAY } from "@/lib/whatsapp";
 
 const SUBJECTS = [
   "General Enquiry",
@@ -16,7 +17,7 @@ const SUBJECTS = [
 
 export default function ContactForm() {
   const [form, setForm] = useState({
-    name: "", email: "", phone: "", subject: "General Enquiry", message: "",
+    name: "", email: "", phone: "", subject: "General Enquiry", message: "", website: "",
   });
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -33,11 +34,23 @@ export default function ContactForm() {
     }
     setLoading(true);
     setError("");
-    // Simulate submission (replace with actual Server Action or API call)
-    await new Promise((r) => setTimeout(r, 1200));
-    console.log("[CONTACT FORM]", form);
-    setLoading(false);
-    setSubmitted(true);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(data.error || "Something went wrong. Please try again.");
+        return;
+      }
+      setSubmitted(true);
+    } catch {
+      setError("Network error. Please check your connection and try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (submitted) {
@@ -49,7 +62,7 @@ export default function ContactForm() {
           Thanks for reaching out, {form.name.split(" ")[0]}. We&apos;ll get back to you at <strong>{form.email}</strong> within 2 business hours.
         </p>
         <button
-          onClick={() => { setSubmitted(false); setForm({ name: "", email: "", phone: "", subject: "General Enquiry", message: "" }); }}
+          onClick={() => { setSubmitted(false); setForm({ name: "", email: "", phone: "", subject: "General Enquiry", message: "", website: "" }); }}
           className="text-[#034795] text-sm font-bold hover:underline"
         >
           Send another message
@@ -60,6 +73,17 @@ export default function ContactForm() {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      {/* Honeypot — hidden from humans, catches naive bots */}
+      <input
+        type="text"
+        name="website"
+        value={form.website}
+        onChange={set("website")}
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        className="absolute opacity-0 pointer-events-none h-0 w-0"
+      />
       {error && (
         <div className="bg-red-50 border border-red-200 rounded-[12px] px-4 py-3 text-sm text-red-600">{error}</div>
       )}
@@ -88,7 +112,7 @@ export default function ContactForm() {
           type="tel"
           value={form.phone}
           onChange={set("phone")}
-          placeholder="+880 1711-000000"
+          placeholder={PHONE_DISPLAY}
         />
         <div>
           <label className="text-xs text-[#5b6480] block mb-1 font-medium">Subject</label>

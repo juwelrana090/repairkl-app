@@ -1,25 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { generateMeta, breadcrumbSchema, localBusinessSchema } from "@/lib/seo";
+import { breadcrumbSchema, localBusinessSchema } from "@/lib/seo";
+import { buildPageMetadata } from "@/lib/seo/pageMeta";
 import ContactForm from "./ContactForm";
 import { bookingLink, whatsappLink, PHONE_TEL } from "@/lib/whatsapp";
 import WhatsAppIcon from "@/components/marketing/WhatsAppIcon";
 
-export const metadata: Metadata = {
-  ...generateMeta({
-    title: "Contact RepairKL – Appliance Repair in Kuala Lumpur",
-    description:
-      "WhatsApp or call RepairKL on +60 11-5580 4809 to book fridge, washing machine, dryer or aircond repair in KL and Selangor. Open Sat–Thu, 8AM–10PM.",
-    path: "/contact",
-    keywords: [
-      "contact repairkl",
-      "appliance repair Kuala Lumpur contact",
-      "repairkl whatsapp",
-      "repairkl phone number",
-    ],
-  }),
-};
+export const metadata: Metadata = buildPageMetadata("contact");
 
 const CONTACT_INFO = [
   {

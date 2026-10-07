@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { buildPageMetadata } from "@/lib/seo/pageMeta";
 
-export const metadata: Metadata = { title: "Sign In" };
+export const metadata: Metadata = buildPageMetadata("auth");
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (

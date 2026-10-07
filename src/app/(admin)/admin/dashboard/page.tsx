@@ -3,8 +3,10 @@ import { prisma } from "@/lib/prisma";
 import { StatCard, BookingCard } from "@/components/shared/Cards";
 import { StatusBadge } from "@/components/ui";
 import Link from "next/link";
+import { buildPageMetadata } from "@/lib/seo/pageMeta";
 
-export const metadata: Metadata = { title: "Admin Dashboard – RepairKL" };
+
+export const metadata: Metadata = buildPageMetadata("admin.dashboard");
 
 export default async function AdminDashboardPage() {
   const now = new Date();

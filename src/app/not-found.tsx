@@ -1,8 +1,10 @@
 import AppIcon from "@/components/ui/AppIcon";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/seo/pageMeta";
 
-export const metadata: Metadata = { title: "404 – Page Not Found | RepairKL" };
+
+export const metadata: Metadata = buildPageMetadata("not-found");
 
 export default function NotFound() {
   return (
@@ -28,7 +30,7 @@ export default function NotFound() {
             Go Home
           </Link>
           <Link
-            href="/services"
+            href="/our-services"
             className="h-12 px-6 bg-[#eeeef6] text-[#001353] font-bold rounded-[14px] flex items-center justify-center hover:bg-[#ddddee] transition-colors"
           >
             Browse Services

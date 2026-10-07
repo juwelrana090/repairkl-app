@@ -5,8 +5,10 @@ import { getSession } from "@/lib/auth/session";
 import { prisma } from "@/lib/prisma";
 import { BookingCard } from "@/components/shared/Cards";
 import OrdersTabs from "./OrdersTabs";
+import { buildPageMetadata } from "@/lib/seo/pageMeta";
 
-export const metadata: Metadata = { title: "My Orders – RepairKL" };
+
+export const metadata: Metadata = buildPageMetadata("customer.orders");
 
 export default async function OrdersPage({
   searchParams,

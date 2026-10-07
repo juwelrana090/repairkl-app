@@ -4,8 +4,10 @@ import Link from "next/link";
 import { getSession } from "@/lib/auth/session";
 import { prisma } from "@/lib/prisma";
 import { ServiceCard } from "@/components/shared/Cards";
+import { buildPageMetadata } from "@/lib/seo/pageMeta";
 
-export const metadata: Metadata = { title: "Saved Services – RepairKL" };
+
+export const metadata: Metadata = buildPageMetadata("customer.saved");
 
 export default async function SavedPage() {
   const session = await getSession();

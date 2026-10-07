@@ -1,5 +1,4 @@
 import Link from "next/link";
-import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { prisma } from "@/lib/prisma";
 import { localBusinessSchema } from "@/lib/seo";
@@ -8,27 +7,6 @@ import WhatsAppIcon from "@/components/marketing/WhatsAppIcon";
 import Image from "next/image";
 import { getServiceIcon } from "@/lib/brandAssets";
 import HeroBackgroundSlider from "@/components/marketing/HeroBackgroundSlider";
-
-export const metadata: Metadata = {
-  title: "RepairKL – Trusted Home Appliance Repair in KL",
-  description:
-    "Book professional fridge, washing machine, dryer and air-conditioner repair in Kuala Lumpur. Fast, reliable, affordable.",
-  keywords: [
-    "fridge repair Kuala Lumpur",
-    "washing machine repair Malaysia",
-    "dryer repair KL",
-    "AC service Kuala Lumpur",
-    "appliance repair Malaysia",
-    "repairkl app",
-  ],
-  openGraph: {
-    title: "RepairKL – Trusted Home Appliance Repair in KL",
-    description:
-      "Book professional appliance repair services instantly. Verified technicians, guaranteed quality.",
-    type: "website",
-    images: [{ url: "/og-home.png", width: 1200, height: 630 }],
-  },
-};
 
 /* ─────────────────────────────────────────────────────────────────────────
    Background images
@@ -51,8 +29,8 @@ const IMAGES = {
     { src: "/images/hero/ac-Installation.jpg", position: "center right" },
   ],
   about: "/images/about-technician.jpg", // technician at a customer's home
-  stats: "/images/stats-bg.jpg", // tools / workshop close-up
-  cta: "/images/cta-bg.jpg", // clean modern KL kitchen or living room
+  stats: "/images/services/stats-bg.jpg", // tools / workshop close-up
+  cta: "/images/services/cta-bg.jpg", // clean modern KL kitchen or living room
 };
 
 /* ─── Icons (inline SVG, no dependency) ─────────────────────────────────── */
@@ -1004,18 +982,6 @@ export default async function MarketingHome() {
             >
               <WhatsAppIcon className="w-5 h-5" />
               Book a repair
-            </a>
-            <a
-              href="#"
-              className="inline-flex items-center justify-center gap-2 bg-white text-[#001353] hover:bg-white/90 font-bold px-6 py-4 rounded-xl transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#034795]"
-            >
-              App Store
-            </a>
-            <a
-              href="#"
-              className="inline-flex items-center justify-center gap-2 bg-white text-[#001353] hover:bg-white/90 font-bold px-6 py-4 rounded-xl transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#034795]"
-            >
-              Google Play
             </a>
           </div>
         </div>

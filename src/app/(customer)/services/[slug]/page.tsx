@@ -1,7 +1,7 @@
 import AppIcon from "@/components/ui/AppIcon";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { generateMeta, serviceSchema } from "@/lib/seo";
+import { generateMeta } from "@/lib/seo";
 import ServiceBookingPanel from "./ServiceBookingPanel";
 
 export async function generateMetadata({
@@ -18,10 +18,11 @@ export async function generateMetadata({
   if (!service) return {};
 
   return generateMeta({
-    title: `${service.name} | RepairKL`,
+    title: service.name,
     description: service.description || `Book ${service.name} at RepairKL`,
-    path: `/services/${slug}`,
+    canonical: `/services/${slug}`,
     keywords: [service.name, service.category.name, "home services"],
+    noIndex: true, // auth-walled customer booking page, not a marketing page
   });
 }
 
@@ -61,18 +62,8 @@ export default async function ServicePage({
     })),
   };
 
-  const jsonLd = serviceSchema({
-    name: service.name,
-    description: service.description || "",
-    url: `${process.env.NEXT_PUBLIC_APP_URL}/services/${slug}`,
-  });
-
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
       <div className="max-w-4xl mx-auto">
         <div className="bg-white rounded-2xl p-6 shadow-sm mb-6">
           <div className="flex items-start justify-between mb-4">

@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { StatusBadge } from "@/components/ui";
+import { buildPageMetadata } from "@/lib/seo/pageMeta";
 
-export const metadata: Metadata = { title: "Bookings – Admin" };
+
+export const metadata: Metadata = buildPageMetadata("admin.bookings");
 
 export default async function AdminBookingsPage({
   searchParams,
