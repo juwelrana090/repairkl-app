@@ -71,8 +71,8 @@ export default function ContactPage() {
         <div className="absolute inset-0" aria-hidden="true">
           <div className="absolute inset-0 bg-gradient-to-br from-[#001353] via-[#0a1f63] to-[#001353]" />
           <Image
-            src="/images/services/Air-Conditioner-Service.jpg"
-            alt=""
+            src="/images/services/air-conditioner-service.jpg"
+            alt="Air conditioner service technician in Kuala Lumpur"
             fill
             priority
             sizes="100vw"
@@ -121,6 +121,7 @@ export default function ContactPage() {
                   <img
                     src={c.icon}
                     alt=""
+                    role="presentation"
                     width={32}
                     height={32}
                     className="w-8 h-8 object-contain"
@@ -163,6 +164,7 @@ export default function ContactPage() {
                   <img
                     src="/images/icons/pin.png"
                     alt=""
+                    role="presentation"
                     width={64}
                     height={64}
                     className="w-16 h-16 object-contain mx-auto mb-4"

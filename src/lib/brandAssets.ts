@@ -13,27 +13,27 @@ export type ServiceAsset = {
 export const SERVICE_ASSETS = {
   fridge: {
     icon: `${ICONS}/refrigerator.png`,
-    image: `${PHOTOS}/Fridge-Repair.jpg`,
+    image: `${PHOTOS}/fridge-repair.jpg`,
     alt: "Technician repairing a refrigerator",
   },
   washer: {
     icon: `${ICONS}/washing-machine.png`,
-    image: `${PHOTOS}/Washing-Machine-Repair.jpg`,
+    image: `${PHOTOS}/washing-machine-repair.jpg`,
     alt: "Technician repairing a front-load washing machine",
   },
   dryer: {
     icon: `${ICONS}/washing-machine.png`,
-    image: `${PHOTOS}/Dryer-Repair.jpg`,
+    image: `${PHOTOS}/dryer-repair.jpg`,
     alt: "Technician testing a clothes dryer",
   },
   acService: {
     icon: `${ICONS}/maintenance.png`,
-    image: `${PHOTOS}/Air-Conditioner-Service.jpg`,
+    image: `${PHOTOS}/air-conditioner-service.jpg`,
     alt: "Technician servicing a wall-mounted air conditioner",
   },
   acInstall: {
     icon: `${ICONS}/installation.png`,
-    image: `${PHOTOS}/AC-Installation.jpg`,
+    image: `${PHOTOS}/ac-installation.jpg`,
     alt: "Technician installing an air conditioner",
   },
 } satisfies Record<string, ServiceAsset>;

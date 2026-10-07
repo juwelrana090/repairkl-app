@@ -36,7 +36,7 @@ export default async function AdminServicesPage() {
           return (
             <div key={cat.id} className="bg-white rounded-[16px] border border-[#ddddee] p-3 text-center">
               <div className="w-11 h-11 rounded-full mx-auto mb-2 flex items-center justify-center" style={{ background: `${cat.color}20` }}>
-                <Image src={getServiceIcon(cat.slug || cat.name)} alt="" width={28} height={28} className="w-7 h-7 object-contain" />
+                <Image src={getServiceIcon(cat.slug || cat.name)} alt="" role="presentation" width={28} height={28} className="w-7 h-7 object-contain" />
               </div>
               <p className="text-xs font-bold text-[#001353] leading-tight">{cat.name}</p>
               <p className="text-[10px] text-[#5b6480] mt-0.5">{count} services</p>

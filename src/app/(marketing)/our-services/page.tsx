@@ -186,8 +186,8 @@ export default async function OurServicesPage() {
         <div className="absolute inset-0" aria-hidden="true">
           <div className="absolute inset-0 bg-gradient-to-br from-[#001353] via-[#0a1f63] to-[#001353]" />
           <Image
-            src="/images/hero/our-services.png"
-            alt=""
+            src="/images/hero/our-services.webp"
+            alt="Home appliance repair services in Kuala Lumpur — fridge, washing machine, dryer and aircond"
             fill
             priority
             sizes="100vw"
@@ -226,6 +226,7 @@ export default async function OurServicesPage() {
                   <Image
                     src={cat.asset.icon}
                     alt=""
+                    role="presentation"
                     width={22}
                     height={22}
                     className="w-[22px] h-[22px] object-contain"
@@ -250,6 +251,7 @@ export default async function OurServicesPage() {
                 <Image
                   src={f.icon}
                   alt=""
+                  role="presentation"
                   width={44}
                   height={44}
                   className="w-11 h-11 object-contain shrink-0"
@@ -319,6 +321,7 @@ export default async function OurServicesPage() {
                       <Image
                         src={cat.asset.icon}
                         alt=""
+                        role="presentation"
                         width={36}
                         height={36}
                         className="w-9 h-9 object-contain"
@@ -383,6 +386,7 @@ export default async function OurServicesPage() {
           <Image
             src={FEATURE_ICONS.booking}
             alt=""
+            role="presentation"
             width={64}
             height={64}
             className="w-16 h-16 object-contain mx-auto mb-6"

@@ -1,8 +1,15 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
+import { seoImage } from "@/lib/imageSeo";
 
-export type HeroSlide = { src: string; position?: string };
+export type HeroSlide = {
+  src: string;
+  /** Descriptive alt for crawlers — the wrapper is aria-hidden, so screen readers skip it. */
+  alt?: string;
+  position?: string;
+};
 
 export default function HeroBackgroundSlider({
   slides,
@@ -55,11 +62,18 @@ export default function HeroBackgroundSlider({
               className="absolute inset-0 overflow-hidden transition-opacity duration-[1400ms] ease-in-out"
               style={{ opacity: isActive ? 1 : 0 }}
             >
-              <div
-                className="absolute inset-0 bg-cover bg-no-repeat"
+              <Image
+                {...seoImage({
+                  src: slide.src,
+                  alt: slide.alt ?? "",
+                  sizes: "100vw",
+                  // First slide is the LCP — preload it, lazy-load the rest
+                  priority: i === 0,
+                })}
+                fill
+                className="object-cover"
                 style={{
-                  backgroundImage: `url("${slide.src}")`,
-                  backgroundPosition: slide.position ?? "center",
+                  objectPosition: slide.position ?? "center",
                   transform: !reduced && isActive ? "scale(1.08)" : "scale(1)",
                   transition: reduced
                     ? "none"

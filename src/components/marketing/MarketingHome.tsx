@@ -16,17 +16,31 @@ import HeroBackgroundSlider from "@/components/marketing/HeroBackgroundSlider";
    ───────────────────────────────────────────────────────────────────────── */
 const IMAGES = {
   heroSlides: [
-    { src: "/images/hero/fridge-repairbg.jpg", position: "center right" },
+    {
+      src: "/images/hero/fridge-repairbg.jpg",
+      alt: "Fridge repair technician in Kuala Lumpur",
+      position: "center right",
+    },
     {
       src: "/images/hero/washing-machine-repair.jpg",
+      alt: "Washing machine repair service in Kuala Lumpur",
       position: "center right",
     },
-    { src: "/images/hero/dryer-repair.jpg", position: "center right" },
+    {
+      src: "/images/hero/dryer-repair.jpg",
+      alt: "Dryer repair technician at work",
+      position: "center right",
+    },
     {
       src: "/images/hero/air-conditioner-service.jpg",
+      alt: "Air conditioner service in Kuala Lumpur",
       position: "center right",
     },
-    { src: "/images/hero/ac-Installation.jpg", position: "center right" },
+    {
+      src: "/images/hero/ac-installation.jpg",
+      alt: "Air conditioner installation in Kuala Lumpur",
+      position: "center right",
+    },
   ],
   about: "/images/about-technician.jpg", // technician at a customer's home
   stats: "/images/services/stats-bg.jpg", // tools / workshop close-up
@@ -371,9 +385,15 @@ function PhotoBackground({
   return (
     <div className="absolute inset-0" aria-hidden="true">
       <div className="absolute inset-0 bg-gradient-to-br from-[#001353] via-[#0a1f63] to-[#001353]" />
-      <div
-        className="absolute inset-0 bg-cover bg-no-repeat"
-        style={{ backgroundImage: `url(${src})`, backgroundPosition: position }}
+      <Image
+        src={src}
+        alt=""
+        role="presentation"
+        fill
+        sizes="100vw"
+        loading="lazy"
+        className="object-cover"
+        style={{ objectPosition: position }}
       />
       <div className={`absolute inset-0 ${overlay}`} />
     </div>
@@ -509,6 +529,7 @@ export default async function MarketingHome() {
                           <Image
                             src={getServiceIcon(s.name)}
                             alt=""
+                            role="presentation"
                             width={28}
                             height={28}
                             className="w-7 h-7 object-contain"
@@ -625,6 +646,7 @@ export default async function MarketingHome() {
                   <Image
                     src={getServiceIcon(s.name)}
                     alt=""
+                    role="presentation"
                     width={40}
                     height={40}
                     className="w-10 h-10 object-contain"

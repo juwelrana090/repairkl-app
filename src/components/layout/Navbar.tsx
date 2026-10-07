@@ -43,6 +43,7 @@ export default function Navbar({
           <Image
             src="/images/logo/logo.png"
             alt=""
+            role="presentation"
             width={36}
             height={36}
             priority

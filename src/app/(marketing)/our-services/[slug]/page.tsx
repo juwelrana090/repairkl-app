@@ -101,7 +101,7 @@ export default async function ServiceDetailPage({
           <div className="absolute inset-0 bg-gradient-to-br from-[#001353] via-[#0a1f63] to-[#001353]" />
           <Image
             src={service.asset.image}
-            alt=""
+            alt={service.asset.alt}
             fill
             priority
             sizes="100vw"
@@ -135,6 +135,7 @@ export default async function ServiceDetailPage({
                 <Image
                   src={service.asset.icon}
                   alt=""
+                  role="presentation"
                   width={32}
                   height={32}
                   className="w-8 h-8 object-contain"
@@ -359,6 +360,7 @@ export default async function ServiceDetailPage({
                   <Image
                     src={r.asset.icon}
                     alt=""
+                    role="presentation"
                     width={36}
                     height={36}
                     className="w-9 h-9 object-contain"

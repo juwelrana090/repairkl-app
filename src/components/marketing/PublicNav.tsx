@@ -77,6 +77,7 @@ export default function PublicNav() {
                   <img
                     src={s.icon}
                     alt=""
+                    role="presentation"
                     width={24}
                     height={24}
                     className="w-6 h-6 object-contain"
@@ -100,6 +101,7 @@ export default function PublicNav() {
             <img
               src="/images/logo/logo.png"
               alt=""
+              role="presentation"
               width={40}
               height={40}
               className="h-10 w-10 rounded-xl object-contain shrink-0"

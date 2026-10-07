@@ -82,7 +82,12 @@ const findings: Finding[] = [];
 const cssBackgrounds: { file: string; line: number; snippet: string }[] = [];
 
 for (const file of walk(SRC)) {
-  const source = readFileSync(file, "utf8");
+  const raw = readFileSync(file, "utf8");
+  // Strip block comments and full-line // comments so JSDoc examples
+  // (e.g. the one in src/lib/imageSeo.ts) aren't scanned as JSX.
+  const source = raw
+    .replace(/\/\*[\s\S]*?\*\//g, "")
+    .replace(/^[ \t]*\/\/.*$/gm, "");
   const rel = relative(ROOT, file).replace(/\\/g, "/");
 
   const elementRe = /<(img|Image)\b[\s\S]*?(?:\/>|>)/g;
@@ -91,6 +96,9 @@ for (const file of walk(SRC)) {
     // Skip the import line and type references
     if (source.slice(Math.max(0, m.index - 8), m.index).includes("import")) continue;
     const element = m[0];
+    // Props (incl. alt) arrive via a spread — assume the typed source
+    // (e.g. seoImage(), which makes alt mandatory) and skip.
+    if (element.includes("{...")) continue;
     const component = m[1] as "img" | "Image";
     const { alt, severity, decorative } = classify(component, element);
     findings.push({

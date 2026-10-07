@@ -81,6 +81,7 @@ export default function PublicFooter() {
                 <img
                   src="/images/logo/logo.png"
                   alt=""
+                  role="presentation"
                   width={44}
                   height={44}
                   loading="lazy"
@@ -191,6 +192,7 @@ export default function PublicFooter() {
                       <img
                         src={s.icon}
                         alt=""
+                        role="presentation"
                         width={20}
                         height={20}
                         className="w-5 h-5 object-contain"

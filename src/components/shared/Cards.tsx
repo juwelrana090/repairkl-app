@@ -34,7 +34,7 @@ export function ServiceCard({ service }: { service: ServiceCardData }) {
               <Image src={src} alt={service.name} fill sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" className="object-cover group-hover:scale-105 transition-transform duration-300" />
             ) : (
               <div className="w-full h-full flex items-center justify-center">
-                <Image src={getServiceIcon(service.name)} alt="" width={72} height={72} className="w-18 h-18 object-contain" />
+                <Image src={getServiceIcon(service.name)} alt="" role="presentation" width={72} height={72} className="w-18 h-18 object-contain" />
               </div>
             );
           })()}
@@ -97,7 +97,7 @@ export function CategoryCard({
           className="w-14 h-14 rounded-[16px] flex items-center justify-center text-2xl group-hover:scale-110 transition-transform"
           style={{ background: `${color}20` }}
         >
-          <Image src={getServiceIcon(slug || name)} alt="" width={36} height={36} className="w-9 h-9 object-contain" />
+          <Image src={getServiceIcon(slug || name)} alt="" role="presentation" width={36} height={36} className="w-9 h-9 object-contain" />
         </div>
         <p className="text-xs font-bold text-[#001353] text-center tracking-[-0.2px] leading-tight">{name}</p>
         {count !== undefined && (
