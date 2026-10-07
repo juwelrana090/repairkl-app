@@ -1,4 +1,4 @@
-import type { JsonLdObject } from "./types";
+import type { JsonLdDocument, JsonLdObject } from "./types";
 
 /**
  * Merge nodes into a single @graph document. Nodes sharing an @id are merged
@@ -10,7 +10,7 @@ import type { JsonLdObject } from "./types";
  */
 export function buildJsonLd(
   nodes: (JsonLdObject | null | undefined)[],
-): JsonLdObject {
+): JsonLdDocument {
   const graph: JsonLdObject[] = [];
   const indexOfId = new Map<string, number>();
 

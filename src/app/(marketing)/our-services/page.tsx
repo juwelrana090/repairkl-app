@@ -2,8 +2,14 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { serviceSchema, breadcrumbSchema } from "@/lib/seo";
+import {
+  serviceSchema,
+  breadcrumbSchema,
+  buildJsonLd,
+  SITE_URL,
+} from "@/lib/seo";
 import { buildPageMetadata } from "@/lib/seo/pageMeta";
+import JsonLd from "@/components/seo/JsonLd";
 import {
   SERVICE_ASSETS,
   FEATURE_ICONS,
@@ -155,11 +161,13 @@ export default async function OurServicesPage() {
     /* DB not ready */
   }
 
+  // Real, crawlable detail-page URLs (never #fragments — crawlers treat
+  // them as the parent page, so each Service would collapse into one URL).
   const schemas = CATEGORIES.map((cat) =>
     serviceSchema({
       name: cat.name,
       description: cat.desc,
-      url: `${process.env.NEXT_PUBLIC_APP_URL ?? "https://repairkl.com"}/our-services#${cat.slug}`,
+      url: `${SITE_URL}/our-services/${cat.slug}`,
     }),
   );
   const breadcrumb = breadcrumbSchema([
@@ -169,17 +177,7 @@ export default async function OurServicesPage() {
 
   return (
     <>
-      {schemas.map((s, i) => (
-        <script
-          key={i}
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(s) }}
-        />
-      ))}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }}
-      />
+      <JsonLd data={buildJsonLd([breadcrumb, ...schemas])} />
 
       {/* ─── HERO ── */}
       <section className="relative pt-36 pb-24 overflow-hidden text-white">

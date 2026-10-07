@@ -3,3 +3,6 @@
  * also work standalone); buildJsonLd() composes many into one @graph.
  */
 export type JsonLdObject = { "@type": string } & Record<string, unknown>;
+
+/** A full JSON-LD document as emitted by buildJsonLd(). */
+export type JsonLdDocument = { "@context": string; "@graph": JsonLdObject[] };

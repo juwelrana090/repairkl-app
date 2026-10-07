@@ -1,8 +1,13 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth/session";
-import { websiteSchema } from "@/lib/seo";
+import {
+  websiteSchema,
+  localBusinessSchema,
+  buildJsonLd,
+} from "@/lib/seo";
 import { buildPageMetadata } from "@/lib/seo/pageMeta";
+import JsonLd from "@/components/seo/JsonLd";
 import PublicNav from "@/components/marketing/PublicNav";
 import PublicFooter from "@/components/marketing/PublicFooter";
 import MarketingHome from "@/components/marketing/MarketingHome";
@@ -23,10 +28,7 @@ export default async function RootPage() {
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema()) }}
-      />
+      <JsonLd data={buildJsonLd([websiteSchema(), localBusinessSchema()])} />
       <PublicNav />
       <main>
         <MarketingHome />

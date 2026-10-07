@@ -1,7 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { prisma } from "@/lib/prisma";
-import { localBusinessSchema } from "@/lib/seo";
 import { bookingLink, whatsappLink, PHONE_DISPLAY } from "@/lib/whatsapp";
 import WhatsAppIcon from "@/components/marketing/WhatsAppIcon";
 import Image from "next/image";
@@ -432,15 +431,11 @@ export default async function MarketingHome() {
     { number: "1 month", label: "Minimum labour warranty" },
   ];
 
-  const schema = localBusinessSchema();
+  // Business/website JSON-LD for the homepage is emitted by app/page.tsx
+  // as one @graph — nothing to render here.
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-      />
-
       {/* ─── HERO ──────────────────────────────────────────────────────── */}
       <section
         className="relative min-h-[100svh] flex items-center overflow-hidden text-white"

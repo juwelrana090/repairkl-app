@@ -2,13 +2,18 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { prisma } from "@/lib/prisma";
 import {
   generateMeta,
   breadcrumbSchema,
   faqSchema,
   serviceSchema,
+  buildJsonLd,
+  withReviews,
+  type ReviewFact,
   SITE_URL,
 } from "@/lib/seo";
+import JsonLd from "@/components/seo/JsonLd";
 import {
   SERVICES,
   SERVICE_AREAS,
@@ -57,6 +62,46 @@ function CheckIcon() {
   );
 }
 
+/**
+ * REAL reviews only (reviews table rows). The Service.rating / reviewCount
+ * columns are seeded demo numbers and are deliberately never emitted as
+ * structured data. Returns [] when the DB is unreachable at build time —
+ * the schema then simply ships without review markup.
+ */
+async function loadServiceReviews(slug: string): Promise<ReviewFact[]> {
+  try {
+    // DB service slugs carry suffixes (e.g. "fridge-repair-general");
+    // match them the same way the our-services index does.
+    const services = await prisma.service.findMany({
+      where: {
+        isActive: true,
+        OR: [{ slug }, { slug: { startsWith: `${slug}-` } }],
+      },
+      select: { id: true },
+    });
+    if (services.length === 0) return [];
+    const rows = await prisma.review.findMany({
+      where: { serviceId: { in: services.map((s) => s.id) } },
+      orderBy: { createdAt: "desc" },
+      take: 5,
+      select: {
+        rating: true,
+        comment: true,
+        createdAt: true,
+        customer: { select: { fullName: true } },
+      },
+    });
+    return rows.map((r) => ({
+      author: r.customer.fullName,
+      rating: r.rating,
+      comment: r.comment,
+      date: r.createdAt,
+    }));
+  } catch {
+    return [];
+  }
+}
+
 export default async function ServiceDetailPage({
   params,
 }: {
@@ -69,14 +114,19 @@ export default async function ServiceDetailPage({
   const url = `${SITE_URL}/our-services/${service.slug}`;
   const related = SERVICES.filter((s) => s.slug !== service.slug);
 
+  const reviews = await loadServiceReviews(service.slug);
+
   const schemas = [
-    serviceSchema({
-      name: service.name,
-      description: service.metaDescription,
-      url,
-      image: `${SITE_URL}${service.asset.image}`,
-      areaServed: SERVICE_AREAS,
-    }),
+    withReviews(
+      serviceSchema({
+        name: service.name,
+        description: service.metaDescription,
+        url,
+        image: `${SITE_URL}${service.asset.image}`,
+        areaServed: SERVICE_AREAS,
+      }),
+      reviews,
+    ),
     faqSchema(service.faqs.map((f) => ({ question: f.q, answer: f.a }))),
     breadcrumbSchema([
       { name: "Home", url: "/" },
@@ -87,13 +137,7 @@ export default async function ServiceDetailPage({
 
   return (
     <>
-      {schemas.map((s, i) => (
-        <script
-          key={i}
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(s) }}
-        />
-      ))}
+      <JsonLd data={buildJsonLd(schemas)} />
 
       {/* ─── HERO ── */}
       <section className="relative pt-36 pb-20 overflow-hidden text-white">

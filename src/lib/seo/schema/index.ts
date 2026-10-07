@@ -11,4 +11,4 @@ export {
   type ReviewFact,
 } from "./review";
 export { buildJsonLd } from "./graph";
-export type { JsonLdObject } from "./types";
+export type { JsonLdObject, JsonLdDocument } from "./types";

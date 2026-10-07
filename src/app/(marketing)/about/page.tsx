@@ -4,8 +4,13 @@ import Link from "next/link";
 import Image from "next/image";
 import { bookingLink } from "@/lib/whatsapp";
 import WhatsAppIcon from "@/components/marketing/WhatsAppIcon";
-import { localBusinessSchema, breadcrumbSchema } from "@/lib/seo";
+import {
+  localBusinessSchema,
+  breadcrumbSchema,
+  buildJsonLd,
+} from "@/lib/seo";
 import { buildPageMetadata } from "@/lib/seo/pageMeta";
+import JsonLd from "@/components/seo/JsonLd";
 
 export const metadata: Metadata = buildPageMetadata("about");
 
@@ -92,22 +97,17 @@ const TEAM = [
 ];
 
 export default function AboutPage() {
-  const businessSchema = localBusinessSchema();
-  const breadcrumb = breadcrumbSchema([
-    { name: "Home", url: "/" },
-    { name: "About Us", url: "/about" },
-  ]);
+  const schemas = [
+    localBusinessSchema(),
+    breadcrumbSchema([
+      { name: "Home", url: "/" },
+      { name: "About Us", url: "/about" },
+    ]),
+  ];
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(businessSchema) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }}
-      />
+      <JsonLd data={buildJsonLd(schemas)} />
 
       {/* ─── HERO ── */}
       <section className="relative pt-36 pb-24 overflow-hidden text-white">

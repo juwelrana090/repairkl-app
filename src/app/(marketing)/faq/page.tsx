@@ -4,7 +4,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { whatsappLink } from "@/lib/whatsapp";
 import WhatsAppIcon from "@/components/marketing/WhatsAppIcon";
-import { faqSchema, breadcrumbSchema } from "@/lib/seo";
+import { faqSchema, breadcrumbSchema, buildJsonLd } from "@/lib/seo";
+import JsonLd from "@/components/seo/JsonLd";
 import { buildPageMetadata } from "@/lib/seo/pageMeta";
 
 export const metadata: Metadata = buildPageMetadata("faq");
@@ -116,24 +117,17 @@ const FAQ_SECTIONS = [
 
 export default function FaqPage() {
   const allFaqs = FAQ_SECTIONS.flatMap((s) => s.faqs);
-  const schema = faqSchema(
-    allFaqs.map((f) => ({ question: f.q, answer: f.a })),
-  );
-  const breadcrumb = breadcrumbSchema([
-    { name: "Home", url: "/" },
-    { name: "FAQ", url: "/faq" },
-  ]);
+  const schemas = [
+    faqSchema(allFaqs.map((f) => ({ question: f.q, answer: f.a }))),
+    breadcrumbSchema([
+      { name: "Home", url: "/" },
+      { name: "FAQ", url: "/faq" },
+    ]),
+  ];
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }}
-      />
+      <JsonLd data={buildJsonLd(schemas)} />
 
       {/* ─── HERO ── */}
       <section className="relative pt-36 pb-24 overflow-hidden text-white">

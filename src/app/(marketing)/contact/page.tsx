@@ -1,7 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { breadcrumbSchema, localBusinessSchema } from "@/lib/seo";
+import {
+  breadcrumbSchema,
+  localBusinessSchema,
+  buildJsonLd,
+} from "@/lib/seo";
+import JsonLd from "@/components/seo/JsonLd";
 import { buildPageMetadata } from "@/lib/seo/pageMeta";
 import ContactForm from "./ContactForm";
 import { bookingLink, whatsappLink, PHONE_TEL } from "@/lib/whatsapp";
@@ -49,22 +54,17 @@ const CONTACT_INFO = [
 ];
 
 export default function ContactPage() {
-  const breadcrumb = breadcrumbSchema([
-    { name: "Home", url: "/" },
-    { name: "Contact", url: "/contact" },
-  ]);
-  const business = localBusinessSchema();
+  const schemas = [
+    localBusinessSchema(),
+    breadcrumbSchema([
+      { name: "Home", url: "/" },
+      { name: "Contact", url: "/contact" },
+    ]),
+  ];
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(business) }}
-      />
+      <JsonLd data={buildJsonLd(schemas)} />
 
       {/* ─── HERO ── */}
       <section className="relative pt-36 pb-24 overflow-hidden text-white">
