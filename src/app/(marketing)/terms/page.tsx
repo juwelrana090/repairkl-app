@@ -1,15 +1,28 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Breadcrumbs from "@/components/marketing/Breadcrumbs";
+import JsonLd from "@/components/seo/JsonLd";
+import { breadcrumbSchema, buildJsonLd } from "@/lib/seo";
 import { buildPageMetadata } from "@/lib/seo/pageMeta";
 
 export const metadata: Metadata = buildPageMetadata("terms");
+
+const BREADCRUMB = [
+  { name: "Home", url: "/" },
+  { name: "Terms of Service", url: "/terms" },
+];
 
 export default function TermsPage() {
   const lastUpdated = "June 1, 2025";
   return (
     <>
+      <JsonLd data={buildJsonLd([breadcrumbSchema(BREADCRUMB)])} />
       <section className="bg-[#001353] pt-36 pb-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <Breadcrumbs
+            className="flex justify-center mb-4"
+            items={BREADCRUMB.map(({ name, url }) => ({ label: name, href: url }))}
+          />
           <h1 className="text-4xl font-black text-white tracking-[-1px] mb-3">Terms of Service</h1>
           <p className="text-white/50 text-sm">Last updated: {lastUpdated}</p>
         </div>

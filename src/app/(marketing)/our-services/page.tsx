@@ -10,6 +10,7 @@ import {
 } from "@/lib/seo";
 import { buildPageMetadata } from "@/lib/seo/pageMeta";
 import JsonLd from "@/components/seo/JsonLd";
+import Breadcrumbs from "@/components/marketing/Breadcrumbs";
 import {
   SERVICE_ASSETS,
   FEATURE_ICONS,
@@ -19,6 +20,10 @@ import { bookingLink } from "@/lib/whatsapp";
 import WhatsAppIcon from "@/components/marketing/WhatsAppIcon";
 
 export const metadata: Metadata = buildPageMetadata("our-services");
+
+// DB-backed rating badges refresh on the ISR cycle (10 min) instead of
+// making the page dynamic on every request.
+export const revalidate = 600;
 
 type Category = {
   slug: string;
@@ -195,16 +200,13 @@ export default async function OurServicesPage() {
         </div>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <nav
-            className="flex justify-center items-center gap-2 text-sm text-white/55 mb-6"
-            aria-label="Breadcrumb"
-          >
-            <Link href="/" className="hover:text-white transition-colors">
-              Home
-            </Link>
-            <span aria-hidden="true">/</span>
-            <span className="text-white/85">Our Services</span>
-          </nav>
+          <Breadcrumbs
+            className="flex justify-center mb-6"
+            items={[
+              { label: "Home", href: "/" },
+              { label: "Our Services" },
+            ]}
+          />
           <h1 className="text-[2.6rem] sm:text-6xl font-bold tracking-[-0.03em] leading-[1.05] mb-6 max-w-[18ch] mx-auto">
             Five specialist repair services in Kuala Lumpur.
           </h1>

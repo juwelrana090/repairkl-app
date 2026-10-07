@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/auth/session";
 import { StatusBadge } from "@/components/ui";
+import { GBP_REVIEW_URL } from "@/lib/seo/site";
 import OrderActions from "./OrderActions";
 
 export default async function OrderDetailPage({
@@ -115,6 +116,27 @@ export default async function OrderDetailPage({
       </div>
 
       <OrderActions booking={booking} />
+
+      {/* Google review ask — completed bookings, only once the review URL env is set */}
+      {booking.status === "COMPLETED" && GBP_REVIEW_URL && (
+        <div className="bg-white rounded-2xl p-6 shadow-sm mt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <h3 className="font-bold text-[#001353]">Enjoyed the service?</h3>
+            <p className="text-sm text-[#5b6480] mt-1">
+              Share your experience — it helps other customers in Kuala Lumpur
+              find us.
+            </p>
+          </div>
+          <a
+            href={GBP_REVIEW_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="shrink-0 bg-[#034795] text-white font-bold text-sm px-6 py-3 rounded-[12px] hover:bg-[#0a1f63] transition-colors"
+          >
+            Leave a Google review
+          </a>
+        </div>
+      )}
     </div>
   );
 }

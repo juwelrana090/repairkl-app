@@ -45,11 +45,14 @@ proxy `PUBLIC_PATHS` whitelist is then moot.)
 | `/services?category=X` filter URLs | canonical → `/services` | Add `canonical` to filter page metadata at flip |
 | `/booking`, `/orders`, panels | unchanged | Stay auth-walled |
 
-Internal links to rewrite at flip: `PublicNav.tsx`, `PublicFooter.tsx`,
-`MarketingHome.tsx` (6 links), `not-found.tsx`, admin "View", `sitemap.ts`,
-`robots.ts` (remove `/services` from disallow), JSON-LD `url`s + breadcrumbs,
-`PAGE_META` canonicals. All go through `canonicalMap.ts` helpers, so the bulk
-is a one-file change there + the redirect block.
+Internal links to rewrite at flip: **`src/lib/navigation.ts`** (single source
+since Step 8 — PublicNav, PublicFooter service + quick links all render from
+it, so the header/footer part of the flip is one file), `MarketingHome.tsx`
+(6 links), `not-found.tsx`, admin "View", `sitemap.ts` (`sitemapSource.ts`),
+`robots.ts` (remove `/services` from disallow), JSON-LD `url`s + breadcrumbs
+(both the `breadcrumbSchema` arrays and the visible `Breadcrumbs.tsx` items on
+each marketing page), `PAGE_META` canonicals. All go through `canonicalMap.ts`
+helpers, so the bulk is a one-file change there + the redirect block.
 
 ### 3. `/our-services/[slug]` → DB-driven prep (no code yet)
 

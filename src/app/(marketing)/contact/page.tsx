@@ -7,12 +7,24 @@ import {
   buildJsonLd,
 } from "@/lib/seo";
 import JsonLd from "@/components/seo/JsonLd";
+import Breadcrumbs from "@/components/marketing/Breadcrumbs";
 import { buildPageMetadata } from "@/lib/seo/pageMeta";
 import ContactForm from "./ContactForm";
 import { bookingLink, whatsappLink, PHONE_TEL } from "@/lib/whatsapp";
 import WhatsAppIcon from "@/components/marketing/WhatsAppIcon";
+import { GBP_PLACE_ID, GBP_URL } from "@/lib/seo/site";
 
 export const metadata: Metadata = buildPageMetadata("contact");
+
+// Env-gated map (SEO plan Step 12): with NEXT_PUBLIC_GBP_PLACE_ID set, embed
+// the live Google map of the listing (no API key needed); otherwise keep the
+// static placeholder card.
+const MAP_EMBED_URL = GBP_PLACE_ID
+  ? `https://www.google.com/maps?q=place_id:${GBP_PLACE_ID}&output=embed`
+  : "";
+const MAP_LINK_URL = GBP_PLACE_ID
+  ? `https://www.google.com/maps/search/?api=1&place_id=${GBP_PLACE_ID}`
+  : (GBP_URL || "https://maps.google.com");
 
 const CONTACT_INFO = [
   {
@@ -47,7 +59,7 @@ const CONTACT_INFO = [
     title: "Visit Us",
     value: "45 Kuala Lumpur, Kuala Lumpur 1212",
     subtitle: "By appointment only",
-    href: "https://maps.google.com",
+    href: MAP_LINK_URL,
     color: "#fb6f27",
     bg: "#fff1e9",
   },
@@ -81,16 +93,13 @@ export default function ContactPage() {
           <div className="absolute inset-0 bg-[#001353]/85" />
         </div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <nav
-            className="flex justify-center items-center gap-2 text-sm text-white/50 mb-6"
-            aria-label="Breadcrumb"
-          >
-            <Link href="/" className="hover:text-white/80 transition-colors">
-              Home
-            </Link>
-            <span>/</span>
-            <span className="text-white/80">Contact</span>
-          </nav>
+          <Breadcrumbs
+            className="flex justify-center mb-6"
+            items={[
+              { label: "Home", href: "/" },
+              { label: "Contact" },
+            ]}
+          />
           <h1 className="text-5xl lg:text-7xl font-black text-white tracking-[-2px] leading-tight mb-6">
             We&apos;d Love to <br />
             <span className="text-[#034795]">Hear from You</span>
@@ -156,35 +165,46 @@ export default function ContactPage() {
               <ContactForm />
             </div>
 
-            {/* Map placeholder + info (2 cols) */}
+            {/* Map + info (2 cols) */}
             <div className="lg:col-span-2 flex flex-col gap-5">
-              {/* Map */}
-              <div className="bg-[#f5f5fa] rounded-[24px] border border-[#ddddee] overflow-hidden aspect-square flex items-center justify-center text-center p-8">
-                <div>
-                  <img
-                    src="/images/icons/pin.png"
-                    alt=""
-                    role="presentation"
-                    width={64}
-                    height={64}
-                    className="w-16 h-16 object-contain mx-auto mb-4"
-                  />
-                  <p className="font-bold text-[#001353]">
-                    Kuala Lumpur, Malaysia
-                  </p>
-                  <p className="text-[#5b6480] text-sm mt-1">
-                    45 Kuala Lumpur, Kuala Lumpur 1212
-                  </p>
-                  <a
-                    href="https://maps.google.com"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-block mt-4 text-[#034795] text-sm font-bold hover:underline"
-                  >
-                    Open in Google Maps →
-                  </a>
+              {/* Map — live embed when GBP place id is configured, placeholder otherwise */}
+              {MAP_EMBED_URL ? (
+                <iframe
+                  src={MAP_EMBED_URL}
+                  title="RepairKL location on Google Maps"
+                  loading="lazy"
+                  allowFullScreen
+                  referrerPolicy="no-referrer-when-downgrade"
+                  className="w-full h-full min-h-[320px] aspect-square rounded-[24px] border border-[#ddddee] bg-[#f5f5fa]"
+                />
+              ) : (
+                <div className="bg-[#f5f5fa] rounded-[24px] border border-[#ddddee] overflow-hidden aspect-square flex items-center justify-center text-center p-8">
+                  <div>
+                    <img
+                      src="/images/icons/pin.png"
+                      alt=""
+                      role="presentation"
+                      width={64}
+                      height={64}
+                      className="w-16 h-16 object-contain mx-auto mb-4"
+                    />
+                    <p className="font-bold text-[#001353]">
+                      Kuala Lumpur, Malaysia
+                    </p>
+                    <p className="text-[#5b6480] text-sm mt-1">
+                      45 Kuala Lumpur, Kuala Lumpur 1212
+                    </p>
+                    <a
+                      href={MAP_LINK_URL}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-block mt-4 text-[#034795] text-sm font-bold hover:underline"
+                    >
+                      Open in Google Maps →
+                    </a>
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Office hours */}
               <div className="bg-[#001353] rounded-[24px] p-7">

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { bookingLink, whatsappLink, PHONE_DISPLAY } from "@/lib/whatsapp";
 import WhatsAppIcon from "@/components/marketing/WhatsAppIcon";
@@ -405,15 +406,25 @@ function formatCount(n: number, fallback: string) {
   return `${n}+`;
 }
 
-export default async function MarketingHome() {
-  let liveStats = { customers: 0, bookings: 0, workers: 0 };
-  try {
+// Stat counters change rarely — cache for an hour so the homepage stays
+// static instead of hitting the DB on every render.
+const getLiveStats = unstable_cache(
+  async () => {
     const [customers, bookings, workers] = await Promise.all([
       prisma.user.count({ where: { role: "CUSTOMER" } }),
       prisma.booking.count(),
       prisma.worker.count({ where: { isVerified: true } }),
     ]);
-    liveStats = { customers, bookings, workers };
+    return { customers, bookings, workers };
+  },
+  ["marketing-home-stats"],
+  { revalidate: 3600 },
+);
+
+export default async function MarketingHome() {
+  let liveStats = { customers: 0, bookings: 0, workers: 0 };
+  try {
+    liveStats = await getLiveStats();
   } catch {
     /* DB not ready */
   }

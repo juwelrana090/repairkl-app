@@ -3,6 +3,28 @@ import { WHATSAPP_NUMBER } from "@/lib/whatsapp";
 export const SITE_URL =
   process.env.NEXT_PUBLIC_APP_URL ?? "https://repairkl.com";
 
+// ── Env-gated integrations (SEO plan Steps 10–13) ───────────────────────────
+// Every feature behind these stays dormant — no markup, no script, no link —
+// until the credential is set in the environment. See .env.example.
+
+/** GSC HTML-tag verification token (the content= value, not the full tag). */
+export const GSC_VERIFICATION =
+  process.env.NEXT_PUBLIC_GSC_VERIFICATION ?? "";
+
+/** Google Business Profile URL (used for "Find us on Google" + JSON-LD sameAs). */
+export const GBP_URL = process.env.NEXT_PUBLIC_GBP_URL ?? "";
+
+/** Direct review link (GBP → "Ask for reviews"). Falls back to the profile. */
+export const GBP_REVIEW_URL =
+  process.env.NEXT_PUBLIC_GBP_REVIEW_URL ?? GBP_URL;
+
+/** GBP place id — powers the embedded map on /contact (no API key needed). */
+export const GBP_PLACE_ID = process.env.NEXT_PUBLIC_GBP_PLACE_ID ?? "";
+
+/** Twitter/X handle including the @, for twitter:site. */
+export const TWITTER_HANDLE =
+  process.env.NEXT_PUBLIC_TWITTER_HANDLE ?? "";
+
 // Default social-preview image (1200x630). Kept in sync with the file in
 // /public/images/og/ — see Step 2 of the SEO plan.
 export const DEFAULT_OG_IMAGE = "/images/og/default-1200x630.jpg";

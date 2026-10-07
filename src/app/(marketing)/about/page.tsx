@@ -11,6 +11,7 @@ import {
 } from "@/lib/seo";
 import { buildPageMetadata } from "@/lib/seo/pageMeta";
 import JsonLd from "@/components/seo/JsonLd";
+import Breadcrumbs from "@/components/marketing/Breadcrumbs";
 
 export const metadata: Metadata = buildPageMetadata("about");
 
@@ -124,16 +125,13 @@ export default function AboutPage() {
           <div className="absolute inset-0 bg-[#001353]/85" />
         </div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <nav
-            className="flex justify-center items-center gap-2 text-sm text-white/50 mb-6"
-            aria-label="Breadcrumb"
-          >
-            <Link href="/" className="hover:text-white/80 transition-colors">
-              Home
-            </Link>
-            <span>/</span>
-            <span className="text-white/80">About Us</span>
-          </nav>
+          <Breadcrumbs
+            className="flex justify-center mb-6"
+            items={[
+              { label: "Home", href: "/" },
+              { label: "About Us" },
+            ]}
+          />
           <h1 className="text-5xl lg:text-7xl font-black text-white tracking-[-2px] leading-tight mb-6">
             We&apos;re on a Mission to
             <br />

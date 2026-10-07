@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import WhatsAppIcon from "@/components/marketing/WhatsAppIcon";
 import { openWhatsApp, PHONE_DISPLAY } from "@/lib/whatsapp";
+import { trackWhatsAppClick } from "@/lib/analytics/events";
 
 const QUICK_REPLIES = [
   "Fridge repair",
@@ -73,6 +74,7 @@ export default function WhatsAppChat() {
   const send = (text: string) => {
     const body =
       text.trim() || "Hi RepairKL, I need help with an appliance repair.";
+    trackWhatsAppClick("chat_widget");
     openWhatsApp(body);
     setMessage("");
   };

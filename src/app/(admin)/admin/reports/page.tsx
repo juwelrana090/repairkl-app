@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { StatCard } from "@/components/shared/Cards";
 import { buildPageMetadata } from "@/lib/seo/pageMeta";
+import { GA_ID } from "@/lib/analytics/gtag";
 
 
 export const metadata: Metadata = buildPageMetadata("admin.reports");
@@ -180,6 +181,42 @@ export default async function AdminReportsPage() {
               <p className="text-sm text-[#5b6480] text-center py-6">No revenue data yet</p>
             )}
           </div>
+        </div>
+      </div>
+
+      {/* GA4 status (SEO plan Step 10) — events are wired app-wide and dormant until the env is set */}
+      <div className="bg-white rounded-[24px] border border-[#ddddee] p-6">
+        <div className="flex items-center justify-between gap-4 flex-wrap">
+          <div>
+            <h2 className="font-bold text-[#001353] flex items-center gap-2">
+              <span
+                className={`w-2.5 h-2.5 rounded-full ${GA_ID ? "bg-[#1a8f5c]" : "bg-[#ddddee]"}`}
+                aria-hidden="true"
+              />
+              Google Analytics 4
+            </h2>
+            {GA_ID ? (
+              <p className="text-sm text-[#5b6480] mt-1">
+                Connected — measurement ID <span className="font-medium text-[#001353]">{GA_ID}</span>.
+                Tracking page views plus <code>booking_start</code>, <code>booking_complete</code>,{" "}
+                <code>whatsapp_click</code>, <code>call_click</code> and <code>contact_submit</code> events.
+              </p>
+            ) : (
+              <p className="text-sm text-[#5b6480] mt-1">
+                Not configured. Set <code className="text-[#034795]">NEXT_PUBLIC_GA_ID</code> in{" "}
+                <code>.env</code> and redeploy — tracking is already wired across the app (page views,
+                booking funnel, WhatsApp/call clicks, contact form) and activates automatically.
+              </p>
+            )}
+          </div>
+          <a
+            href="https://analytics.google.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm font-bold text-[#034795] hover:underline shrink-0"
+          >
+            Open GA4 →
+          </a>
         </div>
       </div>
     </div>

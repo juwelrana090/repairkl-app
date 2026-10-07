@@ -1,30 +1,17 @@
 import AppIcon from "@/components/ui/AppIcon";
 import Link from "next/link";
+import SmartLink from "@/components/ui/SmartLink";
 import WhatsAppChat from "@/components/marketing/WhatsAppChat";
 import WhatsAppLinkInterceptor from "@/components/marketing/WhatsAppLinkInterceptor";
 import WhatsAppIcon from "@/components/marketing/WhatsAppIcon";
 import { SOCIAL_LINKS } from "@/lib/social";
+import { GBP_URL } from "@/lib/seo/site";
+import {
+  FOOTER_LEGAL_LINKS,
+  FOOTER_QUICK_LINKS,
+  FOOTER_SERVICE_LINKS,
+} from "@/lib/navigation";
 import { bookingLink, whatsappLink, PHONE_DISPLAY } from "@/lib/whatsapp";
-
-const SERVICES = [
-  { name: "Fridge Repair", href: "/our-services/fridge-repair" },
-  {
-    name: "Washing Machine Repair",
-    href: "/our-services/washing-machine-repair",
-  },
-  { name: "Dryer Repair", href: "/our-services/dryer-repair" },
-  { name: "Air-Conditioner Service", href: "/our-services/aircond-service" },
-  { name: "AC Installation", href: "/our-services/aircond-installation" },
-];
-
-const QUICK_LINKS: { name: string; href: string; external?: boolean }[] = [
-  { name: "About Us", href: "/about" },
-  { name: "Our Services", href: "/our-services" },
-  { name: "FAQ", href: "/faq" },
-  { name: "Contact Us", href: "/contact" },
-  { name: "Book a Service", href: bookingLink(), external: true },
-  { name: "Worker Portal", href: "/login" },
-];
 
 export default function PublicFooter() {
   return (
@@ -118,6 +105,18 @@ export default function PublicFooter() {
                   <AppIcon name="pin" className="w-4 h-4" />
                   <span>Kuala Lumpur, Malaysia</span>
                 </div>
+                {/* Google Business Profile — only once NEXT_PUBLIC_GBP_URL is set */}
+                {GBP_URL && (
+                  <a
+                    href={GBP_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 text-sm text-white/70 hover:text-white transition-colors"
+                  >
+                    <AppIcon name="star" className="w-4 h-4" />
+                    <span>Find us on Google</span>
+                  </a>
+                )}
               </div>
             </div>
 
@@ -127,14 +126,14 @@ export default function PublicFooter() {
                 Our Services
               </h3>
               <ul className="space-y-2.5">
-                {SERVICES.map((s) => (
-                  <li key={s.name}>
+                {FOOTER_SERVICE_LINKS.map((s) => (
+                  <li key={s.href}>
                     <Link
                       href={s.href}
                       className="text-sm text-white/60 hover:text-[#034795] transition-colors flex items-center gap-2"
                     >
                       <span className="text-[#034795] text-xs">→</span>
-                      {s.name}
+                      {s.label}
                     </Link>
                   </li>
                 ))}
@@ -147,27 +146,16 @@ export default function PublicFooter() {
                 Quick Links
               </h3>
               <ul className="space-y-2.5">
-                {QUICK_LINKS.map((l) => (
-                  <li key={l.name}>
-                    {l.external ? (
-                      <a
-                        href={l.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-sm text-white/60 hover:text-[#034795] transition-colors flex items-center gap-2"
-                      >
-                        <span className="text-[#034795] text-xs">→</span>
-                        {l.name}
-                      </a>
-                    ) : (
-                      <Link
-                        href={l.href}
-                        className="text-sm text-white/60 hover:text-[#034795] transition-colors flex items-center gap-2"
-                      >
-                        <span className="text-[#034795] text-xs">→</span>
-                        {l.name}
-                      </Link>
-                    )}
+                {FOOTER_QUICK_LINKS.map((l) => (
+                  <li key={l.href}>
+                    {/* SmartLink: internal → next/link, WhatsApp → new tab */}
+                    <SmartLink
+                      href={l.href}
+                      className="text-sm text-white/60 hover:text-[#034795] transition-colors flex items-center gap-2"
+                    >
+                      <span className="text-[#034795] text-xs">→</span>
+                      {l.label}
+                    </SmartLink>
                   </li>
                 ))}
               </ul>
@@ -213,24 +201,15 @@ export default function PublicFooter() {
               with <AppIcon name="heart" className="w-3.5 h-3.5 text-red-500 -mt-0.5" filled /> in Malaysia.
             </p>
             <div className="flex gap-4">
-              <Link
-                href="/privacy"
-                className="text-xs text-white/40 hover:text-white/70 transition-colors"
-              >
-                Privacy Policy
-              </Link>
-              <Link
-                href="/terms"
-                className="text-xs text-white/40 hover:text-white/70 transition-colors"
-              >
-                Terms of Service
-              </Link>
-              <Link
-                href="/sitemap.xml"
-                className="text-xs text-white/40 hover:text-white/70 transition-colors"
-              >
-                Sitemap
-              </Link>
+              {FOOTER_LEGAL_LINKS.map((l) => (
+                <Link
+                  key={l.href}
+                  href={l.href}
+                  className="text-xs text-white/40 hover:text-white/70 transition-colors"
+                >
+                  {l.label}
+                </Link>
+              ))}
             </div>
           </div>
         </div>

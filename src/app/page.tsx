@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import { redirect } from "next/navigation";
-import { getSession } from "@/lib/auth/session";
 import {
   websiteSchema,
   localBusinessSchema,
@@ -14,18 +12,11 @@ import MarketingHome from "@/components/marketing/MarketingHome";
 
 export const metadata: Metadata = buildPageMetadata("home");
 
-export default async function RootPage() {
-  const session = await getSession();
-  if (session) {
-    const roleMap: Record<string, string> = {
-      ADMIN: "/admin/dashboard",
-      WORKER: "/worker/dashboard",
-      SUPPORT: "/support/dashboard",
-      CUSTOMER: "/home",
-    };
-    redirect(roleMap[session.role] ?? "/home");
-  }
+// Logged-in users are redirected to their dashboard by src/proxy.ts, so this
+// page renders for anonymous visitors only and can be ISR-cached.
+export const revalidate = 3600;
 
+export default function RootPage() {
   return (
     <>
       <JsonLd data={buildJsonLd([websiteSchema(), localBusinessSchema()])} />

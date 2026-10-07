@@ -6,15 +6,8 @@ import { useState, useEffect } from "react";
 import { twMerge } from "tailwind-merge";
 import { SOCIAL_LINKS } from "@/lib/social";
 import WhatsAppIcon from "@/components/marketing/WhatsAppIcon";
+import { PUBLIC_NAV_LINKS } from "@/lib/navigation";
 import { bookingLink, whatsappLink, PHONE_DISPLAY } from "@/lib/whatsapp";
-
-const NAV_LINKS = [
-  { href: "/", label: "Home" },
-  { href: "/our-services", label: "Services" },
-  { href: "/about", label: "About Us" },
-  { href: "/faq", label: "FAQ" },
-  { href: "/contact", label: "Contact" },
-];
 
 export default function PublicNav() {
   const pathname = usePathname();
@@ -118,7 +111,7 @@ export default function PublicNav() {
 
           {/* Desktop links */}
           <div className="hidden lg:flex items-center gap-1">
-            {NAV_LINKS.map((link) => {
+            {PUBLIC_NAV_LINKS.map((link) => {
               const isActive =
                 link.href === "/"
                   ? pathname === "/"
@@ -204,7 +197,7 @@ export default function PublicNav() {
         {/* Mobile menu */}
         {open && (
           <div className="lg:hidden bg-white border-t border-[#ddddee] py-4 px-2 flex flex-col gap-1">
-            {NAV_LINKS.map((link) => (
+            {PUBLIC_NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}

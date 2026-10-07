@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { z } from "zod";
-import { SITE, DEFAULT_OG_IMAGE } from "./site";
+import { SITE, TWITTER_HANDLE } from "./site";
 
 // Site identity (NAP single source) and all JSON-LD builders live in
 // ./site.ts and ./schema/ — re-exported here so "@/lib/seo" keeps working.
@@ -48,6 +48,12 @@ export const metaInputSchema = z.object({
   type: z.enum(["website", "article", "profile"]).optional(),
   /** Convenience shortcut for robots: { index: false, follow: false }. */
   noIndex: z.boolean().optional(),
+  /**
+   * Omit the og/twitter image entirely — for pages that ship their own
+   * file-convention card (opengraph-image.tsx in the page's segment), so
+   * the fallback below doesn't override it.
+   */
+  inheritOgImage: z.boolean().optional(),
 });
 
 export type MetaInput = z.infer<typeof metaInputSchema>;
@@ -59,7 +65,13 @@ function absoluteUrl(url: string): string {
 export function generateMeta(input: MetaInput): Metadata {
   const options = metaInputSchema.parse(input);
   const url = options.canonical ? absoluteUrl(options.canonical) : SITE.url;
-  const image = absoluteUrl(options.og?.image ?? DEFAULT_OG_IMAGE);
+  // Social images: explicit page image, else the root dynamic card
+  // (/opengraph-image — file convention in src/app/). Pages with their own
+  // file-convention card pass inheritOgImage so nothing overrides it.
+  const ogImage = options.inheritOgImage
+    ? undefined
+    : (options.og?.image ?? "/opengraph-image");
+  const twitterImage = options.twitter?.image ?? ogImage;
   const robots = options.noIndex
     ? { index: false, follow: false }
     : {
@@ -86,17 +98,21 @@ export function generateMeta(input: MetaInput): Metadata {
       description: options.og?.description ?? options.description,
       siteName: SITE.name,
       locale: "en_MY",
-      images: [{ url: image, alt: options.og?.title ?? options.title }],
+      ...(ogImage
+        ? {
+            images: [
+              { url: absoluteUrl(ogImage), alt: options.og?.title ?? options.title },
+            ],
+          }
+        : {}),
     },
     twitter: {
       card: options.twitter?.card ?? "summary_large_image",
       title: options.og?.title ?? options.title,
       description: options.og?.description ?? options.description,
-      images: [
-        absoluteUrl(
-          options.twitter?.image ?? options.og?.image ?? DEFAULT_OG_IMAGE,
-        ),
-      ],
+      ...(twitterImage ? { images: [absoluteUrl(twitterImage)] } : {}),
+      // Set globally when NEXT_PUBLIC_TWITTER_HANDLE is configured
+      ...(TWITTER_HANDLE ? { site: TWITTER_HANDLE } : {}),
     },
     robots,
   };

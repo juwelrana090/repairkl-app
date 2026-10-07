@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { PHONE_DISPLAY } from "@/lib/whatsapp";
+import { trackContactSubmit } from "@/lib/analytics/events";
 
 const SUBJECTS = [
   "General Enquiry",
@@ -46,6 +47,7 @@ export default function ContactForm() {
         return;
       }
       setSubmitted(true);
+      trackContactSubmit(form.subject);
     } catch {
       setError("Network error. Please check your connection and try again.");
     } finally {

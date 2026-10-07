@@ -14,6 +14,7 @@ import {
   SITE_URL,
 } from "@/lib/seo";
 import JsonLd from "@/components/seo/JsonLd";
+import Breadcrumbs from "@/components/marketing/Breadcrumbs";
 import {
   SERVICES,
   SERVICE_AREAS,
@@ -40,8 +41,10 @@ export async function generateMetadata({
     title: service.metaTitle,
     description: service.metaDescription,
     canonical: `/our-services/${service.slug}`,
-    og: { image: service.asset.image },
     keywords: service.keywords,
+    // Social image comes from the file-convention card in this segment
+    // ([slug]/opengraph-image.tsx) — keep generateMeta from overriding it.
+    inheritOgImage: true,
   });
 }
 
@@ -155,23 +158,14 @@ export default async function ServiceDetailPage({
         </div>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <nav
-            className="flex flex-wrap items-center gap-2 text-sm text-white/60 mb-6"
-            aria-label="Breadcrumb"
-          >
-            <Link href="/" className="hover:text-white transition-colors">
-              Home
-            </Link>
-            <span aria-hidden="true">/</span>
-            <Link
-              href="/our-services"
-              className="hover:text-white transition-colors"
-            >
-              Our Services
-            </Link>
-            <span aria-hidden="true">/</span>
-            <span className="text-white/90">{service.name}</span>
-          </nav>
+          <Breadcrumbs
+            className="mb-6"
+            items={[
+              { label: "Home", href: "/" },
+              { label: "Our Services", href: "/our-services" },
+              { label: service.name },
+            ]}
+          />
 
           <div className="max-w-3xl">
             <div className="flex items-center gap-3 mb-5">

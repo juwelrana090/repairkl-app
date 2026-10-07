@@ -1,5 +1,5 @@
 import { SOCIAL_LINKS } from "@/lib/social";
-import { SITE, SITE_URL } from "../site";
+import { GBP_URL, SITE, SITE_URL } from "../site";
 import type { JsonLdObject } from "./types";
 
 /**
@@ -7,8 +7,12 @@ import type { JsonLdObject } from "./types";
  * the NAP detail, so pages only ever emit one business entity.
  */
 export function organizationSchema(): JsonLdObject {
-  // sameAs only when real profile URLs exist — social.ts hides "#" placeholders.
-  const sameAs = SOCIAL_LINKS.map((s) => s.href);
+  // sameAs only when real URLs exist — social.ts hides entries without a URL,
+  // and the GBP profile link appears only once NEXT_PUBLIC_GBP_URL is set.
+  const sameAs = [
+    ...SOCIAL_LINKS.map((s) => s.href),
+    ...(GBP_URL ? [GBP_URL] : []),
+  ];
   return {
     "@context": "https://schema.org",
     "@type": "Organization",

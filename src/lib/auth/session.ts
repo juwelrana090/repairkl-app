@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
+import { cache } from "react";
 
 const SESSION_COOKIE = "repairkl_session";
 const TOKEN_COOKIE = "repairkl_token";
@@ -35,7 +36,9 @@ export async function createSession(payload: SessionPayload): Promise<string> {
   return token;
 }
 
-export async function getSession(): Promise<SessionPayload | null> {
+// Request-deduped: layouts, pages and API routes in the same render all
+// call getSession() — cache() verifies the JWT once per request.
+export const getSession = cache(async (): Promise<SessionPayload | null> => {
   try {
     const cookieStore = await cookies();
     const token = cookieStore.get(TOKEN_COOKIE)?.value;
@@ -44,7 +47,7 @@ export async function getSession(): Promise<SessionPayload | null> {
   } catch {
     return null;
   }
-}
+});
 
 export async function clearSession(): Promise<void> {
   const cookieStore = await cookies();

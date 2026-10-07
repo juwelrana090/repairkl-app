@@ -1,12 +1,24 @@
 import AppIcon from "@/components/ui/AppIcon";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { unstable_cache } from "next/cache";
 import { getSession } from "@/lib/auth/session";
 import Navbar from "@/components/layout/Navbar";
 import { prisma } from "@/lib/prisma";
 import type { Metadata } from "next";
 import { buildPageMetadata } from "@/lib/seo/pageMeta";
 
+// Navbar user data changes rarely — a short server-side cache (keyed by
+// userId) keeps the layout from re-querying the user row on every request.
+const getUserBrief = unstable_cache(
+  (userId: string) =>
+    prisma.user.findUnique({
+      where: { id: userId },
+      select: { fullName: true, avatarUrl: true, role: true },
+    }),
+  ["customer-navbar-user"],
+  { revalidate: 60 },
+);
 
 export const metadata: Metadata = buildPageMetadata("customer");
 
@@ -20,10 +32,7 @@ export default async function CustomerLayout({ children }: { children: React.Rea
     redirect(roleMap[session.role] ?? "/login");
   }
 
-  const user = await prisma.user.findUnique({
-    where: { id: session.userId },
-    select: { fullName: true, avatarUrl: true, role: true },
-  });
+  const user = await getUserBrief(session.userId);
 
   return (
     <div className="min-h-screen bg-[#f5f5fa]">

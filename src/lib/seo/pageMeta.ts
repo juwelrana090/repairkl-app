@@ -96,6 +96,9 @@ export const PAGE_META: Record<string, MetaInput> = {
     description:
       "See how RepairKL connects you with verified appliance repair technicians in Kuala Lumpur — book, track and pay in one place.",
     canonical: "/onboarding",
+    // Public-viewable but robots-disallowed (Step 7) — keep the three
+    // signals consistent: noindex + robots Disallow + not in sitemap.
+    noIndex: true,
   },
   "not-found": {
     title: "Page Not Found",
@@ -131,6 +134,7 @@ export const PAGE_META: Record<string, MetaInput> = {
   "admin.workers": { title: "Workers", noIndex: true },
   "admin.users": { title: "Users", noIndex: true },
   "admin.services": { title: "Services", noIndex: true },
+  "admin.services-new": { title: "New Service", noIndex: true },
   "admin.promotions": { title: "Promotions", noIndex: true },
   "admin.reports": { title: "Reports", noIndex: true },
   "admin.settings": { title: "Settings", noIndex: true },

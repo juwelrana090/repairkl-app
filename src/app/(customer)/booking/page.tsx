@@ -1,11 +1,12 @@
 "use client";
 import AppIcon from "@/components/ui/AppIcon";
-import { useState, Suspense } from "react";
+import { useState, Suspense, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { showToast } from "@/components/ui";
 import { twMerge } from "tailwind-merge";
+import { trackBookingComplete, trackBookingStart } from "@/lib/analytics/events";
 
 // ── Steps ─────────────────────────────────────────────────────────────────────
 
@@ -41,6 +42,8 @@ function BookingWizard() {
 
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
+  // Fire booking_start once, when the user first advances past the details step
+  const startedTracking = useRef(false);
   const [promoCode, setPromoCode] = useState("");
   const [promoApplied, setPromoApplied] = useState(false);
   const [notes, setNotes] = useState("");
@@ -88,6 +91,12 @@ function BookingWizard() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Booking failed");
+      const total = Number(data.booking?.totalAmount);
+      trackBookingComplete(
+        data.booking.id,
+        serviceName,
+        Number.isFinite(total) && total > 0 ? total : undefined,
+      );
       showToast("Booking confirmed!", "success");
       router.push(`/orders/${data.booking.id}`);
     } catch (err: unknown) {
@@ -329,7 +338,17 @@ function BookingWizard() {
           </Button>
         )}
         {step < STEPS.length - 1 ? (
-          <Button onClick={() => setStep(step + 1)} className="flex-1" disabled={!canNext}>
+          <Button
+            onClick={() => {
+              if (step === 0 && !startedTracking.current) {
+                startedTracking.current = true;
+                trackBookingStart(serviceName);
+              }
+              setStep(step + 1);
+            }}
+            className="flex-1"
+            disabled={!canNext}
+          >
             Next →
           </Button>
         ) : (

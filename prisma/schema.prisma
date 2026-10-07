@@ -67,6 +67,33 @@ enum TicketPriority {
   URGENT
 }
 
+enum PageStatus {
+  DRAFT
+  PUBLISHED
+}
+
+// Section building blocks for DB-driven marketing pages (Step 17 registry
+// maps each type to a component + Zod props schema in src/lib/sections/).
+enum SectionType {
+  HERO
+  SERVICE_GRID
+  RICH_TEXT
+  STATS
+  FAQ
+  CTA
+  TESTIMONIALS
+  CONTACT_INFO
+  TIMELINE
+  VALUES
+  IMAGE_TEXT
+}
+
+enum NavigationLocation {
+  HEADER
+  FOOTER
+  MOBILE
+}
+
 // ─── Users ──────────────────────────────────────────────────────────────────────
 
 model User {
@@ -420,4 +447,154 @@ model Banner {
   createdAt DateTime @default(now())
 
   @@map("banners")
+}
+
+// ─── CMS (SEO plan Step 15) ─────────────────────────────────────────────────────
+// Data layer only — admin UI arrives in Steps 16–18. Marketing pages keep
+// rendering from code until Step 17/18 swap them to these tables.
+
+/// Singleton row (id = 1): site identity every page can rely on. Null fields
+/// fall back to the code defaults in src/lib/seo/site.ts, so the admin can
+/// adopt the DB values field by field (Step 16 form).
+model SiteSetting {
+  id           Int      @id @default(1)
+
+  // NAP (name / address / phone)
+  siteName     String   @default("RepairKL") @db.VarChar(120)
+  tagline      String?  @db.VarChar(191)
+  phone        String?  @db.VarChar(30) // E.164, e.g. +601155804809
+  phoneDisplay String?  @db.VarChar(60) // e.g. +60 11-5580 4809
+  email        String?  @db.VarChar(191)
+  addressLine  String?  @db.VarChar(191)
+  city         String?  @db.VarChar(120)
+  region       String?  @db.VarChar(120)
+  postalCode   String?  @db.VarChar(20)
+  countryCode  String?  @db.VarChar(2)
+  latitude     Float?
+  longitude    Float?
+
+  // Opening hours — { days: string[], opens: "08:00", closes: "22:00" }
+  openingHours Json?
+
+  // Social + external profiles — [{ platform: string, url: string }]
+  socialProfiles Json?
+
+  // Analytics / verification IDs (seeded from the NEXT_PUBLIC_* envs; the
+  // admin form in Step 16 shows and edits these)
+  gaMeasurementId String? @db.VarChar(60)
+  gscVerification String? @db.VarChar(191)
+  gbpUrl           String? @db.VarChar(500)
+  gbpReviewUrl     String? @db.VarChar(500)
+  gbpPlaceId       String? @db.VarChar(191)
+  twitterHandle    String? @db.VarChar(60)
+
+  // Defaults
+  defaultOgImage String? @db.VarChar(500)
+  robotsTxtExtra String? @db.Text
+
+  updatedAt     DateTime @updatedAt
+
+  @@map("site_settings")
+}
+
+/// Per-page SEO metadata. pageKey mirrors the PAGE_META registry keys in
+/// src/lib/seo/pageMeta.ts ("home", "about", "our-services/fridge-repair"…);
+/// that file stays the fallback until pages read from here (Step 18).
+model SeoMeta {
+  id              String   @id @default(cuid()) @db.VarChar(36)
+  pageKey         String   @unique @db.VarChar(191)
+  title           String   @db.VarChar(191)
+  description     String?  @db.VarChar(320)
+  canonical       String?  @db.VarChar(500)
+  keywords        Json? // string[]
+  robots          Json? // { index, follow, noIndex … } as MetaInput.robots
+  og              Json? // { title, description, image }
+  twitter         Json? // { card, image }
+  schemaType      String?  @db.VarChar(120)
+  breadcrumbTitle String?  @db.VarChar(191)
+  updatedAt       DateTime @updatedAt
+
+  page            Page?
+
+  @@map("seo_meta")
+}
+
+/// A DB-driven marketing page. slug is site-relative without leading slash;
+/// the home page uses slug "home". Step 18's catch-all (marketing)/[slug]
+/// renders PUBLISHED pages through the section registry.
+model Page {
+  id          String     @id @default(cuid()) @db.VarChar(36)
+  slug        String     @unique @db.VarChar(191)
+  title       String     @db.VarChar(191)
+  status      PageStatus @default(DRAFT)
+  template    String?    @db.VarChar(120)
+  // privacy/terms: no delete, no unpublish (Step 18 guard)
+  isProtected Boolean    @default(false)
+  seoMetaId   String?    @unique @db.VarChar(36)
+  seoMeta     SeoMeta?   @relation(fields: [seoMetaId], references: [id], onDelete: SetNull)
+  publishedAt DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  sections    PageSection[]
+
+  @@map("pages")
+}
+
+/// One renderable block of a Page, ordered top-to-bottom. props shape is
+/// validated per SectionType by the Zod schemas in src/lib/sections/schemas.ts
+/// (Step 17); parse failures skip the section, never crash the page.
+model PageSection {
+  id        String      @id @default(cuid()) @db.VarChar(36)
+  pageId    String      @db.VarChar(36)
+  page      Page        @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  order     Int         @default(0)
+  type      SectionType
+  props     Json
+  isVisible Boolean     @default(true)
+  updatedAt DateTime    @updatedAt
+
+  @@index([pageId, order])
+  @@map("page_sections")
+}
+
+/// Media library entry. alt is REQUIRED (accessibility + image SEO) — the
+/// admin upload form (Step 16) refuses to save without it.
+model MediaAsset {
+  id           String   @id @default(cuid()) @db.VarChar(36)
+  url          String   @db.VarChar(500)
+  alt          String   @db.VarChar(500)
+  width        Int?
+  height       Int?
+  focusKeyword String?  @db.VarChar(191)
+  uploadedBy   String?  @db.VarChar(36) // User.id, no FK — stays decoupled
+  createdAt    DateTime @default(now())
+
+  @@index([createdAt])
+  @@map("media_assets")
+}
+
+/// Header/footer/mobile menus. items holds MenuItem[] in the shape of
+/// src/lib/navigation.ts — the code file stays the fallback until the
+/// layouts read from here (Step 18+).
+model Navigation {
+  id        String             @id @default(cuid()) @db.VarChar(36)
+  location  NavigationLocation @unique
+  items     Json
+  updatedAt DateTime           @updatedAt
+
+  @@map("navigations")
+}
+
+/// Managed redirects (e.g. /ac-repair → /our-services/aircond-service).
+/// `from`/`to` are site-relative paths; statusCode 301 or 302.
+model Redirect {
+  id         String   @id @default(cuid()) @db.VarChar(36)
+  from       String   @unique @map("from_path") @db.VarChar(500)
+  to         String   @db.VarChar(500)
+  statusCode Int      @default(301)
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+
+  @@map("redirects")
 }
