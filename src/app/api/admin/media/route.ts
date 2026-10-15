@@ -5,6 +5,34 @@ import { PERMISSIONS } from "@/lib/auth/permissions";
 import { prisma } from "@/lib/prisma";
 import { saveUpload } from "@/lib/media/storage";
 
+// GET /api/admin/media — recent assets for the Media picker (RichTextEditor).
+// Editors who can edit content need to pick images, so either permission works.
+export async function GET() {
+  try {
+    const session = await getSession();
+    if (
+      !session ||
+      !(
+        (await sessionHasPermission(session, PERMISSIONS.MEDIA_MANAGE)) ||
+        (await sessionHasPermission(session, PERMISSIONS.CONTENT_EDIT))
+      )
+    ) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const rows = await prisma.mediaAsset.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 100,
+      select: { id: true, url: true, alt: true, width: true, height: true },
+    });
+
+    return NextResponse.json({ data: rows });
+  } catch (error) {
+    console.error("[ADMIN_MEDIA_GET]", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
+}
+
 // POST /api/admin/media — multipart upload (file + alt + focusKeyword)
 export async function POST(request: NextRequest) {
   try {

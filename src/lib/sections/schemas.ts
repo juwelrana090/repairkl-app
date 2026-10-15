@@ -154,9 +154,12 @@ export const richTextBlockSchema = z.discriminatedUnion("type", [
   }),
 ]);
 
+// `html` is Tiptap output from RichTextEditor (sanitized again at render time).
+// `blocks` is the legacy format; it renders only when `html` is absent.
 export const richTextSchema = z.object({
   heading: z.string().min(1).optional(),
   lead: z.string().optional(),
+  html: z.string().max(200_000).optional(),
   blocks: z.array(richTextBlockSchema).default([]),
 });
 export type RichTextProps = z.infer<typeof richTextSchema>;

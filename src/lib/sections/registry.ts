@@ -90,7 +90,7 @@ export const SECTION_REGISTRY: Record<SectionType, SectionRegistration> = {
   }),
   [SectionType.RICH_TEXT]: register("Rich text", richTextSchema, RichTextSection, {
     heading: "About this page",
-    blocks: [{ type: "paragraph", text: "Write your copy here." }],
+    html: "<p>Write your copy here.</p>",
   }),
   [SectionType.FAQ]: register("FAQ", faqSchema, FaqSection, {
     heading: "Common questions",

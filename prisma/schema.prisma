@@ -533,6 +533,7 @@ model SeoMeta {
   updatedAt       DateTime @updatedAt
 
   page            Page?
+  post            Post?
 
   @@map("seo_meta")
 }
@@ -615,4 +616,69 @@ model Redirect {
   createdAt  DateTime @default(now())
 
   @@map("redirects")
+}
+
+// ─── Blog (Phase D) ───────────────────────────────────────────────────────────
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+}
+
+/// Blog post. A PUBLISHED post with publishedAt in the future is "scheduled":
+/// public routes show it only once publishedAt <= now.
+/// contentJson = Tiptap JSON (editing); contentHtml = sanitized-on-render HTML.
+model Post {
+  id             String     @id @default(cuid()) @db.VarChar(36)
+  slug           String     @unique @db.VarChar(191)
+  title          String     @db.VarChar(191)
+  excerpt        String?    @db.VarChar(500)
+  contentJson    Json?
+  contentHtml    String?    @db.Text
+  coverMediaId   String?    @db.VarChar(36) // MediaAsset.id, no FK — same as uploadedBy
+  status         PostStatus @default(DRAFT)
+  publishedAt    DateTime?
+  authorId       String?    @db.VarChar(36) // User.id, no FK
+  categoryId     String?    @db.VarChar(36)
+  category       PostCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  seoMetaId      String?    @unique @db.VarChar(36)
+  seoMeta        SeoMeta?   @relation(fields: [seoMetaId], references: [id], onDelete: SetNull)
+  readingMinutes Int        @default(0)
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  tags           PostTag[]
+
+  @@index([status, publishedAt])
+  @@index([categoryId])
+  @@map("posts")
+}
+
+model PostCategory {
+  id    String @id @default(cuid()) @db.VarChar(36)
+  slug  String @unique @db.VarChar(191)
+  name  String @db.VarChar(191)
+  posts Post[]
+
+  @@map("post_categories")
+}
+
+model Tag {
+  id    String    @id @default(cuid()) @db.VarChar(36)
+  slug  String    @unique @db.VarChar(191)
+  name  String    @db.VarChar(191)
+  posts PostTag[]
+
+  @@map("tags")
+}
+
+model PostTag {
+  postId String @db.VarChar(36)
+  tagId  String @db.VarChar(36)
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([postId, tagId])
+  @@index([tagId])
+  @@map("post_tags")
 }
