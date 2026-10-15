@@ -14,9 +14,13 @@ export interface RichTextValue {
   json: JSONContent;
 }
 
+export type HeadingLevel = 1 | 2 | 3 | 4;
+
 interface RichTextEditorProps {
   initialContent?: JSONContent | string;
   placeholder?: string;
+  /** Heading levels offered in the toolbar. Posts keep H2/H3; the page builder passes H1–H4. */
+  headingLevels?: HeadingLevel[];
   onChange?: (value: RichTextValue) => void;
 }
 
@@ -29,6 +33,7 @@ const btnActive = "bg-[#034795] text-white hover:bg-[#034795]";
 export default function RichTextEditor({
   initialContent,
   placeholder = "Start writing…",
+  headingLevels = [2, 3],
   onChange,
 }: RichTextEditorProps) {
   const [pickerOpen, setPickerOpen] = useState(false);
@@ -40,7 +45,7 @@ export default function RichTextEditor({
     shouldRerenderOnTransaction: true,
     extensions: [
       StarterKit.configure({
-        heading: { levels: [2, 3] },
+        heading: { levels: headingLevels },
         link: { openOnClick: false, autolink: true },
       }),
       Image,
@@ -97,6 +102,7 @@ export default function RichTextEditor({
     <div className="rounded-[16px] border border-[#ddddee] bg-white overflow-hidden">
       <Toolbar
         editor={editor}
+        headingLevels={headingLevels}
         onLinkClick={openLinkInput}
         onImageClick={() => setPickerOpen(true)}
       />
@@ -140,33 +146,29 @@ export default function RichTextEditor({
 
 interface ToolbarProps {
   editor: Editor;
+  headingLevels: HeadingLevel[];
   onLinkClick: () => void;
   onImageClick: () => void;
 }
 
-function Toolbar({ editor, onLinkClick, onImageClick }: ToolbarProps) {
+function Toolbar({ editor, headingLevels, onLinkClick, onImageClick }: ToolbarProps) {
   const chain = () => editor.chain().focus();
 
   const btn = (active: boolean) => `${btnBase} ${active ? btnActive : ""}`;
 
   return (
     <div className="flex flex-wrap items-center gap-1 px-3 py-2 border-b border-[#ddddee] bg-[#f8f9fc]">
-      <button
-        type="button"
-        title="Heading 2"
-        onClick={() => chain().toggleHeading({ level: 2 }).run()}
-        className={btn(editor.isActive("heading", { level: 2 }))}
-      >
-        H2
-      </button>
-      <button
-        type="button"
-        title="Heading 3"
-        onClick={() => chain().toggleHeading({ level: 3 }).run()}
-        className={btn(editor.isActive("heading", { level: 3 }))}
-      >
-        H3
-      </button>
+      {headingLevels.map((level) => (
+        <button
+          key={level}
+          type="button"
+          title={`Heading ${level}`}
+          onClick={() => chain().toggleHeading({ level }).run()}
+          className={btn(editor.isActive("heading", { level }))}
+        >
+          H{level}
+        </button>
+      ))}
 
       <Divider />
 

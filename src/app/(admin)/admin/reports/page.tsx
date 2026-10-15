@@ -1,11 +1,17 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import { prisma } from "@/lib/prisma";
-import { StatCard } from "@/components/shared/Cards";
 import { buildPageMetadata } from "@/lib/seo/pageMeta";
 import { GA_ID } from "@/lib/analytics/gtag";
-
+import AppIcon from "@/components/ui/AppIcon";
+import AdminPageHeader from "@/components/admin/ui/PageHeader";
+import { AdminCard } from "@/components/admin/ui/Card";
+import AdminBadge from "@/components/admin/ui/Badge";
 
 export const metadata: Metadata = buildPageMetadata("admin.reports");
+
+const STAT_ICON = "flex h-12 w-12 items-center justify-center rounded-xl bg-[#eaf0f8] text-[#034795]";
+const BAR_TRACK = "relative w-full rounded-t-lg bg-[#f0f2f7]";
 
 export default async function AdminReportsPage() {
   const now = new Date();
@@ -78,147 +84,186 @@ export default async function AdminReportsPage() {
   const maxRevenue = Math.max(...monthlyRevenue.map((r) => Number(r._sum.amount ?? 0)), 1);
 
   return (
-    <div className="flex flex-col gap-8">
-      <div>
-        <h1 className="text-2xl font-bold text-[#001353] tracking-[-0.5px]">Reports & Analytics</h1>
-        <p className="text-sm text-[#5b6480] mt-1">Business performance overview</p>
-      </div>
+    <div className="flex flex-col gap-6">
+      <AdminPageHeader title="Reports & Analytics" description="Business performance overview" />
 
       {/* KPIs */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard label="Total Revenue" value={`RM${(Number(totalRevenue._sum.amount ?? 0) / 1000).toFixed(0)}K`} icon="wallet" color="#034795" change="+8% vs last month" changeType="up" />
-        <StatCard label="Total Bookings" value={totalBookings.toLocaleString()} icon="clipboard" color="#1a8f5c" change="+12%" changeType="up" />
-        <StatCard label="Total Customers" value={totalCustomers.toLocaleString()} icon="users" color="#fb6f27" />
-        <StatCard label="Active Workers" value={totalWorkers} icon="hardHat" color="#e0972f" />
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <StatTile
+          label="Total revenue"
+          value={`RM${(Number(totalRevenue._sum.amount ?? 0) / 1000).toFixed(0)}K`}
+          icon="wallet"
+          badge={<AdminBadge color="success" size="sm">+8%</AdminBadge>}
+          hint="vs last month"
+        />
+        <StatTile
+          label="Total bookings"
+          value={totalBookings.toLocaleString()}
+          icon="clipboard"
+          badge={<AdminBadge color="success" size="sm">+12%</AdminBadge>}
+          hint="vs last month"
+        />
+        <StatTile label="Total customers" value={totalCustomers.toLocaleString()} icon="users" />
+        <StatTile label="Verified workers" value={String(totalWorkers)} icon="hardHat" />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
         {/* Monthly bookings bar chart */}
-        <div className="bg-white rounded-[24px] border border-[#ddddee] p-6">
-          <h2 className="font-bold text-[#001353] mb-6">Monthly Bookings</h2>
-          <div className="flex items-end gap-3 h-40">
+        <AdminCard title="Monthly bookings" desc="New bookings over the last 6 months.">
+          <div className="flex h-56 items-end gap-3">
             {months.map(({ label }, i) => {
               const count = monthlyBookings[i];
               const height = maxMonthly > 0 ? (count / maxMonthly) * 100 : 0;
               return (
-                <div key={label} className="flex-1 flex flex-col items-center gap-2">
-                  <span className="text-xs font-bold text-[#001353]">{count}</span>
-                  <div className="w-full bg-[#eeeef6] rounded-t-[8px] relative" style={{ height: "120px" }}>
-                    <div className="absolute bottom-0 left-0 right-0 bg-[#034795] rounded-t-[8px] transition-all" style={{ height: `${height}%` }} />
+                <div key={label} className="flex flex-1 flex-col items-center gap-2">
+                  <span className="text-xs font-semibold text-[#001353]">{count}</span>
+                  <div className={BAR_TRACK} style={{ height: "160px" }}>
+                    <div className="absolute bottom-0 left-0 right-0 rounded-t-lg bg-[#034795] transition-all" style={{ height: `${height}%` }} />
                   </div>
-                  <span className="text-[10px] text-[#5b6480]">{label}</span>
+                  <span className="text-[11px] text-[#5b6480]">{label}</span>
                 </div>
               );
             })}
           </div>
-        </div>
+        </AdminCard>
 
         {/* Monthly revenue */}
-        <div className="bg-white rounded-[24px] border border-[#ddddee] p-6">
-          <h2 className="font-bold text-[#001353] mb-6">Monthly Revenue (RM)</h2>
-          <div className="flex items-end gap-3 h-40">
+        <AdminCard title="Monthly revenue (RM)" desc="Paid payments over the last 6 months.">
+          <div className="flex h-56 items-end gap-3">
             {months.map(({ label }, i) => {
               const amount = Number(monthlyRevenue[i]._sum.amount ?? 0);
               const height = maxRevenue > 0 ? (amount / maxRevenue) * 100 : 0;
               return (
-                <div key={label} className="flex-1 flex flex-col items-center gap-2">
-                  <span className="text-[10px] font-bold text-[#001353]">RM{(amount / 1000).toFixed(0)}K</span>
-                  <div className="w-full bg-[#eeeef6] rounded-t-[8px] relative" style={{ height: "120px" }}>
-                    <div className="absolute bottom-0 left-0 right-0 bg-[#1a8f5c] rounded-t-[8px] transition-all" style={{ height: `${height}%` }} />
+                <div key={label} className="flex flex-1 flex-col items-center gap-2">
+                  <span className="text-[11px] font-semibold text-[#001353]">RM{(amount / 1000).toFixed(0)}K</span>
+                  <div className={BAR_TRACK} style={{ height: "160px" }}>
+                    <div className="absolute bottom-0 left-0 right-0 rounded-t-lg bg-[#1a8f5c] transition-all" style={{ height: `${height}%` }} />
                   </div>
-                  <span className="text-[10px] text-[#5b6480]">{label}</span>
+                  <span className="text-[11px] text-[#5b6480]">{label}</span>
                 </div>
               );
             })}
           </div>
-        </div>
+        </AdminCard>
 
         {/* Top services */}
-        <div className="bg-white rounded-[24px] border border-[#ddddee] p-6">
-          <h2 className="font-bold text-[#001353] mb-4">Top Services by Bookings</h2>
-          <div className="space-y-3">
+        <AdminCard title="Top services by bookings" desc="Five most booked services.">
+          <div className="space-y-4">
             {topServices.map((s, i) => {
               const max = topServices[0]._count.bookings || 1;
               const pct = (s._count.bookings / max) * 100;
               return (
                 <div key={s.id}>
-                  <div className="flex justify-between text-sm mb-1">
-                    <span className="font-medium text-[#001353] flex items-center gap-2">
-                      <span className="w-5 h-5 rounded-full bg-[#eaf0f8] text-[#034795] text-xs flex items-center justify-center font-bold">{i + 1}</span>
+                  <div className="mb-1.5 flex items-center justify-between text-sm">
+                    <span className="flex items-center gap-2 font-medium text-[#001353]">
+                      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#eaf0f8] text-xs font-semibold text-[#034795]">{i + 1}</span>
                       {s.name}
                     </span>
-                    <span className="font-bold text-[#034795]">{s._count.bookings}</span>
+                    <span className="font-semibold text-[#034795]">{s._count.bookings}</span>
                   </div>
-                  <div className="h-1.5 bg-[#eeeef6] rounded-full overflow-hidden">
-                    <div className="h-full bg-[#034795] rounded-full" style={{ width: `${pct}%` }} />
+                  <div className="h-2 overflow-hidden rounded-full bg-[#f0f2f7]">
+                    <div className="h-full rounded-full bg-[#034795]" style={{ width: `${pct}%` }} />
                   </div>
                 </div>
               );
             })}
           </div>
-        </div>
+        </AdminCard>
 
         {/* Revenue by category */}
-        <div className="bg-white rounded-[24px] border border-[#ddddee] p-6">
-          <h2 className="font-bold text-[#001353] mb-4">Revenue by Category</h2>
-          <div className="space-y-3">
-            {catRevenue.filter((c) => c.total > 0).slice(0, 6).map((cat, i) => {
+        <AdminCard title="Revenue by category" desc="Paid bookings grouped by service category.">
+          <div className="space-y-4">
+            {catRevenue.filter((c) => c.total > 0).slice(0, 6).map((cat) => {
               const max = catRevenue[0]?.total || 1;
               const pct = (cat.total / max) * 100;
               return (
                 <div key={cat.name}>
-                  <div className="flex justify-between text-sm mb-1">
+                  <div className="mb-1.5 flex items-center justify-between text-sm">
                     <span className="font-medium text-[#001353]">{cat.name}</span>
-                    <span className="font-bold" style={{ color: cat.color }}>RM{cat.total.toLocaleString()}</span>
+                    <span className="font-semibold" style={{ color: cat.color }}>RM{cat.total.toLocaleString()}</span>
                   </div>
-                  <div className="h-1.5 bg-[#eeeef6] rounded-full overflow-hidden">
+                  <div className="h-2 overflow-hidden rounded-full bg-[#f0f2f7]">
                     <div className="h-full rounded-full" style={{ width: `${pct}%`, background: cat.color }} />
                   </div>
                 </div>
               );
             })}
             {catRevenue.every((c) => c.total === 0) && (
-              <p className="text-sm text-[#5b6480] text-center py-6">No revenue data yet</p>
+              <p className="py-6 text-center text-sm text-[#5b6480]">No revenue data yet</p>
             )}
           </div>
-        </div>
+        </AdminCard>
       </div>
 
       {/* GA4 status (SEO plan Step 10) — events are wired app-wide and dormant until the env is set */}
-      <div className="bg-white rounded-[24px] border border-[#ddddee] p-6">
-        <div className="flex items-center justify-between gap-4 flex-wrap">
-          <div>
-            <h2 className="font-bold text-[#001353] flex items-center gap-2">
-              <span
-                className={`w-2.5 h-2.5 rounded-full ${GA_ID ? "bg-[#1a8f5c]" : "bg-[#ddddee]"}`}
-                aria-hidden="true"
-              />
-              Google Analytics 4
-            </h2>
-            {GA_ID ? (
-              <p className="text-sm text-[#5b6480] mt-1">
-                Connected — measurement ID <span className="font-medium text-[#001353]">{GA_ID}</span>.
-                Tracking page views plus <code>booking_start</code>, <code>booking_complete</code>,{" "}
-                <code>whatsapp_click</code>, <code>call_click</code> and <code>contact_submit</code> events.
-              </p>
-            ) : (
-              <p className="text-sm text-[#5b6480] mt-1">
-                Not configured. Set <code className="text-[#034795]">NEXT_PUBLIC_GA_ID</code> in{" "}
-                <code>.env</code> and redeploy — tracking is already wired across the app (page views,
-                booking funnel, WhatsApp/call clicks, contact form) and activates automatically.
-              </p>
-            )}
+      <AdminCard
+        title="Google Analytics 4"
+        actions={
+          <div className="flex items-center gap-3">
+            <AdminBadge color={GA_ID ? "success" : "neutral"} size="sm">
+              {GA_ID ? "Connected" : "Not configured"}
+            </AdminBadge>
+            <a
+              href="https://analytics.google.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="cursor-pointer text-sm font-medium text-[#034795] hover:text-[#023a7a]"
+            >
+              Open GA4 →
+            </a>
           </div>
-          <a
-            href="https://analytics.google.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm font-bold text-[#034795] hover:underline shrink-0"
-          >
-            Open GA4 →
-          </a>
+        }
+      >
+        <p className="text-sm text-[#5b6480]">
+          {GA_ID ? (
+            <>
+              Connected — measurement ID <span className="font-medium text-[#001353]">{GA_ID}</span>.
+              Tracking page views plus <code>booking_start</code>, <code>booking_complete</code>,{" "}
+              <code>whatsapp_click</code>, <code>call_click</code> and <code>contact_submit</code> events.
+            </>
+          ) : (
+            <>
+              Not configured. Set <code className="text-[#034795]">NEXT_PUBLIC_GA_ID</code> in{" "}
+              <code>.env</code> and redeploy — tracking is already wired across the app (page views,
+              booking funnel, WhatsApp/call clicks, contact form) and activates automatically.
+            </>
+          )}
+        </p>
+      </AdminCard>
+    </div>
+  );
+}
+
+function StatTile({
+  label,
+  value,
+  icon,
+  badge,
+  hint,
+}: {
+  label: string;
+  value: string;
+  icon: string;
+  badge?: ReactNode;
+  hint?: string;
+}) {
+  return (
+    <div className="rounded-2xl border border-[#e4e7f0] bg-white p-5 shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)]">
+      <div className="flex items-start justify-between gap-4">
+        <div className="min-w-0">
+          <p className="text-sm text-[#5b6480]">{label}</p>
+          <p className="mt-2 text-2xl font-semibold text-[#001353]">{value}</p>
+        </div>
+        <div className={`${STAT_ICON} shrink-0`}>
+          <AppIcon name={icon} className="h-6 w-6" />
         </div>
       </div>
+      {(badge || hint) && (
+        <div className="mt-3 flex items-center gap-2 text-sm">
+          {badge}
+          {hint && <span className="text-[#5b6480]">{hint}</span>}
+        </div>
+      )}
     </div>
   );
 }

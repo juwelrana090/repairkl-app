@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { buildPageMetadata } from "@/lib/seo/pageMeta";
@@ -46,30 +45,24 @@ export default async function AdminUserEditPage({
       : [];
 
   return (
-    <div className="flex flex-col gap-6">
-      <Link href={`/admin/users/${u.id}`} className="text-sm font-semibold text-[#034795] hover:underline w-fit">
-        ← Back to user profile
-      </Link>
-
-      <EditUserClient
-        user={{
-          id: u.id,
-          fullName: u.fullName,
-          email: u.email,
-          phone: u.phone,
-          role: u.role,
-          isActive: u.isActive,
-          isSelf,
-          address: {
-            street: u.address?.street ?? "",
-            city: u.address?.city ?? "",
-            state: u.address?.state ?? "",
-            zipCode: u.address?.zipCode ?? "",
-            country: u.address?.country ?? "",
-          },
-        }}
-        roleOptions={roleOptions}
-      />
-    </div>
+    <EditUserClient
+      user={{
+        id: u.id,
+        fullName: u.fullName,
+        email: u.email,
+        phone: u.phone,
+        role: u.role,
+        isActive: u.isActive,
+        isSelf,
+        address: {
+          street: u.address?.street ?? "",
+          city: u.address?.city ?? "",
+          state: u.address?.state ?? "",
+          zipCode: u.address?.zipCode ?? "",
+          country: u.address?.country ?? "",
+        },
+      }}
+      roleOptions={roleOptions}
+    />
   );
 }

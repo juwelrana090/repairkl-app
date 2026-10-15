@@ -121,6 +121,12 @@ export default function PagesClient({ pages }: { pages: AdminPageRow[] }) {
                         >
                           View
                         </Link>
+                        <Link
+                          href={`/admin/pages/${p.id}/builder`}
+                          className="inline-flex h-8 items-center rounded-[16px] border border-[#d0d5dd] bg-white px-3 text-xs font-medium text-[#3d4766] transition-colors hover:bg-[#f9fafb]"
+                        >
+                          Build
+                        </Link>
                         <AdminButton
                           type="button"
                           variant="outline"

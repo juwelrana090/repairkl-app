@@ -1,4 +1,4 @@
-// Central map of RepairKL icon + photo assets (files live in /public/images).
+// Central map of RepairKL icon + photo assets (files live in /public/assets/images).
 // Import from here instead of hard-coding paths or emojis in components.
 
 const ICONS = "/assets/images/icons";

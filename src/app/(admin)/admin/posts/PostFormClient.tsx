@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import type { JSONContent } from "@tiptap/react";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
 import { showToast } from "@/components/ui";
+import AdminButton from "@/components/admin/ui/Button";
+import { AdminCard } from "@/components/admin/ui/Card";
+import { AdminInput, AdminLabel, AdminSelect, AdminTextarea } from "@/components/admin/ui/Field";
 import RichTextEditor, { type RichTextValue } from "@/components/admin/rich-text/RichTextEditor";
 import MediaPickerModal, { type PickedMedia } from "@/components/admin/rich-text/MediaPickerModal";
 
@@ -31,29 +32,25 @@ export interface PostFormValues {
   seo: { title: string; description: string; ogImage: string };
 }
 
-function Field({
+function FormField({
+  id,
   label,
   hint,
   children,
 }: {
+  id: string;
   label: string;
   hint?: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
-    <div>
-      <p className="text-xs font-bold text-[#001353] mb-1.5">{label}</p>
+    <div className="flex flex-col gap-1.5">
+      <AdminLabel htmlFor={id}>{label}</AdminLabel>
       {children}
-      {hint && <p className="text-[11px] text-[#5b6480] mt-1">{hint}</p>}
+      {hint && <p className="text-xs text-[#5b6480]">{hint}</p>}
     </div>
   );
 }
-
-const textAreaClass =
-  "w-full border border-[#ddddee] rounded-[12px] px-4 py-3 text-sm text-[#001353] outline-none focus:border-[#034795] resize-y";
-
-const selectClass =
-  "w-full h-11 border border-[#ddddee] rounded-[12px] px-4 text-sm text-[#001353] bg-white outline-none focus:border-[#034795]";
 
 function slugify(text: string) {
   return text
@@ -162,154 +159,171 @@ export default function PostFormClient({
   const serpUrl = `repairkl.com/blog/${form.slug || "your-post-slug"}`;
 
   return (
-    <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 items-start">
+    <div className="grid grid-cols-1 items-start gap-6 xl:grid-cols-3">
       {/* ── Main column ── */}
-      <div className="xl:col-span-2 flex flex-col gap-6">
-        <div className="bg-white rounded-[24px] border border-[#ddddee] p-6 flex flex-col gap-5">
-          <Field label="Title">
-            <Input
-              value={form.title}
-              maxLength={191}
-              onChange={(e) => onTitleChange(e.target.value)}
-            />
-          </Field>
-          <Field label="Slug" hint="URL path: /blog/<slug>. Auto-filled from title until edited.">
-            <Input
-              value={form.slug}
-              maxLength={191}
-              onChange={(e) => {
-                setSlugTouched(true);
-                set("slug", slugify(e.target.value));
-              }}
-            />
-          </Field>
-          <Field label="Excerpt" hint="Short summary for the blog list and search snippets.">
-            <textarea
-              rows={3}
-              maxLength={500}
-              className={textAreaClass}
-              value={form.excerpt}
-              onChange={(e) => set("excerpt", e.target.value)}
-            />
-          </Field>
-        </div>
+      <div className="flex flex-col gap-6 xl:col-span-2">
+        <AdminCard title="Post details">
+          <div className="flex flex-col gap-5">
+            <FormField id="post-title" label="Title">
+              <AdminInput
+                id="post-title"
+                value={form.title}
+                maxLength={191}
+                onChange={(e) => onTitleChange(e.target.value)}
+              />
+            </FormField>
+            <FormField id="post-slug" label="Slug" hint="URL path: /blog/<slug>. Auto-filled from title until edited.">
+              <AdminInput
+                id="post-slug"
+                value={form.slug}
+                maxLength={191}
+                onChange={(e) => {
+                  setSlugTouched(true);
+                  set("slug", slugify(e.target.value));
+                }}
+              />
+            </FormField>
+            <FormField id="post-excerpt" label="Excerpt" hint="Short summary for the blog list and search snippets.">
+              <AdminTextarea
+                id="post-excerpt"
+                rows={3}
+                maxLength={500}
+                value={form.excerpt}
+                onChange={(e) => set("excerpt", e.target.value)}
+              />
+            </FormField>
+          </div>
+        </AdminCard>
 
-        <div className="bg-white rounded-[24px] border border-[#ddddee] p-6 flex flex-col gap-3">
-          <p className="text-xs font-bold text-[#001353]">Content</p>
+        <AdminCard title="Content">
           <RichTextEditor
             initialContent={form.contentJson ?? undefined}
             placeholder="Write the post…"
             onChange={onEditorChange}
           />
-        </div>
+        </AdminCard>
 
-        <div className="bg-white rounded-[24px] border border-[#ddddee] p-6 flex flex-col gap-5">
-          <p className="text-sm font-bold text-[#001353]">SEO</p>
-          <Field label="SEO title" hint="Leave empty to use the post title.">
-            <Input
-              value={form.seo.title}
-              maxLength={191}
-              onChange={(e) => set("seo", { ...form.seo, title: e.target.value })}
-            />
-          </Field>
-          <Field label="Meta description" hint="Aim for 120–160 characters.">
-            <textarea
-              rows={3}
-              maxLength={320}
-              className={textAreaClass}
-              value={form.seo.description}
-              onChange={(e) => set("seo", { ...form.seo, description: e.target.value })}
-            />
-          </Field>
-          <Field label="OG image URL" hint="Defaults to the cover image when empty.">
-            <Input
-              value={form.seo.ogImage}
-              onChange={(e) => set("seo", { ...form.seo, ogImage: e.target.value })}
-            />
-          </Field>
-          <p className="text-[11px] text-[#5b6480]">
-            Google preview: <span className="text-[#1a0dab]">{serpUrl}</span>
-          </p>
-        </div>
+        <AdminCard title="SEO">
+          <div className="flex flex-col gap-5">
+            <FormField id="post-seo-title" label="SEO title" hint="Leave empty to use the post title.">
+              <AdminInput
+                id="post-seo-title"
+                value={form.seo.title}
+                maxLength={191}
+                onChange={(e) => set("seo", { ...form.seo, title: e.target.value })}
+              />
+            </FormField>
+            <FormField id="post-seo-description" label="Meta description" hint="Aim for 120–160 characters.">
+              <AdminTextarea
+                id="post-seo-description"
+                rows={3}
+                maxLength={320}
+                value={form.seo.description}
+                onChange={(e) => set("seo", { ...form.seo, description: e.target.value })}
+              />
+            </FormField>
+            <FormField id="post-og-image" label="OG image URL" hint="Defaults to the cover image when empty.">
+              <AdminInput
+                id="post-og-image"
+                value={form.seo.ogImage}
+                onChange={(e) => set("seo", { ...form.seo, ogImage: e.target.value })}
+              />
+            </FormField>
+            <p className="text-xs text-[#5b6480]">
+              Google preview: <span className="text-[#1a0dab]">{serpUrl}</span>
+            </p>
+          </div>
+        </AdminCard>
       </div>
 
       {/* ── Side column ── */}
       <div className="flex flex-col gap-6 xl:sticky xl:top-6">
-        <div className="bg-white rounded-[24px] border border-[#ddddee] p-6 flex flex-col gap-5">
-          <Field label="Status">
-            <select
-              className={selectClass}
-              value={form.status}
-              onChange={(e) => set("status", e.target.value as PostFormValues["status"])}
+        <AdminCard title="Publishing">
+          <div className="flex flex-col gap-5">
+            <FormField id="post-status" label="Status">
+              <AdminSelect
+                id="post-status"
+                value={form.status}
+                onChange={(e) => set("status", e.target.value as PostFormValues["status"])}
+              >
+                <option value="DRAFT">Draft</option>
+                <option value="PUBLISHED">Published</option>
+              </AdminSelect>
+            </FormField>
+            <FormField
+              id="post-publish-at"
+              label="Publish date"
+              hint="Set a future date to schedule. Empty = publish immediately when Published."
             >
-              <option value="DRAFT">Draft</option>
-              <option value="PUBLISHED">Published</option>
-            </select>
-          </Field>
-          <Field
-            label="Publish date"
-            hint="Set a future date to schedule. Empty = publish immediately when Published."
-          >
-            <input
-              type="datetime-local"
-              className={selectClass}
-              value={form.publishedAt}
-              onChange={(e) => set("publishedAt", e.target.value)}
-            />
-          </Field>
-          <Button onClick={save} loading={saving}>
-            {mode === "create" ? "Create post" : "Save post"}
-          </Button>
-        </div>
-
-        <div className="bg-white rounded-[24px] border border-[#ddddee] p-6 flex flex-col gap-5">
-          <Field label="Category">
-            <select
-              className={selectClass}
-              value={form.categoryId}
-              onChange={(e) => set("categoryId", e.target.value)}
-            >
-              <option value="">No category</option>
-              {categories.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
-          </Field>
-          <Field label="Tags" hint="Comma-separated. New tags are created on save.">
-            <Input
-              value={form.tags}
-              placeholder="fridge, tips, kuala lumpur"
-              onChange={(e) => set("tags", e.target.value)}
-            />
-          </Field>
-        </div>
-
-        <div className="bg-white rounded-[24px] border border-[#ddddee] p-6 flex flex-col gap-4">
-          <p className="text-xs font-bold text-[#001353]">Cover image</p>
-          <div className="rounded-[16px] overflow-hidden border border-[#ddddee] bg-[#eeeef6] h-40 flex items-center justify-center">
-            {form.coverUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={form.coverUrl} alt={form.coverAlt} className="w-full h-full object-cover" />
-            ) : (
-              <span className="text-xs text-[#5b6480]">No cover selected</span>
-            )}
+              <AdminInput
+                id="post-publish-at"
+                type="datetime-local"
+                value={form.publishedAt}
+                onChange={(e) => set("publishedAt", e.target.value)}
+              />
+            </FormField>
+            <AdminButton onClick={save} disabled={saving}>
+              {saving ? "Saving…" : mode === "create" ? "Create post" : "Save post"}
+            </AdminButton>
           </div>
-          <Field label="Alt text" hint="Required for accessibility and SEO.">
-            <Input value={form.coverAlt} onChange={(e) => set("coverAlt", e.target.value)} />
-          </Field>
-          <div className="flex gap-2">
-            <Button variant="secondary" onClick={() => setPickerOpen(true)}>
-              {form.coverUrl ? "Change cover" : "Pick from Media"}
-            </Button>
-            {form.coverUrl && (
-              <Button variant="secondary" onClick={() => set("coverUrl", "")}>
-                Remove
-              </Button>
-            )}
+        </AdminCard>
+
+        <AdminCard title="Organisation">
+          <div className="flex flex-col gap-5">
+            <FormField id="post-category" label="Category">
+              <AdminSelect
+                id="post-category"
+                value={form.categoryId}
+                onChange={(e) => set("categoryId", e.target.value)}
+              >
+                <option value="">No category</option>
+                {categories.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.name}
+                  </option>
+                ))}
+              </AdminSelect>
+            </FormField>
+            <FormField id="post-tags" label="Tags" hint="Comma-separated. New tags are created on save.">
+              <AdminInput
+                id="post-tags"
+                value={form.tags}
+                placeholder="fridge, tips, kuala lumpur"
+                onChange={(e) => set("tags", e.target.value)}
+              />
+            </FormField>
           </div>
-        </div>
+        </AdminCard>
+
+        <AdminCard title="Cover image">
+          <div className="flex flex-col gap-5">
+            <div className="flex h-40 items-center justify-center overflow-hidden rounded-[16px] border border-[#e4e7f0] bg-[#f5f5fa]">
+              {form.coverUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={form.coverUrl} alt={form.coverAlt} className="h-full w-full object-cover" />
+              ) : (
+                <span className="text-xs text-[#5b6480]">No cover selected</span>
+              )}
+            </div>
+            <FormField id="post-cover-alt" label="Alt text" hint="Required for accessibility and SEO.">
+              <AdminInput
+                id="post-cover-alt"
+                value={form.coverAlt}
+                onChange={(e) => set("coverAlt", e.target.value)}
+              />
+            </FormField>
+            <div className="flex flex-wrap gap-2">
+              <AdminButton variant="outline" size="sm" onClick={() => setPickerOpen(true)}>
+                {form.coverUrl ? "Change cover" : "Pick from Media"}
+              </AdminButton>
+              {form.coverUrl && (
+                <AdminButton variant="ghost" size="sm" onClick={() => set("coverUrl", "")}>
+                  Remove
+                </AdminButton>
+              )}
+            </div>
+          </div>
+        </AdminCard>
       </div>
 
       <MediaPickerModal open={pickerOpen} onClose={() => setPickerOpen(false)} onPick={onCoverPick} />

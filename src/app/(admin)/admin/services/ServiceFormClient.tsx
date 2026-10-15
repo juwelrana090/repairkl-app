@@ -1,13 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type InputHTMLAttributes, type ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import AppIcon from "@/components/ui/AppIcon";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
 import { showToast } from "@/components/ui";
 import { twMerge } from "tailwind-merge";
+import AdminButton from "@/components/admin/ui/Button";
+import { AdminCard } from "@/components/admin/ui/Card";
+import { AdminCheckbox, AdminInput, AdminLabel, AdminSelect, AdminSwitch, AdminTextarea } from "@/components/admin/ui/Field";
 
 export interface PackageRow {
   name: string;
@@ -39,15 +40,38 @@ const TABS = [
   { id: "images", label: "Images & SEO", icon: "eye" },
 ] as const;
 
-const textAreaClass =
-  "w-full border border-[#ddddee] rounded-[12px] px-4 py-3 text-sm text-[#001353] outline-none focus:border-[#034795] resize-y";
-
 function slugify(value: string): string {
   return value
     .toLowerCase()
     .trim()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
+}
+
+/** Label above a control, optional hint below (matches the user/edit form). */
+function FormField({
+  id,
+  label,
+  children,
+}: {
+  id: string;
+  label: string;
+  children: ReactNode;
+}) {
+  return (
+    <div className="flex flex-col">
+      <AdminLabel htmlFor={id}>{label}</AdminLabel>
+      {children}
+    </div>
+  );
+}
+
+function TextField({ id, label, ...input }: { id: string; label: string } & InputHTMLAttributes<HTMLInputElement> & { hint?: string }) {
+  return (
+    <FormField id={id} label={label}>
+      <AdminInput id={id} {...input} />
+    </FormField>
+  );
 }
 
 export default function ServiceFormClient({
@@ -165,258 +189,247 @@ export default function ServiceFormClient({
     });
 
   return (
-    <div className="flex gap-6 items-start">
+    <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
       {/* Tabs */}
-      <div className="w-48 shrink-0 flex flex-col gap-1">
+      <nav className="flex w-full shrink-0 flex-col gap-1 lg:w-56" aria-label="Service sections">
         {TABS.map((t) => (
           <button
             key={t.id}
             type="button"
             onClick={() => setTab(t.id)}
+            aria-current={tab === t.id ? "page" : undefined}
             className={twMerge(
-              "flex items-center gap-2 px-3 py-2.5 rounded-[12px] text-sm font-medium transition-all text-left",
-              tab === t.id ? "bg-[#eaf0f8] text-[#034795] font-bold" : "text-[#5b6480] hover:bg-[#eeeef6]",
+              "flex h-10 cursor-pointer items-center gap-3 rounded-lg px-3 text-left text-sm font-medium transition",
+              tab === t.id ? "bg-[#eaf0f8] font-semibold text-[#034795]" : "text-[#5b6480] hover:bg-[#f5f5fa] hover:text-[#001353]",
             )}
           >
-            <AppIcon name={t.icon} className="w-4 h-4" />
+            <AppIcon name={t.icon} className="h-5 w-5 shrink-0" />
             {t.label}
           </button>
         ))}
-      </div>
+      </nav>
 
       {/* Panel */}
-      <div className="flex-1 bg-white rounded-[24px] border border-[#ddddee] p-6 flex flex-col gap-4 max-w-3xl">
-        {tab === "basic" && (
-          <>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <p className="text-xs text-[#5b6480] mb-1">Category</p>
-                <select
-                  value={form.categoryId}
-                  onChange={(e) => set({ categoryId: e.target.value })}
-                  className="w-full h-14 border-2 border-[#ddddee] rounded-[16px] px-4 text-sm outline-none focus:border-[#034795] bg-white"
-                >
-                  {categories.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <Input label="Name" value={form.name} placeholder="Fridge Repair (General)" onChange={(e) => setName(e.target.value)} />
-            </div>
-            <Input
-              label="Slug"
-              value={form.slug}
-              hint="lowercase-with-dashes — used in URLs and booking links"
-              onChange={(e) => {
-                setSlugTouched(true);
-                set({ slug: slugify(e.target.value) });
-              }}
-            />
-            <div className="grid grid-cols-3 gap-4">
-              <Input
-                label="Base price (RM)"
-                type="number"
-                value={form.basePrice}
-                onChange={(e) => set({ basePrice: e.target.value })}
-              />
-              <Input
-                label="Price unit"
-                value={form.priceUnit}
-                placeholder="fixed / visit"
-                onChange={(e) => set({ priceUnit: e.target.value })}
-              />
-              <Input
-                label="Duration (min)"
-                type="number"
-                value={form.duration}
-                placeholder="60"
-                onChange={(e) => set({ duration: e.target.value })}
-              />
-            </div>
-            <div className="flex gap-3 pt-1">
-              {(
-                [
-                  ["isActive", "Active (visible to customers)"],
-                  ["isFeatured", "Featured on homepage"],
-                ] as const
-              ).map(([key, label]) => (
-                <button
-                  key={key}
-                  type="button"
-                  onClick={() => set({ [key]: !form[key] } as Partial<ServiceFormValues>)}
-                  className={twMerge(
-                    "flex-1 h-11 rounded-[12px] text-sm font-bold border-2 transition-colors",
-                    form[key] ? "border-[#1a8f5c] bg-green-50 text-[#1a8f5c]" : "border-[#ddddee] bg-white text-[#5b6480]",
-                  )}
-                >
-                  <AppIcon name={form[key] ? "check" : "x"} className="inline w-3.5 h-3.5 mr-1 -mt-0.5" />
-                  {label}
-                </button>
-              ))}
-            </div>
-          </>
-        )}
-
-        {tab === "marketing" && (
-          <>
-            <div>
-              <div className="flex items-center mb-1.5">
-                <p className="text-xs text-[#5b6480]">Short description</p>
-                <span className="text-[11px] text-[#5b6480] ml-auto">{form.description.length}/500</span>
-              </div>
-              <textarea
-                rows={2}
-                maxLength={500}
-                className={textAreaClass}
-                value={form.description}
-                placeholder="One-liner shown on service cards"
-                onChange={(e) => set({ description: e.target.value })}
-              />
-            </div>
-            <div>
-              <div className="flex items-center mb-1.5">
-                <p className="text-xs text-[#5b6480]">Long description</p>
-                <span className="text-[11px] text-[#5b6480] ml-auto">{form.longDesc.length}/5000</span>
-              </div>
-              <textarea
-                rows={10}
-                maxLength={5000}
-                className={textAreaClass}
-                value={form.longDesc}
-                placeholder="Full marketing copy for the service detail page — what's included, common problems, warranty notes…"
-                onChange={(e) => set({ longDesc: e.target.value })}
-              />
-            </div>
-          </>
-        )}
-
-        {tab === "packages" && (
-          <>
-            {form.packages.map((p, i) => (
-              <div key={i} className="border border-[#ddddee] rounded-[16px] p-4 flex flex-col gap-3">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold text-[#5b6480]">#{i + 1}</span>
-                  <input
-                    value={p.name}
-                    onChange={(e) => setPackage(i, { name: e.target.value })}
-                    placeholder="Package name (e.g. General Repair)"
-                    className="flex-1 h-10 px-3 border border-[#ddddee] rounded-[10px] text-sm text-[#001353] outline-none focus:border-[#034795]"
-                  />
-                  <input
-                    type="number"
-                    value={p.price}
-                    onChange={(e) => setPackage(i, { price: e.target.value })}
-                    placeholder="RM"
-                    className="w-24 h-10 px-3 border border-[#ddddee] rounded-[10px] text-sm text-[#001353] outline-none focus:border-[#034795]"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setPackage(i, { isPopular: !p.isPopular })}
-                    className={twMerge(
-                      "h-10 px-3 text-xs font-bold rounded-[10px] border-2 whitespace-nowrap",
-                      p.isPopular ? "border-[#fb6f27] bg-orange-50 text-[#fb6f27]" : "border-[#ddddee] text-[#5b6480]",
-                    )}
-                  >
-                    <AppIcon name="star" filled={p.isPopular} className="inline w-3.5 h-3.5 mr-1 -mt-0.5" />
-                    Popular
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => set({ packages: form.packages.filter((_, j) => j !== i) })}
-                    className="w-9 h-10 text-[#d64545] text-sm font-bold bg-red-50 rounded-[10px] hover:bg-red-100"
-                  >
-                    <AppIcon name="x" className="w-4 h-4 mx-auto" />
-                  </button>
-                </div>
-                <input
-                  value={p.description}
-                  onChange={(e) => setPackage(i, { description: e.target.value })}
-                  placeholder="Short description (optional)"
-                  className="w-full h-10 px-3 border border-[#ddddee] rounded-[10px] text-sm text-[#001353] outline-none focus:border-[#034795]"
-                />
-                <textarea
-                  rows={4}
-                  value={p.includesText}
-                  onChange={(e) => setPackage(i, { includesText: e.target.value })}
-                  placeholder={"What's included — one per line:\nDiagnosis\nLabour\nSpare parts"}
-                  className={textAreaClass}
+      <AdminCard className="w-full max-w-3xl flex-1">
+        <div className="flex flex-col gap-5">
+          {tab === "basic" && (
+            <>
+              <div className="grid gap-5 sm:grid-cols-2">
+                <FormField id="svc-category" label="Category">
+                  <AdminSelect id="svc-category" value={form.categoryId} onChange={(e) => set({ categoryId: e.target.value })}>
+                    {categories.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.name}
+                      </option>
+                    ))}
+                  </AdminSelect>
+                </FormField>
+                <TextField
+                  id="svc-name"
+                  label="Name"
+                  value={form.name}
+                  placeholder="Fridge Repair (General)"
+                  onChange={(e) => setName(e.target.value)}
                 />
               </div>
-            ))}
-            <button
-              type="button"
-              onClick={() =>
-                set({ packages: [...form.packages, { name: "", description: "", price: "", includesText: "", isPopular: false }] })
-              }
-              className="self-start px-4 h-10 text-sm font-bold text-[#034795] bg-[#eaf0f8] rounded-[12px] hover:bg-[#d5e3f5]"
-            >
-              + Add package
-            </button>
-          </>
-        )}
-
-        {tab === "images" && (
-          <>
-            <Input
-              label="Image URL"
-              value={form.imageUrl}
-              placeholder="/assets/images/services/fridge-repair.jpg"
-              hint="Copy a URL from the Media library and paste it here"
-              onChange={(e) => set({ imageUrl: e.target.value })}
-            />
-            <div className="h-48 bg-[#f5f5fa] rounded-[16px] border border-[#ddddee] overflow-hidden flex items-center justify-center">
-              {form.imageUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={form.imageUrl} alt="Service image preview" className="w-full h-full object-cover" />
-              ) : (
-                <p className="text-xs text-[#5b6480]">Image preview appears here</p>
-              )}
-            </div>
-            <div className="bg-[#f5f5fa] rounded-[16px] p-4 flex items-center justify-between gap-4">
-              <div>
-                <p className="text-sm font-bold text-[#001353]">Media library & page SEO</p>
-                <p className="text-xs text-[#5b6480] mt-0.5">
-                  Upload images in the Media library; edit the category page's title and meta in the SEO manager.
-                </p>
+              <TextField
+                id="svc-slug"
+                label="Slug"
+                value={form.slug}
+                hint="lowercase-with-dashes — used in URLs and booking links"
+                onChange={(e) => {
+                  setSlugTouched(true);
+                  set({ slug: slugify(e.target.value) });
+                }}
+              />
+              <div className="grid gap-5 sm:grid-cols-3">
+                <TextField
+                  id="svc-base-price"
+                  label="Base price (RM)"
+                  type="number"
+                  value={form.basePrice}
+                  onChange={(e) => set({ basePrice: e.target.value })}
+                />
+                <TextField
+                  id="svc-price-unit"
+                  label="Price unit"
+                  value={form.priceUnit}
+                  placeholder="fixed / visit"
+                  onChange={(e) => set({ priceUnit: e.target.value })}
+                />
+                <TextField
+                  id="svc-duration"
+                  label="Duration (min)"
+                  type="number"
+                  value={form.duration}
+                  placeholder="60"
+                  onChange={(e) => set({ duration: e.target.value })}
+                />
               </div>
-              <div className="flex gap-2 shrink-0">
-                <Link
-                  href="/admin/media"
-                  target="_blank"
-                  className="text-xs px-3 py-2 bg-white border border-[#ddddee] rounded-[10px] text-[#5b6480] hover:border-[#034795]"
-                >
-                  Media ↗
-                </Link>
-                <Link
-                  href="/admin/seo"
-                  target="_blank"
-                  className="text-xs px-3 py-2 bg-white border border-[#ddddee] rounded-[10px] text-[#5b6480] hover:border-[#034795]"
-                >
-                  SEO ↗
-                </Link>
+              <div className="flex flex-col gap-4 pt-1 sm:flex-row sm:gap-8">
+                <AdminSwitch
+                  label="Active (visible to customers)"
+                  checked={form.isActive}
+                  onChange={(v) => set({ isActive: v })}
+                />
+                <AdminSwitch
+                  label="Featured on homepage"
+                  checked={form.isFeatured}
+                  onChange={(v) => set({ isFeatured: v })}
+                />
               </div>
-            </div>
-          </>
-        )}
-
-        <div className="mt-2 flex items-center gap-3">
-          <Button onClick={save} loading={saving}>
-            {mode === "create" ? "Create Service" : "Save Service"}
-          </Button>
-          {mode === "edit" && (
-            <button
-              type="button"
-              onClick={remove}
-              disabled={deleting}
-              className="h-[52px] px-5 text-sm font-bold text-[#d64545] bg-red-50 rounded-[16px] hover:bg-red-100 disabled:opacity-50"
-            >
-              {deleting ? "Deleting…" : "Delete"}
-            </button>
+            </>
           )}
+
+          {tab === "marketing" && (
+            <>
+              <FormField id="svc-description" label="Short description">
+                <AdminTextarea
+                  id="svc-description"
+                  rows={2}
+                  maxLength={500}
+                  value={form.description}
+                  placeholder="One-liner shown on service cards"
+                  hint={`${form.description.length}/500`}
+                  onChange={(e) => set({ description: e.target.value })}
+                />
+              </FormField>
+              <FormField id="svc-long-desc" label="Long description">
+                <AdminTextarea
+                  id="svc-long-desc"
+                  rows={10}
+                  maxLength={5000}
+                  value={form.longDesc}
+                  placeholder="Full marketing copy for the service detail page — what's included, common problems, warranty notes…"
+                  hint={`${form.longDesc.length}/5000`}
+                  onChange={(e) => set({ longDesc: e.target.value })}
+                />
+              </FormField>
+            </>
+          )}
+
+          {tab === "packages" && (
+            <>
+              {form.packages.map((p, i) => (
+                <div key={i} className="flex flex-col gap-3 rounded-lg border border-[#e4e7f0] bg-[#fcfcfd] p-4">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="w-8 shrink-0 text-xs font-semibold text-[#8a92a8]">#{i + 1}</span>
+                    <AdminInput
+                      aria-label={`Package ${i + 1} name`}
+                      value={p.name}
+                      onChange={(e) => setPackage(i, { name: e.target.value })}
+                      placeholder="Package name (e.g. General Repair)"
+                      className="min-w-0 flex-1"
+                    />
+                    <AdminInput
+                      aria-label={`Package ${i + 1} price`}
+                      type="number"
+                      value={p.price}
+                      onChange={(e) => setPackage(i, { price: e.target.value })}
+                      placeholder="RM"
+                      className="w-28"
+                    />
+                    <AdminCheckbox
+                      id={`svc-pkg-${i}-popular`}
+                      label="Popular"
+                      checked={p.isPopular}
+                      onChange={(v) => setPackage(i, { isPopular: v })}
+                    />
+                    <AdminButton
+                      variant="ghost"
+                      size="sm"
+                      aria-label={`Remove package ${i + 1}`}
+                      startIcon={<AppIcon name="x" className="h-4 w-4" />}
+                      onClick={() => set({ packages: form.packages.filter((_, j) => j !== i) })}
+                    />
+                  </div>
+                  <AdminInput
+                    aria-label={`Package ${i + 1} description`}
+                    value={p.description}
+                    onChange={(e) => setPackage(i, { description: e.target.value })}
+                    placeholder="Short description (optional)"
+                  />
+                  <AdminTextarea
+                    aria-label={`Package ${i + 1} included items`}
+                    rows={4}
+                    value={p.includesText}
+                    onChange={(e) => setPackage(i, { includesText: e.target.value })}
+                    placeholder={"What's included — one per line:\nDiagnosis\nLabour\nSpare parts"}
+                  />
+                </div>
+              ))}
+              <div>
+                <AdminButton
+                  variant="outline"
+                  size="sm"
+                  startIcon={<AppIcon name="package" className="h-4 w-4" />}
+                  onClick={() =>
+                    set({ packages: [...form.packages, { name: "", description: "", price: "", includesText: "", isPopular: false }] })
+                  }
+                >
+                  Add package
+                </AdminButton>
+              </div>
+            </>
+          )}
+
+          {tab === "images" && (
+            <>
+              <TextField
+                id="svc-image-url"
+                label="Image URL"
+                value={form.imageUrl}
+                placeholder="/assets/images/services/fridge-repair.jpg"
+                hint="Copy a URL from the Media library and paste it here"
+                onChange={(e) => set({ imageUrl: e.target.value })}
+              />
+              <div className="flex h-48 items-center justify-center overflow-hidden rounded-lg border border-[#e4e7f0] bg-[#f5f5fa]">
+                {form.imageUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={form.imageUrl} alt="Service image preview" className="h-full w-full object-cover" />
+                ) : (
+                  <p className="text-xs text-[#5b6480]">Image preview appears here</p>
+                )}
+              </div>
+              <div className="flex flex-col gap-4 rounded-lg border border-[#e4e7f0] bg-[#f5f5fa] p-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="text-sm font-semibold text-[#001353]">Media library & page SEO</p>
+                  <p className="mt-0.5 text-xs text-[#5b6480]">
+                    Upload images in the Media library; edit the category page&apos;s title and meta in the SEO manager.
+                  </p>
+                </div>
+                <div className="flex shrink-0 gap-2">
+                  <Link
+                    href="/admin/media"
+                    target="_blank"
+                    className="inline-flex h-9 cursor-pointer items-center rounded-lg border border-[#d0d5dd] bg-white px-3 text-sm font-medium text-[#3d4766] shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] hover:bg-[#f9fafb]"
+                  >
+                    Media ↗
+                  </Link>
+                  <Link
+                    href="/admin/seo"
+                    target="_blank"
+                    className="inline-flex h-9 cursor-pointer items-center rounded-lg border border-[#d0d5dd] bg-white px-3 text-sm font-medium text-[#3d4766] shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] hover:bg-[#f9fafb]"
+                  >
+                    SEO ↗
+                  </Link>
+                </div>
+              </div>
+            </>
+          )}
+
+          <div className="flex flex-wrap items-center gap-3 border-t border-[#f0f2f7] pt-5">
+            <AdminButton onClick={save} disabled={saving}>
+              {saving ? "Saving…" : mode === "create" ? "Create Service" : "Save Service"}
+            </AdminButton>
+            {mode === "edit" && (
+              <AdminButton variant="danger" onClick={remove} disabled={deleting}>
+                {deleting ? "Deleting…" : "Delete"}
+              </AdminButton>
+            )}
+          </div>
         </div>
-      </div>
+      </AdminCard>
     </div>
   );
 }
