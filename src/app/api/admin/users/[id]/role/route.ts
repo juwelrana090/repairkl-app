@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth/session";
-import { sessionCanManageRules } from "@/lib/auth/permissionStore";
 import {
   ADMIN_TIER_ROLES,
   ALL_ROLES,
   canChangeUserRole,
 } from "@/lib/auth/roleHierarchy";
+import { loadUserManager, rolePolicyRole } from "@/lib/auth/userManagement";
 import { prisma } from "@/lib/prisma";
 
 export async function PATCH(
@@ -19,20 +19,13 @@ export async function PATCH(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // The JWT role can be stale for up to 7 days. Use the DB role for the actor
-    // so a demoted or deactivated admin cannot keep using the old token.
-    const actor = await prisma.user.findUnique({
-      where: { id: session.userId },
-      select: { id: true, role: true, isActive: true },
-    });
-    if (!actor || !actor.isActive) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-    const actorSession = { ...session, role: actor.role };
-
-    if (!(await sessionCanManageRules(actorSession))) {
+    // Admin-tier users and rules:manage holders may change roles. The actor is
+    // re-read from the DB, so a demoted or deactivated user loses access at once.
+    const manager = await loadUserManager(session);
+    if (!manager) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
+    const actor = { id: manager.id, role: rolePolicyRole(manager) };
 
     if (actor.id === targetId) {
       return NextResponse.json(

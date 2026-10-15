@@ -636,7 +636,9 @@ model Post {
   contentJson    Json?
   contentHtml    String?    @db.Text
   coverMediaId   String?    @db.VarChar(36) // MediaAsset.id, no FK — same as uploadedBy
-  status         PostStatus @default(DRAFT)
+  coverUrl       String?    @db.VarChar(500)
+  coverAlt       String?    @db.VarChar(191)
+  status        PostStatus @default(DRAFT)
   publishedAt    DateTime?
   authorId       String?    @db.VarChar(36) // User.id, no FK
   categoryId     String?    @db.VarChar(36)

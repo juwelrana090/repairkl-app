@@ -4,7 +4,7 @@ import { StatusBadge } from "@/components/ui";
 import AdminUsersClient from "./AdminUsersClient";
 import { buildPageMetadata } from "@/lib/seo/pageMeta";
 import { getSession } from "@/lib/auth/session";
-import { sessionCanManageRules } from "@/lib/auth/permissionStore";
+import { canManageUserAccount, loadUserManager, rolePolicyRole } from "@/lib/auth/userManagement";
 
 export const metadata: Metadata = buildPageMetadata("admin.users");
 
@@ -30,7 +30,11 @@ export default async function AdminUsersPage({
   }
 
   const session = await getSession();
-  const canManageRoles = session ? await sessionCanManageRules(session) : false;
+  // DB-backed: admin-tier users and rules:manage holders. JWT role may be stale.
+  const manager = session ? await loadUserManager(session) : null;
+  const canManageRoles = !!manager;
+  const actorRole = manager ? rolePolicyRole(manager) : "";
+  const actorId = session?.userId ?? "";
 
   const [users, total] = await Promise.all([
     prisma.user.findMany({
@@ -70,13 +74,15 @@ export default async function AdminUsersPage({
           city: u.address?.city ?? "—",
           createdAt: u.createdAt.toISOString(),
           permissions: u.permissions.map((p) => p.permission),
+          isSelf: u.id === actorId,
+          canEdit: u.id === actorId || (!!manager && canManageUserAccount(actorRole, u.role, manager.hasRulesGrant)),
         }))}
         total={total}
         page={pageNum}
         limit={limit}
         activeRole={role}
         search={search}
-        actorRole={session?.role ?? ""}
+        actorRole={actorRole}
         canManageRoles={canManageRoles}
       />
     </div>

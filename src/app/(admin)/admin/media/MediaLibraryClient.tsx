@@ -2,7 +2,8 @@
 
 import { useRef, useState } from "react";
 import AppIcon from "@/components/ui/AppIcon";
-import { showToast } from "@/components/ui";
+import { Modal, showToast } from "@/components/ui";
+import { Button } from "@/components/ui/Button";
 
 interface MediaRow {
   id: string;
@@ -33,6 +34,8 @@ export default function MediaLibraryClient({
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editAlt, setEditAlt] = useState("");
   const [editKeyword, setEditKeyword] = useState("");
+  const [pendingDelete, setPendingDelete] = useState<MediaRow | null>(null);
+  const [deleting, setDeleting] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const q = search.toLowerCase();
@@ -100,13 +103,19 @@ export default function MediaLibraryClient({
   };
 
   const remove = async (row: MediaRow) => {
-    const res = await fetch(`/api/admin/media/${row.id}`, { method: "DELETE" });
-    if (!res.ok) {
-      showToast("Delete failed", "error");
-      return;
+    setDeleting(true);
+    try {
+      const res = await fetch(`/api/admin/media/${row.id}`, { method: "DELETE" });
+      if (!res.ok) {
+        showToast("Delete failed", "error");
+        return;
+      }
+      setRows((r) => r.filter((x) => x.id !== row.id));
+      setPendingDelete(null);
+      showToast("Deleted", "success");
+    } finally {
+      setDeleting(false);
     }
-    setRows((r) => r.filter((x) => x.id !== row.id));
-    showToast("Deleted", "success");
   };
 
   const copyUrl = async (url: string) => {
@@ -154,7 +163,7 @@ export default function MediaLibraryClient({
             type="button"
             onClick={upload}
             disabled={uploading}
-            className="h-10 px-4 bg-[#034795] text-white text-sm font-bold rounded-[10px] hover:bg-[#001353] disabled:opacity-50"
+            className="h-10 px-4 bg-[#034795] text-white text-sm font-bold rounded-[10px] hover:bg-[#001353] disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
           >
             {uploading ? "Uploading…" : "Upload"}
           </button>
@@ -219,14 +228,14 @@ export default function MediaLibraryClient({
                     <button
                       type="button"
                       onClick={() => saveEdit(r)}
-                      className="flex-1 h-9 bg-[#1a8f5c] text-white text-xs font-bold rounded-[10px]"
+                      className="flex-1 h-9 bg-[#1a8f5c] text-white text-xs font-bold rounded-[10px] cursor-pointer"
                     >
                       Save
                     </button>
                     <button
                       type="button"
                       onClick={() => setEditingId(null)}
-                      className="flex-1 h-9 bg-[#eeeef6] text-[#5b6480] text-xs font-bold rounded-[10px]"
+                      className="flex-1 h-9 bg-[#eeeef6] text-[#5b6480] text-xs font-bold rounded-[10px] cursor-pointer"
                     >
                       Cancel
                     </button>
@@ -251,7 +260,7 @@ export default function MediaLibraryClient({
                     <button
                       type="button"
                       onClick={() => copyUrl(r.url)}
-                      className="flex-1 h-8 text-[10px] font-bold text-[#034795] bg-[#eaf0f8] rounded-[8px] hover:bg-[#d5e3f5]"
+                      className="flex-1 h-8 text-[10px] font-bold text-[#034795] bg-[#eaf0f8] rounded-[8px] hover:bg-[#d5e3f5] cursor-pointer"
                     >
                       Copy URL
                     </button>
@@ -262,14 +271,14 @@ export default function MediaLibraryClient({
                         setEditAlt(r.alt);
                         setEditKeyword(r.focusKeyword);
                       }}
-                      className="flex-1 h-8 text-[10px] font-bold text-[#5b6480] bg-[#eeeef6] rounded-[8px] hover:bg-[#ddddee]"
+                      className="flex-1 h-8 text-[10px] font-bold text-[#5b6480] bg-[#eeeef6] rounded-[8px] hover:bg-[#ddddee] cursor-pointer"
                     >
                       Edit
                     </button>
                     <button
                       type="button"
-                      onClick={() => remove(r)}
-                      className="flex-1 h-8 text-[10px] font-bold text-[#d64545] bg-red-50 rounded-[8px] hover:bg-red-100"
+                      onClick={() => setPendingDelete(r)}
+                      className="flex-1 h-8 text-[10px] font-bold text-[#d64545] bg-red-50 rounded-[8px] hover:bg-red-100 cursor-pointer"
                     >
                       Delete
                     </button>
@@ -279,6 +288,24 @@ export default function MediaLibraryClient({
             </div>
           ))}
         </div>
+      )}
+
+      {pendingDelete && (
+        <Modal open onClose={() => !deleting && setPendingDelete(null)} title="Delete media" size="sm">
+          <div className="flex flex-col gap-4">
+            <p className="text-sm text-[#5b6480]">
+              Delete <strong className="text-[#001353]">{pendingDelete.url.split("/").pop()}</strong>? This file will be removed from the library and cannot be undone.
+            </p>
+            <div className="flex justify-end gap-2">
+              <Button type="button" variant="secondary" disabled={deleting} onClick={() => setPendingDelete(null)}>
+                Cancel
+              </Button>
+              <Button type="button" variant="danger" loading={deleting} onClick={() => remove(pendingDelete)}>
+                Delete
+              </Button>
+            </div>
+          </div>
+        </Modal>
       )}
     </div>
   );
