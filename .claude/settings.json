@@ -18,13 +18,35 @@
       "Read(tsconfig.json)",
       "Read(next.config.ts)",
       "Read(tailwind.config.ts)",
-      "Read(.env.example)"
+      "Read(.env.example)",
+      "Bash(npx tsx *)",
+      "Bash(curl -s http://localhost:3000/)",
+      "Bash(netstat -ano)",
+      "Bash(findstr :3000)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:3000/)",
+      "Bash(break)",
+      "Bash(curl -s http://localhost:3000/ > /tmp/home_live.html && npx tsx -e \" *)",
+      "Bash(node -e ' *)",
+      "Bash(node -e \"const fs=require\\('fs'\\);const h=fs.readFileSync\\(process.env.TEMP.replace\\(/\\\\\\\\\\\\\\\\/g,'/'\\)+'/../Local/Temp/claude/c--Dev-Repairkl-repairkl-app/6af00ffa-a7b5-4f43-935e-8c2ef020b9d5/../../../home_live.html','utf8'\\)\")",
+      "Bash(ls -la /tmp/home_live.html 2>/dev/null && echo \"exists\" || echo \"not found\"; find / -name \"home_live.html\" -maxdepth 5 2>/dev/null | head -3)",
+      "Read(//c//**)",
+      "Bash(taskkill //F //PID 33064 //T)",
+      "Bash(findstr \":3000\")",
+      "Bash(findstr \"LISTEN\")",
+      "Bash(xxd)",
+      "Bash(pnpm render:check)",
+      "Bash(pnpm test:seo)",
+      "Bash(taskkill //F //PID 43912 //T)",
+      "Bash(npx next *)"
     ],
     "deny": [
       "Write(~/**)",
       "Write(../**)",
       "Read(~/.ssh/**)",
       "Read(.env)"
+    ],
+    "additionalDirectories": [
+      "\\tmp"
     ]
   }
 }

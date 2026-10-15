@@ -10,9 +10,12 @@
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",
     "db:seed": "tsx prisma/seed.ts",
+    "db:seed:cms": "tsx prisma/seed-cms.ts",
     "db:studio": "prisma studio",
     "db:reset": "prisma migrate reset --force && npm run db:seed",
-    "test:seo": "tsx --test scripts/seo-schema.test.ts"
+    "test:seo": "tsx --test scripts/seo-schema.test.ts",
+    "render:baseline": "tsx scripts/compare-render.ts save",
+    "render:check": "tsx scripts/compare-render.ts check"
   },
   "dependencies": {
     "@prisma/client": "^6.0.0",

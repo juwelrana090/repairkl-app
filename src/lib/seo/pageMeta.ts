@@ -135,8 +135,12 @@ export const PAGE_META: Record<string, MetaInput> = {
   "admin.users": { title: "Users", noIndex: true },
   "admin.services": { title: "Services", noIndex: true },
   "admin.services-new": { title: "New Service", noIndex: true },
+  "admin.services-edit": { title: "Edit Service", noIndex: true },
   "admin.promotions": { title: "Promotions", noIndex: true },
   "admin.reports": { title: "Reports", noIndex: true },
+  "admin.seo": { title: "SEO Manager", noIndex: true },
+  "admin.seo-edit": { title: "Edit SEO", noIndex: true },
+  "admin.media": { title: "Media Library", noIndex: true },
   "admin.settings": { title: "Settings", noIndex: true },
 
   // ── Worker panel (noindex) ───────────────────────────────────────────────

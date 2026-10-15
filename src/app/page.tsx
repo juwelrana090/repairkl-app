@@ -12,8 +12,8 @@ import MarketingHome from "@/components/marketing/MarketingHome";
 
 export const metadata: Metadata = buildPageMetadata("home");
 
-// Logged-in users are redirected to their dashboard by src/proxy.ts, so this
-// page renders for anonymous visitors only and can be ISR-cached.
+// Served to everyone (anonymous and logged-in). Nav user state is fetched
+// client-side, so this page stays ISR-cacheable.
 export const revalidate = 3600;
 
 export default function RootPage() {

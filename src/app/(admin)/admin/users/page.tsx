@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { StatusBadge } from "@/components/ui";
 import AdminUsersClient from "./AdminUsersClient";
 import { buildPageMetadata } from "@/lib/seo/pageMeta";
+import { getSession } from "@/lib/auth/session";
+import { sessionCanManageRules } from "@/lib/auth/permissionStore";
 
 export const metadata: Metadata = buildPageMetadata("admin.users");
 
@@ -27,12 +29,16 @@ export default async function AdminUsersPage({
     ];
   }
 
+  const session = await getSession();
+  const canManageRoles = session ? await sessionCanManageRules(session) : false;
+
   const [users, total] = await Promise.all([
     prisma.user.findMany({
       where,
       include: {
         address: true,
         _count: { select: { bookings: true } },
+        permissions: { select: { permission: true } },
       },
       skip,
       take: limit,
@@ -63,12 +69,15 @@ export default async function AdminUsersPage({
           bookingCount: u._count.bookings,
           city: u.address?.city ?? "—",
           createdAt: u.createdAt.toISOString(),
+          permissions: u.permissions.map((p) => p.permission),
         }))}
         total={total}
         page={pageNum}
         limit={limit}
         activeRole={role}
         search={search}
+        actorRole={session?.role ?? ""}
+        canManageRoles={canManageRoles}
       />
     </div>
   );

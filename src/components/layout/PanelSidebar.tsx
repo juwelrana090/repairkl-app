@@ -17,6 +17,8 @@ const ADMIN_NAV: NavItem[] = [
   { href: "/admin/users", label: "Users", icon: "users" },
   { href: "/admin/workers", label: "Workers", icon: "wrench" },
   { href: "/admin/services", label: "Services", icon: "home" },
+  { href: "/admin/seo", label: "SEO", icon: "search" },
+  { href: "/admin/media", label: "Media", icon: "eye" },
   { href: "/admin/bookings", label: "Bookings", icon: "clipboard" },
   { href: "/admin/promotions", label: "Promotions", icon: "gift" },
   { href: "/admin/reports", label: "Reports", icon: "trendingUp" },
@@ -136,6 +138,21 @@ export default function PanelSidebar({
           })}
         </ul>
       </nav>
+
+      {/* View public site */}
+      <div className="px-3 pb-2">
+        <Link
+          href="/"
+          className={twMerge(
+            "flex items-center gap-3 h-11 rounded-[12px] px-3 transition-all text-sm font-medium text-white/50 hover:text-white hover:bg-white/5",
+            collapsed ? "justify-center px-0 w-11 mx-auto" : "",
+          )}
+          title={collapsed ? "View website" : undefined}
+        >
+          <AppIcon name="eye" className="w-5 h-5" />
+          {!collapsed && <span className="flex-1">View website</span>}
+        </Link>
+      </div>
 
       {/* User footer */}
       <div className={twMerge("border-t border-white/10 p-4", collapsed && "flex justify-center")}>

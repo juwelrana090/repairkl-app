@@ -9,6 +9,9 @@
 # testing
 /coverage
 
+# compare-render baselines (regenerated via `pnpm render:baseline`)
+/scripts/.render-baselines/
+
 # next.js
 /.next/
 /out/

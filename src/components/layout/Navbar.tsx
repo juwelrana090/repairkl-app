@@ -119,6 +119,9 @@ export default function Navbar({
                         <AppIcon name="wrench" className="w-4 h-4 mr-2" /> Worker Panel
                       </Link>
                     )}
+                    <Link href="/" className="menu-drop-item" onClick={() => setMenuOpen(false)}>
+                      <AppIcon name="eye" className="w-4 h-4 mr-2" /> View website
+                    </Link>
                     <form action="/api/auth/logout" method="POST">
                       <button type="submit" className="menu-drop-item w-full text-left text-[#d64545]">
                         <AppIcon name="logOut" className="w-4 h-4 mr-2" /> Sign Out
@@ -162,6 +165,15 @@ export default function Navbar({
               {link.label}
             </Link>
           ))}
+          {user && (
+            <Link
+              href="/"
+              className="text-sm font-medium py-2 text-[#001353]"
+              onClick={() => setMenuOpen(false)}
+            >
+              View website
+            </Link>
+          )}
         </div>
       )}
 

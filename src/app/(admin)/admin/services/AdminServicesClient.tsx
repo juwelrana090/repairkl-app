@@ -90,6 +90,7 @@ export default function AdminServicesClient({ services: initial }: { services: S
                       {/* Public marketing pages are per-category (/our-services/[categorySlug]);
                           DB service slugs (e.g. "fridge-repair-general") have no public page until Step 15 */}
                       <Link href={`/our-services/${s.categorySlug}`} target="_blank" className="text-xs px-2 py-1 bg-[#eeeef6] rounded text-[#5b6480] hover:bg-[#ddddee]">View</Link>
+                      <Link href={`/admin/services/${s.id}/edit`} className="text-xs px-2 py-1 bg-[#eaf0f8] rounded text-[#034795] hover:bg-[#d5e3f5] font-bold">Edit</Link>
                     </div>
                   </td>
                 </tr>

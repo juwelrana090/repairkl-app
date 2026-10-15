@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { twMerge } from "tailwind-merge";
 import { SOCIAL_LINKS } from "@/lib/social";
 import WhatsAppIcon from "@/components/marketing/WhatsAppIcon";
+import UserMenu, { type MenuUser } from "@/components/marketing/UserMenu";
 import { PUBLIC_NAV_LINKS } from "@/lib/navigation";
 import { bookingLink, whatsappLink, PHONE_DISPLAY } from "@/lib/whatsapp";
 
@@ -13,12 +14,28 @@ export default function PublicNav() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  // Server HTML always renders the logged-out state (ISR-safe). The session
+  // is read client-side after mount, so the swap never touches the cached page.
+  const [user, setUser] = useState<MenuUser | null>(null);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/auth/me", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (!cancelled && data?.authenticated) setUser(data.user);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return (
@@ -137,17 +154,23 @@ export default function PublicNav() {
 
           {/* CTA */}
           <div className="flex items-center gap-3">
-            <Link
-              href="/login"
-              className={twMerge(
-                "hidden sm:block text-sm font-bold px-4 py-2 rounded-[10px] transition-all",
-                scrolled
-                  ? "text-[#001353] hover:text-[#034795]"
-                  : "text-white/90 hover:text-white",
-              )}
-            >
-              Sign In
-            </Link>
+            {user ? (
+              <div className="hidden sm:block">
+                <UserMenu variant="desktop" user={user} scrolled={scrolled} />
+              </div>
+            ) : (
+              <Link
+                href="/login"
+                className={twMerge(
+                  "hidden sm:block text-sm font-bold px-4 py-2 rounded-[10px] transition-all",
+                  scrolled
+                    ? "text-[#001353] hover:text-[#034795]"
+                    : "text-white/90 hover:text-white",
+                )}
+              >
+                Sign In
+              </Link>
+            )}
             <a
               href={bookingLink()}
               target="_blank"
@@ -212,13 +235,24 @@ export default function PublicNav() {
                 {link.label}
               </Link>
             ))}
+            {user && (
+              <div className="px-2">
+                <UserMenu
+                  variant="mobile"
+                  user={user}
+                  onNavigate={() => setOpen(false)}
+                />
+              </div>
+            )}
             <div className="flex gap-2 px-4 pt-2">
-              <Link
-                href="/login"
-                className="flex-1 h-11 border-2 border-[#ddddee] rounded-[10px] text-sm font-bold text-[#001353] flex items-center justify-center"
-              >
-                Sign In
-              </Link>
+              {!user && (
+                <Link
+                  href="/login"
+                  className="flex-1 h-11 border-2 border-[#ddddee] rounded-[10px] text-sm font-bold text-[#001353] flex items-center justify-center"
+                >
+                  Sign In
+                </Link>
+              )}
               <a
                 href={bookingLink()}
                 target="_blank"

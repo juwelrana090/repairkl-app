@@ -68,9 +68,10 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  // Has token on /, /login or /register → redirect to the role dashboard.
-  // Doing this here (not in the homepage RSC) keeps "/" fully cacheable.
-  if (token && (pathname === "/" || pathname === "/login" || pathname === "/register")) {
+  // Has token on /login or /register → redirect to the role dashboard.
+  // "/" is intentionally NOT redirected: logged-in users can view the public
+  // site and reach their panel via the nav user menu (A3/A4).
+  if (token && (pathname === "/login" || pathname === "/register")) {
     try {
       const { payload } = await jwtVerify(token, SECRET);
       const role = (payload as { role: string }).role;
