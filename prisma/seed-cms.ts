@@ -204,27 +204,27 @@ function homeSections(): SectionSeed[] {
       props: {
         slides: [
           {
-            src: "/images/hero/fridge-repairbg.jpg",
+            src: "/assets/images/hero/fridge-repairbg.jpg",
             alt: "Fridge repair technician in Kuala Lumpur",
             position: "center right",
           },
           {
-            src: "/images/hero/washing-machine-repair.jpg",
+            src: "/assets/images/hero/washing-machine-repair.jpg",
             alt: "Washing machine repair service in Kuala Lumpur",
             position: "center right",
           },
           {
-            src: "/images/hero/dryer-repair.jpg",
+            src: "/assets/images/hero/dryer-repair.jpg",
             alt: "Dryer repair technician at work",
             position: "center right",
           },
           {
-            src: "/images/hero/air-conditioner-service.jpg",
+            src: "/assets/images/hero/air-conditioner-service.jpg",
             alt: "Air conditioner service in Kuala Lumpur",
             position: "center right",
           },
           {
-            src: "/images/hero/ac-installation.jpg",
+            src: "/assets/images/hero/ac-installation.jpg",
             alt: "Air conditioner installation in Kuala Lumpur",
             position: "center right",
           },
@@ -252,14 +252,14 @@ function homeSections(): SectionSeed[] {
         brands: {
           label: "We repair all major brands",
           items: [
-            { name: "Samsung", logo: "/images/brands/samsung.webp", width: 589 },
-            { name: "LG", logo: "/images/brands/lg.webp", width: 218, tall: true },
-            { name: "Panasonic", logo: "/images/brands/panasonic.webp", width: 618 },
-            { name: "Sharp", logo: "/images/brands/sharp.webp", width: 654 },
-            { name: "Daikin", logo: "/images/brands/daikin.webp", width: 438 },
-            { name: "Mitsubishi", logo: "/images/brands/mitsubishi.webp", width: 582 },
-            { name: "Hitachi", logo: "/images/brands/hitachi.webp", width: 543 },
-            { name: "Toshiba", logo: "/images/brands/toshiba.webp", width: 568 },
+            { name: "Samsung", logo: "/assets/images/brands/samsung.webp", width: 589 },
+            { name: "LG", logo: "/assets/images/brands/lg.webp", width: 218, tall: true },
+            { name: "Panasonic", logo: "/assets/images/brands/panasonic.webp", width: 618 },
+            { name: "Sharp", logo: "/assets/images/brands/sharp.webp", width: 654 },
+            { name: "Daikin", logo: "/assets/images/brands/daikin.webp", width: 438 },
+            { name: "Mitsubishi", logo: "/assets/images/brands/mitsubishi.webp", width: 582 },
+            { name: "Hitachi", logo: "/assets/images/brands/hitachi.webp", width: 543 },
+            { name: "Toshiba", logo: "/assets/images/brands/toshiba.webp", width: 568 },
           ],
         },
       },
@@ -278,7 +278,7 @@ function homeSections(): SectionSeed[] {
     {
       type: "IMAGE_TEXT",
       props: {
-        image: "/images/about-technician.jpg",
+        image: "/assets/images/about-technician.jpg",
         imageCaption: {
           kicker: "Serving the Klang Valley since 2021",
           heading: "Technicians who treat your home like their own.",
@@ -305,7 +305,7 @@ function homeSections(): SectionSeed[] {
     {
       type: "STATS",
       props: {
-        image: "/images/services/stats-bg.jpg",
+        image: "/assets/images/services/stats-bg.jpg",
         stats: [
           { value: "10K+", label: "Repairs completed", live: "bookings" },
           { value: "50+", label: "Verified technicians", live: "workers" },
@@ -445,7 +445,7 @@ function homeSections(): SectionSeed[] {
     {
       type: "CTA",
       props: {
-        image: "/images/services/cta-bg.jpg",
+        image: "/assets/images/services/cta-bg.jpg",
         heading: "Something broken? Get it fixed this week.",
         body: "Send us a WhatsApp message with your appliance and the problem, and we'll book a technician for you.",
         primaryCta: { label: "Book a repair", kind: "booking" },
@@ -459,7 +459,7 @@ function aboutSections(): SectionSeed[] {
     {
       type: "HERO",
       props: {
-        image: "/images/services/ac-installation.jpg",
+        image: "/assets/images/services/ac-installation.jpg",
         imageAlt:
           "RepairKL technician installing an air conditioner in Kuala Lumpur",
         heading: "We're on a Mission to Make Appliance Repair Simple",
@@ -611,7 +611,7 @@ function faqSections(): SectionSeed[] {
     {
       type: "HERO",
       props: {
-        image: "/images/hero/fridge-repairbg.jpg",
+        image: "/assets/images/hero/fridge-repairbg.jpg",
         imageAlt: "Fridge repair technician working on a refrigerator",
         heading: "Frequently Asked Questions",
         headingHighlight: "Questions",
@@ -753,7 +753,7 @@ function contactSections(): SectionSeed[] {
     {
       type: "HERO",
       props: {
-        image: "/images/services/air-conditioner-service.jpg",
+        image: "/assets/images/services/air-conditioner-service.jpg",
         imageAlt: "Air conditioner service technician in Kuala Lumpur",
         heading: "We'd Love to Hear from You",
         headingHighlight: "Hear from You",
@@ -768,7 +768,7 @@ function contactSections(): SectionSeed[] {
       props: {
         cards: [
           {
-            icon: "/images/icons/message.png",
+            icon: "/assets/images/icons/message.png",
             title: "Email Us",
             value: "hello@repairkl.com",
             subtitle: "We reply within 2 business hours",
@@ -777,7 +777,7 @@ function contactSections(): SectionSeed[] {
             bg: "#eaf0f8",
           },
           {
-            icon: "/images/icons/mobile.png",
+            icon: "/assets/images/icons/mobile.png",
             title: "Call Us",
             value: "+60 11-5580 4809",
             subtitle: "Sat–Thu, 8AM–10PM",
@@ -786,7 +786,7 @@ function contactSections(): SectionSeed[] {
             bg: "#e6f5ee",
           },
           {
-            icon: "/images/icons/whatsapp.png",
+            icon: "/assets/images/icons/whatsapp.png",
             title: "WhatsApp",
             value: "+60 11-5580 4809",
             subtitle: "Instant replies 8AM–10PM",
@@ -795,7 +795,7 @@ function contactSections(): SectionSeed[] {
             bg: "#e6f5ee",
           },
           {
-            icon: "/images/icons/pin.png",
+            icon: "/assets/images/icons/pin.png",
             title: "Visit Us",
             value: "45 Kuala Lumpur, Kuala Lumpur 1212",
             subtitle: "By appointment only",
@@ -843,7 +843,7 @@ function ourServicesSections(): SectionSeed[] {
     {
       type: "HERO",
       props: {
-        image: "/images/hero/our-services.webp",
+        image: "/assets/images/hero/our-services.webp",
         imageAlt:
           "Home appliance repair services in Kuala Lumpur — fridge, washing machine, dryer and aircond",
         heading: "Five specialist repair services in Kuala Lumpur.",
@@ -863,22 +863,22 @@ function ourServicesSections(): SectionSeed[] {
         variant: "feature-strip",
         features: [
           {
-            icon: "/images/icons/verified.png",
+            icon: "/assets/images/icons/verified.png",
             title: "Verified technicians",
             desc: "Every technician is background-checked",
           },
           {
-            icon: "/images/icons/wallet.png",
+            icon: "/assets/images/icons/wallet.png",
             title: "Quote before work",
             desc: "You approve the quote before work starts",
           },
           {
-            icon: "/images/icons/secured.png",
+            icon: "/assets/images/icons/secured.png",
             title: "Fully insured",
             desc: "Covered if anything goes wrong",
           },
           {
-            icon: "/images/icons/booking.png",
+            icon: "/assets/images/icons/booking.png",
             title: "Same-day booking",
             desc: "Slots available as soon as today",
           },
@@ -962,7 +962,7 @@ function ourServicesSections(): SectionSeed[] {
     {
       type: "CTA",
       props: {
-        icon: "/images/icons/booking.png",
+        icon: "/assets/images/icons/booking.png",
         heading: "Not sure which service you need?",
         subheading:
           "Tell us what's wrong with your appliance and we'll match you with the right technician.",
@@ -1379,27 +1379,27 @@ async function seedMedia() {
       focusKeyword: "aircond installation Kuala Lumpur",
     },
     {
-      url: "/images/hero/our-services.webp",
+      url: "/assets/images/hero/our-services.webp",
       alt: "Home appliance repair services in Kuala Lumpur — fridge, washing machine, dryer and aircond",
       focusKeyword: "appliance repair services Kuala Lumpur",
     },
     {
-      url: "/images/hero/fridge-repairbg.jpg",
+      url: "/assets/images/hero/fridge-repairbg.jpg",
       alt: "Fridge repair technician working on a refrigerator",
       focusKeyword: "fridge repair Kuala Lumpur",
     },
     {
-      url: "/images/about-technician.jpg",
+      url: "/assets/images/about-technician.jpg",
       alt: "RepairKL technician repairing an appliance",
       focusKeyword: "appliance repair technician Kuala Lumpur",
     },
     {
-      url: "/images/services/stats-bg.jpg",
+      url: "/assets/images/services/stats-bg.jpg",
       alt: "RepairKL repair statistics",
       focusKeyword: null,
     },
     {
-      url: "/images/services/cta-bg.jpg",
+      url: "/assets/images/services/cta-bg.jpg",
       alt: "Book an appliance repair with RepairKL",
       focusKeyword: "book appliance repair Kuala Lumpur",
     },

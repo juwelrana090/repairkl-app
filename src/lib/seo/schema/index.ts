@@ -4,6 +4,7 @@ export { websiteSchema } from "./website";
 export { serviceSchema } from "./service";
 export { faqSchema } from "./faq";
 export { breadcrumbSchema } from "./breadcrumb";
+export { articleSchema } from "./article";
 export {
   reviewSchema,
   aggregateRatingSchema,

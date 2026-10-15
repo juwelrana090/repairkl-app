@@ -26,9 +26,9 @@ export const TWITTER_HANDLE =
   process.env.NEXT_PUBLIC_TWITTER_HANDLE ?? "";
 
 // Default social-preview image (1200x630). Kept in sync with the file in
-// /public/images/og/ — see Step 2 of the SEO plan.
-export const DEFAULT_OG_IMAGE = "/images/og/default-1200x630.jpg";
-export const LOGO_PATH = "/images/logo/logo.png";
+// /public/assets/images/og/ — see Step 2 of the SEO plan.
+export const DEFAULT_OG_IMAGE = "/assets/images/og/default-1200x630.jpg";
+export const LOGO_PATH = "/assets/images/logo/logo.png";
 
 /**
  * Single source of truth for the business identity used across metadata and

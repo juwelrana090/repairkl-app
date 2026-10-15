@@ -1,8 +1,8 @@
 // Central map of RepairKL icon + photo assets (files live in /public/images).
 // Import from here instead of hard-coding paths or emojis in components.
 
-const ICONS = "/images/icons";
-const PHOTOS = "/images/services";
+const ICONS = "/assets/images/icons";
+const PHOTOS = "/assets/images/services";
 
 export type ServiceAsset = {
   icon: string;

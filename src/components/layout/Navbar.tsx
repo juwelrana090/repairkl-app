@@ -44,7 +44,7 @@ export default function Navbar({
         {/* Logo */}
         <Link href={dashboardHref} className="flex items-center gap-2.5 font-bold text-xl text-[#001353]" aria-label="RepairKL home">
           <Image
-            src="/images/logo/logo.png"
+            src="/assets/images/logo/logo.png"
             alt=""
             role="presentation"
             width={36}

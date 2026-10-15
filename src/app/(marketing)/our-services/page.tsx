@@ -189,7 +189,7 @@ export default async function OurServicesPage() {
         <div className="absolute inset-0" aria-hidden="true">
           <div className="absolute inset-0 bg-gradient-to-br from-[#001353] via-[#0a1f63] to-[#001353]" />
           <Image
-            src="/images/hero/our-services.webp"
+            src="/assets/images/hero/our-services.webp"
             alt="Home appliance repair services in Kuala Lumpur — fridge, washing machine, dryer and aircond"
             fill
             priority

@@ -2,8 +2,12 @@
 
 import { useRef, useState } from "react";
 import AppIcon from "@/components/ui/AppIcon";
-import { Modal, showToast } from "@/components/ui";
-import { Button } from "@/components/ui/Button";
+import { showToast } from "@/components/ui";
+import AdminButton from "@/components/admin/ui/Button";
+import AdminBadge from "@/components/admin/ui/Badge";
+import AdminModal from "@/components/admin/ui/Modal";
+import { AdminCard } from "@/components/admin/ui/Card";
+import { AdminInput } from "@/components/admin/ui/Field";
 
 interface MediaRow {
   id: string;
@@ -14,9 +18,6 @@ interface MediaRow {
   height: number | null;
   createdAt: string;
 }
-
-const inputClass =
-  "w-full h-10 px-3 border border-[#ddddee] rounded-[10px] text-sm text-[#001353] outline-none focus:border-[#034795]";
 
 export default function MediaLibraryClient({
   initial,
@@ -130,158 +131,146 @@ export default function MediaLibraryClient({
   return (
     <div className="flex flex-col gap-6">
       {/* Upload card */}
-      <div className="bg-white rounded-[24px] border border-[#ddddee] p-6">
-        <div className="flex items-center justify-between mb-4">
-          <p className="text-sm font-bold text-[#001353]">Upload new</p>
-          <span className="text-[11px] px-2 py-1 rounded-full bg-[#eeeef6] text-[#5b6480]">
+      <AdminCard
+        title="Upload new"
+        desc="JPG, PNG, WebP, GIF, SVG or AVIF · max 5 MB · alt text is mandatory for accessibility and image SEO"
+        actions={
+          <AdminBadge color="neutral" size="sm">
             storage: {backend === "cloudinary" ? "Cloudinary" : "local public/uploads/"}
-          </span>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-3 items-center">
+          </AdminBadge>
+        }
+      >
+        <div className="grid grid-cols-1 items-center gap-3 md:grid-cols-4">
           <input
             ref={fileRef}
             type="file"
             accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml,image/avif"
             onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-            className="text-sm text-[#5b6480] file:mr-3 file:py-2 file:px-4 file:rounded-[10px] file:border-0 file:bg-[#eaf0f8] file:text-[#034795] file:text-sm file:font-bold"
+            className="cursor-pointer text-sm text-[#5b6480] file:mr-3 file:cursor-pointer file:rounded-[16px] file:border-0 file:bg-[#eaf0f8] file:px-4 file:py-2 file:text-sm file:font-medium file:text-[#034795]"
           />
-          <input
+          <AdminInput
             value={alt}
             onChange={(e) => setAlt(e.target.value)}
             placeholder="Alt text (required)"
             maxLength={500}
-            className={inputClass}
           />
-          <input
+          <AdminInput
             value={focusKeyword}
             onChange={(e) => setFocusKeyword(e.target.value)}
             placeholder="Focus keyword (optional)"
             maxLength={191}
-            className={inputClass}
           />
-          <button
+          <AdminButton
             type="button"
-            onClick={upload}
+            variant="primary"
+            size="md"
             disabled={uploading}
-            className="h-10 px-4 bg-[#034795] text-white text-sm font-bold rounded-[10px] hover:bg-[#001353] disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+            onClick={upload}
+            startIcon={<AppIcon name="plus" className="h-4 w-4" />}
           >
             {uploading ? "Uploading…" : "Upload"}
-          </button>
+          </AdminButton>
         </div>
-        <p className="text-[11px] text-[#5b6480] mt-2">
-          JPG, PNG, WebP, GIF, SVG or AVIF · max 5 MB · alt text is mandatory for accessibility and image SEO
-        </p>
-      </div>
+      </AdminCard>
 
       {/* Search */}
-      <div className="flex gap-3">
-        <input
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search by alt text, URL or keyword…"
-          className="flex-1 h-10 px-4 border border-[#ddddee] rounded-[12px] text-sm outline-none focus:border-[#034795]"
-        />
-        <span className="h-10 px-3 bg-[#eeeef6] rounded-[12px] text-sm text-[#5b6480] flex items-center">
+      <div className="flex items-center gap-3">
+        <div className="relative flex-1">
+          <AppIcon name="search" className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[#98a2b3]" />
+          <AdminInput
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search by alt text, URL or keyword…"
+            className="pl-11"
+          />
+        </div>
+        <AdminBadge color="neutral" size="md">
           {filtered.length} files
-        </span>
+        </AdminBadge>
       </div>
 
       {/* Grid */}
       {filtered.length === 0 ? (
-        <p className="text-sm text-[#5b6480] bg-white rounded-[24px] border border-[#ddddee] p-8 text-center">
-          No media yet — upload the first image above.
-        </p>
+        <AdminCard>
+          <p className="py-8 text-center text-sm text-[#5b6480]">
+            No media yet — upload the first image above.
+          </p>
+        </AdminCard>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-4">
           {filtered.map((r) => (
             <div
               key={r.id}
-              className="bg-white rounded-[20px] border border-[#ddddee] overflow-hidden flex flex-col"
+              className="flex flex-col overflow-hidden rounded-[20px] border border-[#e4e7f0] bg-white shadow-sm"
             >
-              <div className="h-36 bg-[#f5f5fa] flex items-center justify-center overflow-hidden">
+              <div className="flex h-36 items-center justify-center overflow-hidden bg-[#f5f5fa]">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={r.url}
                   alt={r.alt}
                   loading="lazy"
-                  className="w-full h-full object-cover"
+                  className="h-full w-full object-cover"
                 />
               </div>
 
               {editingId === r.id ? (
-                <div className="p-3 flex flex-col gap-2">
-                  <input
+                <div className="flex flex-col gap-2 p-3">
+                  <AdminInput
                     value={editAlt}
                     onChange={(e) => setEditAlt(e.target.value)}
                     placeholder="Alt text"
                     maxLength={500}
-                    className={inputClass}
                   />
-                  <input
+                  <AdminInput
                     value={editKeyword}
                     onChange={(e) => setEditKeyword(e.target.value)}
                     placeholder="Focus keyword"
                     maxLength={191}
-                    className={inputClass}
                   />
                   <div className="flex gap-2">
-                    <button
-                      type="button"
-                      onClick={() => saveEdit(r)}
-                      className="flex-1 h-9 bg-[#1a8f5c] text-white text-xs font-bold rounded-[10px] cursor-pointer"
-                    >
+                    <AdminButton type="button" variant="primary" size="sm" className="flex-1" onClick={() => saveEdit(r)}>
                       Save
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setEditingId(null)}
-                      className="flex-1 h-9 bg-[#eeeef6] text-[#5b6480] text-xs font-bold rounded-[10px] cursor-pointer"
-                    >
+                    </AdminButton>
+                    <AdminButton type="button" variant="outline" size="sm" className="flex-1" onClick={() => setEditingId(null)}>
                       Cancel
-                    </button>
+                    </AdminButton>
                   </div>
                 </div>
               ) : (
-                <div className="p-3 flex flex-col gap-1.5 flex-1">
-                  <p className="text-xs text-[#001353] line-clamp-2" title={r.alt}>
+                <div className="flex flex-1 flex-col gap-1.5 p-3">
+                  <p className="line-clamp-2 text-sm font-medium text-[#001353]" title={r.alt}>
                     {r.alt}
                   </p>
-                  <p className="text-[10px] text-[#5b6480] truncate" title={r.url}>
+                  <p className="truncate text-xs text-[#5b6480]" title={r.url}>
                     {r.focusKeyword ? (
                       <>
-                        <AppIcon name="search" className="inline w-3 h-3 mr-0.5 -mt-0.5" />
+                        <AppIcon name="search" className="-mt-0.5 mr-1 inline h-3 w-3" />
                         {`${r.focusKeyword} · `}
                       </>
                     ) : null}
                     {r.url.split("/").pop()}
                     {r.width && r.height ? ` · ${r.width}×${r.height}` : ""}
                   </p>
-                  <div className="flex gap-1.5 mt-auto pt-2">
-                    <button
-                      type="button"
-                      onClick={() => copyUrl(r.url)}
-                      className="flex-1 h-8 text-[10px] font-bold text-[#034795] bg-[#eaf0f8] rounded-[8px] hover:bg-[#d5e3f5] cursor-pointer"
-                    >
+                  <div className="mt-auto flex flex-wrap gap-1.5 pt-2">
+                    <AdminButton type="button" variant="outline" size="sm" className="flex-1" onClick={() => copyUrl(r.url)}>
                       Copy URL
-                    </button>
-                    <button
+                    </AdminButton>
+                    <AdminButton
                       type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="flex-1"
                       onClick={() => {
                         setEditingId(r.id);
                         setEditAlt(r.alt);
                         setEditKeyword(r.focusKeyword);
                       }}
-                      className="flex-1 h-8 text-[10px] font-bold text-[#5b6480] bg-[#eeeef6] rounded-[8px] hover:bg-[#ddddee] cursor-pointer"
                     >
                       Edit
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setPendingDelete(r)}
-                      className="flex-1 h-8 text-[10px] font-bold text-[#d64545] bg-red-50 rounded-[8px] hover:bg-red-100 cursor-pointer"
-                    >
+                    </AdminButton>
+                    <AdminButton type="button" variant="danger" size="sm" className="flex-1" onClick={() => setPendingDelete(r)}>
                       Delete
-                    </button>
+                    </AdminButton>
                   </div>
                 </div>
               )}
@@ -290,23 +279,30 @@ export default function MediaLibraryClient({
         </div>
       )}
 
-      {pendingDelete && (
-        <Modal open onClose={() => !deleting && setPendingDelete(null)} title="Delete media" size="sm">
-          <div className="flex flex-col gap-4">
-            <p className="text-sm text-[#5b6480]">
-              Delete <strong className="text-[#001353]">{pendingDelete.url.split("/").pop()}</strong>? This file will be removed from the library and cannot be undone.
-            </p>
-            <div className="flex justify-end gap-2">
-              <Button type="button" variant="secondary" disabled={deleting} onClick={() => setPendingDelete(null)}>
-                Cancel
-              </Button>
-              <Button type="button" variant="danger" loading={deleting} onClick={() => remove(pendingDelete)}>
-                Delete
-              </Button>
+      <AdminModal
+        isOpen={pendingDelete !== null}
+        onClose={() => !deleting && setPendingDelete(null)}
+        className="max-w-md p-6 sm:p-8"
+      >
+        {pendingDelete && (
+          <>
+            <h2 className="pr-12 text-xl font-semibold text-[#001353]">Delete media</h2>
+            <div className="mt-6 flex flex-col gap-5">
+              <p className="text-sm text-[#5b6480]">
+                Delete <strong className="text-[#001353]">{pendingDelete.url.split("/").pop()}</strong>? This file will be removed from the library and cannot be undone.
+              </p>
+              <div className="flex items-center justify-end gap-3">
+                <AdminButton type="button" variant="outline" disabled={deleting} onClick={() => setPendingDelete(null)}>
+                  Cancel
+                </AdminButton>
+                <AdminButton type="button" variant="danger" disabled={deleting} onClick={() => remove(pendingDelete)}>
+                  {deleting ? "Deleting…" : "Delete"}
+                </AdminButton>
+              </div>
             </div>
-          </div>
-        </Modal>
-      )}
+          </>
+        )}
+      </AdminModal>
     </div>
   );
 }

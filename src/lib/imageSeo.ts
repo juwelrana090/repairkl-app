@@ -3,7 +3,7 @@ import type { ImageProps } from "next/image";
 /**
  * SEO-safe props for next/image — `alt` is mandatory at the type level.
  * Pass alt="" ONLY for decorative images and pair it with role="presentation".
- * Naming rules for the underlying files live in public/images/CONVENTION.md.
+ * Naming rules for the underlying files live in public/assets/images/CONVENTION.md.
  */
 export interface SeoImageInput {
   src: string;
@@ -48,7 +48,7 @@ export function seoImage({
     const basename = src.split("/").pop() ?? src;
     if (slug && !basename.toLowerCase().includes(slug)) {
       console.info(
-        `[imageSeo] "${basename}" doesn't contain the focus keyword — consider a filename including "${slug}" (public/images/CONVENTION.md)`,
+        `[imageSeo] "${basename}" doesn't contain the focus keyword — consider a filename including "${slug}" (public/assets/images/CONVENTION.md)`,
       );
     }
   }

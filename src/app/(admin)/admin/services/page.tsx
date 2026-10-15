@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { getServiceIcon } from "@/lib/brandAssets";
 import { prisma } from "@/lib/prisma";
-import { RatingStars } from "@/components/ui";
+import AdminPageHeader from "@/components/admin/ui/PageHeader";
 import AdminServicesClient from "./AdminServicesClient";
 import { buildPageMetadata } from "@/lib/seo/pageMeta";
 
@@ -22,24 +22,32 @@ export default async function AdminServicesPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-[#001353] tracking-[-0.5px]">Services</h1>
-          <p className="text-sm text-[#5b6480] mt-1">{services.length} total services</p>
-        </div>
-      </div>
+      <AdminPageHeader title="Services" description={`${services.length} total services`} />
 
       {/* Category summary */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-8">
         {categories.map((cat) => {
           const count = services.filter((s) => s.categoryId === cat.id).length;
           return (
-            <div key={cat.id} className="bg-white rounded-[16px] border border-[#ddddee] p-3 text-center">
-              <div className="w-11 h-11 rounded-full mx-auto mb-2 flex items-center justify-center" style={{ background: `${cat.color}20` }}>
-                <Image src={getServiceIcon(cat.slug || cat.name)} alt="" role="presentation" width={28} height={28} className="w-7 h-7 object-contain" />
+            <div
+              key={cat.id}
+              className="rounded-2xl border border-[#e4e7f0] bg-white p-4 text-center shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)]"
+            >
+              <div
+                className="mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-full"
+                style={{ background: `${cat.color}20` }}
+              >
+                <Image
+                  src={getServiceIcon(cat.slug || cat.name)}
+                  alt=""
+                  role="presentation"
+                  width={28}
+                  height={28}
+                  className="h-7 w-7 object-contain"
+                />
               </div>
-              <p className="text-xs font-bold text-[#001353] leading-tight">{cat.name}</p>
-              <p className="text-[10px] text-[#5b6480] mt-0.5">{count} services</p>
+              <p className="text-sm font-medium leading-tight text-[#001353]">{cat.name}</p>
+              <p className="mt-1 text-xs text-[#5b6480]">{count} services</p>
             </div>
           );
         })}

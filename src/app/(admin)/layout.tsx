@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
+import "./admin-theme.css";
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth/session";
 import { prisma } from "@/lib/prisma";
-import PanelSidebar from "@/components/layout/PanelSidebar";
+import AdminShell from "@/components/admin/shell/AdminShell";
 import { buildPageMetadata } from "@/lib/seo/pageMeta";
 
 export const metadata: Metadata = buildPageMetadata("admin");
@@ -19,14 +20,11 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   });
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#f5f5fa]">
-      <PanelSidebar
-        role={session.role as "ADMIN" | "SUPER_ADMIN" | "EDITOR"}
-        user={{ fullName: user?.fullName ?? "Admin", email: user?.email ?? "" }}
-      />
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <main className="flex-1 overflow-y-auto p-6 lg:p-8">{children}</main>
-      </div>
-    </div>
+    <AdminShell
+      role={session.role}
+      user={{ fullName: user?.fullName ?? "Admin", email: user?.email ?? "" }}
+    >
+      {children}
+    </AdminShell>
   );
 }

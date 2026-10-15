@@ -115,7 +115,7 @@ export default function AboutPage() {
         <div className="absolute inset-0" aria-hidden="true">
           <div className="absolute inset-0 bg-gradient-to-br from-[#001353] via-[#0a1f63] to-[#001353]" />
           <Image
-            src="/images/services/ac-installation.jpg"
+            src="/assets/images/services/ac-installation.jpg"
             alt="RepairKL technician installing an air conditioner in Kuala Lumpur"
             fill
             priority

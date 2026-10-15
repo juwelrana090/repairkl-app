@@ -3,11 +3,23 @@ import AppIcon from "@/components/ui/AppIcon";
 import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Modal, StatusBadge, showToast } from "@/components/ui";
+import { Modal, showToast } from "@/components/ui";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { twMerge } from "tailwind-merge";
 import { ALL_ROLES, canChangeUserRole } from "@/lib/auth/roleHierarchy";
+import AdminButton from "@/components/admin/ui/Button";
+import AdminBadge from "@/components/admin/ui/Badge";
+import AdminPagination from "@/components/admin/ui/Pagination";
+import { AdminCard } from "@/components/admin/ui/Card";
+import {
+  AdminTable,
+  AdminTableHead,
+  AdminTableBody,
+  AdminTableRow,
+  AdminTh,
+  AdminTd,
+} from "@/components/admin/ui/Table";
 
 export interface User {
   id: string; fullName: string; email: string; phone: string; role: string;
@@ -22,7 +34,19 @@ type ModalState =
   | { kind: "delete"; user: User }
   | null;
 
+type BadgeColor = "primary" | "success" | "error" | "warning" | "info" | "neutral";
+
 const ROLES = ["ALL", ...ALL_ROLES];
+
+// Same colour family as the dashboard role labels.
+const ROLE_COLOR: Record<string, BadgeColor> = {
+  CUSTOMER: "info",
+  WORKER: "warning",
+  SUPPORT: "primary",
+  EDITOR: "success",
+  ADMIN: "error",
+  SUPER_ADMIN: "neutral",
+};
 
 export async function callApi(url: string, method: string, body?: unknown) {
   const res = await fetch(url, {
@@ -79,155 +103,188 @@ export default function AdminUsersClient({
 
   return (
     <>
-      {/* Controls */}
-      <div className="bg-white rounded-[20px] border border-[#ddddee] p-4 flex flex-col sm:flex-row gap-3">
-        <div className="flex gap-2 flex-wrap">
-          {ROLES.map((r) => (
-            <button key={r} onClick={() => applyFilter(r, searchQ)}
-              className={twMerge("px-3 py-1.5 rounded-full text-xs font-bold border transition-all",
-                (activeRole ?? "ALL") === r ? "border-[#034795] text-[#034795] bg-[#eaf0f8]" : "border-[#ddddee] text-[#5b6480]"
-              )}>
-              {r}
-            </button>
-          ))}
+      {/* Toolbar: role filter, search, add */}
+      <div className="flex flex-col gap-4 rounded-2xl border border-[#e4e7f0] bg-white p-4 shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex flex-wrap gap-2">
+          {ROLES.map((r) => {
+            const active = (activeRole ?? "ALL") === r;
+            return (
+              <button
+                key={r}
+                type="button"
+                onClick={() => applyFilter(r, searchQ)}
+                className={twMerge(
+                  "cursor-pointer rounded-full border px-3.5 py-1.5 text-xs font-medium transition",
+                  active
+                    ? "border-[#034795] bg-[#eaf0f8] text-[#034795]"
+                    : "border-[#d0d5dd] bg-white text-[#5b6480] hover:bg-[#f9fafb]"
+                )}
+              >
+                {r === "ALL" ? "All" : r.replace("_", " ")}
+              </button>
+            );
+          })}
         </div>
-        <div className="flex gap-2 ml-auto">
-          {createRoles.length > 0 && (
-            <button onClick={() => setModal({ kind: "create" })}
-              className="h-9 px-4 bg-[#fb6f27] text-white rounded-[10px] text-sm font-bold">
-              Add user
-            </button>
-          )}
-          <input
-            value={searchQ}
-            onChange={(e) => setSearchQ(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && applyFilter(activeRole, searchQ)}
-            placeholder="Search users..."
-            className="h-9 px-4 border border-[#ddddee] rounded-[10px] text-sm outline-none focus:border-[#034795] w-48"
-          />
-          <button onClick={() => applyFilter(activeRole, searchQ)} className="h-9 px-4 bg-[#034795] text-white rounded-[10px] text-sm font-bold">
+
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="relative">
+            <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#98a2b3]">
+              <AppIcon name="search" className="h-4 w-4" />
+            </span>
+            <input
+              value={searchQ}
+              onChange={(e) => setSearchQ(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && applyFilter(activeRole, searchQ)}
+              placeholder="Search users..."
+              className="h-11 w-56 rounded-lg border border-[#d0d5dd] bg-white pl-9 pr-3 text-sm text-[#001353] shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] outline-none transition placeholder:text-[#98a2b3] focus:border-[#034795]"
+            />
+          </div>
+          <AdminButton variant="outline" size="md" onClick={() => applyFilter(activeRole, searchQ)}>
             Search
-          </button>
+          </AdminButton>
+          {createRoles.length > 0 && (
+            <AdminButton
+              size="md"
+              startIcon={<AppIcon name="plus" className="h-4 w-4" />}
+              onClick={() => setModal({ kind: "create" })}
+            >
+              Add user
+            </AdminButton>
+          )}
         </div>
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-[24px] border border-[#ddddee] overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-[#f5f5fa] border-b border-[#ddddee]">
-              <tr>
-                {["User", "Contact", "Role", "Bookings", "Location", "Verified", "Status", "Actions"].map((h) => (
-                  <th key={h} className="text-left px-4 py-3 text-xs font-bold text-[#5b6480] uppercase tracking-wide whitespace-nowrap">{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#ddddee]">
-              {users.map((u) => (
-                <tr key={u.id} className="hover:bg-[#f5f5fa] transition-colors">
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-[#eaf0f8] flex items-center justify-center text-xs font-bold text-[#034795] shrink-0">
-                        {u.fullName.charAt(0)}
-                      </div>
-                      <div>
-                        <Link href={`/admin/users/${u.id}`} className="text-sm font-medium text-[#001353] hover:text-[#034795] hover:underline">
-                          {u.fullName}
-                        </Link>
-                        <p className="text-xs text-[#5b6480]">{new Date(u.createdAt).toLocaleDateString()}</p>
-                      </div>
+      <AdminCard className="overflow-hidden" title="Users" desc={`Showing ${users.length} of ${total}`}>
+        <AdminTable>
+          <AdminTableHead>
+            <tr>
+              <AdminTh>User</AdminTh>
+              <AdminTh>Contact</AdminTh>
+              <AdminTh>Role</AdminTh>
+              <AdminTh className="text-center">Bookings</AdminTh>
+              <AdminTh>Location</AdminTh>
+              <AdminTh>Verified</AdminTh>
+              <AdminTh>Status</AdminTh>
+              <AdminTh>Actions</AdminTh>
+            </tr>
+          </AdminTableHead>
+          <AdminTableBody>
+            {users.map((u) => (
+              <AdminTableRow key={u.id}>
+                <AdminTd>
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#eaf0f8] text-sm font-semibold text-[#034795]">
+                      {u.fullName.charAt(0)}
                     </div>
-                  </td>
-                  <td className="px-4 py-3">
-                    <p className="text-sm text-[#5b6480]">{u.email}</p>
-                    <p className="text-xs text-[#5b6480]">{u.phone}</p>
-                  </td>
-                  <td className="px-4 py-3">
-                    {canManageRoles && roleOptionsFor(u).length > 1 ? (
-                      <select
-                        value={u.role}
-                        onChange={(e) => changeRole(u, e.target.value)}
-                        className="h-8 px-2 border border-[#ddddee] rounded-[8px] text-xs font-bold text-[#001353] outline-none focus:border-[#034795]"
+                    <div>
+                      <Link href={`/admin/users/${u.id}`} className="font-medium text-[#001353] hover:text-[#034795] hover:underline">
+                        {u.fullName}
+                      </Link>
+                      <p className="text-xs text-[#8a92a8]">{new Date(u.createdAt).toLocaleDateString()}</p>
+                    </div>
+                  </div>
+                </AdminTd>
+                <AdminTd>
+                  <p>{u.email}</p>
+                  <p className="text-xs text-[#8a92a8]">{u.phone}</p>
+                </AdminTd>
+                <AdminTd>
+                  {canManageRoles && roleOptionsFor(u).length > 1 ? (
+                    <select
+                      value={u.role}
+                      onChange={(e) => changeRole(u, e.target.value)}
+                      className="h-9 cursor-pointer rounded-lg border border-[#d0d5dd] bg-white px-2.5 text-xs font-medium text-[#001353] outline-none focus:border-[#034795]"
+                    >
+                      {roleOptionsFor(u).map((r) => (
+                        <option key={r} value={r}>{r.replace("_", " ")}</option>
+                      ))}
+                    </select>
+                  ) : (
+                    <AdminBadge color={ROLE_COLOR[u.role] ?? "neutral"} size="sm">
+                      {u.role.replace("_", " ")}
+                    </AdminBadge>
+                  )}
+                  {u.permissions.length > 0 && (
+                    <div className="mt-1.5 flex flex-wrap gap-1">
+                      {u.permissions.map((p) => (
+                        <span key={p} className="rounded bg-[#eaf0f8] px-1.5 py-0.5 text-[10px] font-semibold text-[#034795]">{p}</span>
+                      ))}
+                    </div>
+                  )}
+                </AdminTd>
+                <AdminTd className="text-center font-semibold text-[#001353]">{u.bookingCount}</AdminTd>
+                <AdminTd>{u.city}</AdminTd>
+                <AdminTd>
+                  <div className="flex items-center gap-1.5">
+                    {u.isEmailVerified && (
+                      <span title="Email verified" className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-[#ecfdf3] text-[#067647]">
+                        <AppIcon name="mail" className="h-4 w-4" />
+                      </span>
+                    )}
+                    {u.isPhoneVerified && (
+                      <span title="Phone verified" className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-[#eff8ff] text-[#175cd3]">
+                        <AppIcon name="smartphone" className="h-4 w-4" />
+                      </span>
+                    )}
+                  </div>
+                </AdminTd>
+                <AdminTd>
+                  <AdminBadge color={u.isActive ? "success" : "error"} size="sm">
+                    {u.isActive ? "Active" : "Inactive"}
+                  </AdminBadge>
+                </AdminTd>
+                <AdminTd>
+                  <div className="flex flex-wrap gap-1.5">
+                    {u.canEdit && (
+                      <Link
+                        href={`/admin/users/${u.id}/edit`}
+                        className="inline-flex cursor-pointer items-center rounded-lg bg-[#eaf0f8] px-2.5 py-1.5 text-xs font-medium text-[#034795] transition hover:bg-[#dbe6f4]"
                       >
-                        {roleOptionsFor(u).map((r) => (
-                          <option key={r} value={r}>{r}</option>
-                        ))}
-                      </select>
-                    ) : (
-                      <StatusBadge status={u.role} />
+                        Edit
+                      </Link>
                     )}
-                    {u.permissions.length > 0 && (
-                      <div className="flex flex-wrap gap-1 mt-1">
-                        {u.permissions.map((p) => (
-                          <span key={p} className="text-[10px] font-bold bg-[#eaf0f8] text-[#034795] px-1.5 py-0.5 rounded">{p}</span>
-                        ))}
-                      </div>
+                    {u.canEdit && (
+                      <AdminButton variant="outline" size="sm" onClick={() => setModal({ kind: "password", user: u })}>
+                        Password
+                      </AdminButton>
                     )}
-                  </td>
-                  <td className="px-4 py-3 text-sm text-center font-bold text-[#001353]">{u.bookingCount}</td>
-                  <td className="px-4 py-3 text-sm text-[#5b6480]">{u.city}</td>
-                  <td className="px-4 py-3">
-                    <div className="flex gap-1">
-                      {u.isEmailVerified && <span title="Email" className="text-xs bg-green-100 text-green-600 px-1.5 py-0.5 rounded font-bold inline-flex items-center"><AppIcon name="mail" className="w-3 h-3" /></span>}
-                      {u.isPhoneVerified && <span title="Phone" className="text-xs bg-blue-100 text-blue-600 px-1.5 py-0.5 rounded font-bold inline-flex items-center"><AppIcon name="smartphone" className="w-3 h-3" /></span>}
-                    </div>
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className={twMerge("text-xs font-bold px-2 py-1 rounded-full", u.isActive ? "bg-green-100 text-green-600" : "bg-red-100 text-red-500")}>
-                      {u.isActive ? "Active" : "Inactive"}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex gap-2 flex-wrap">
-                      {u.canEdit && (
-                        <Link href={`/admin/users/${u.id}/edit`}
-                          className="text-xs px-2 py-1 rounded bg-[#eaf0f8] text-[#034795] hover:bg-[#dbe6f4] font-medium">
-                          Edit
-                        </Link>
-                      )}
-                      {u.canEdit && (
-                        <button onClick={() => setModal({ kind: "password", user: u })}
-                          className="text-xs px-2 py-1 rounded bg-[#eeeef6] text-[#5b6480] hover:bg-[#ddddee] font-medium">
-                          Password
-                        </button>
-                      )}
-                      {u.canEdit && !u.isSelf && (
-                        <button onClick={() => toggleActive(u.id, u.isActive)}
-                          className="text-xs px-2 py-1 rounded bg-[#eeeef6] text-[#5b6480] hover:bg-[#ddddee] font-medium">
-                          {u.isActive ? "Deactivate" : "Activate"}
-                        </button>
-                      )}
-                      {u.canEdit && !u.isSelf && (
-                        <button onClick={() => setModal({ kind: "delete", user: u })}
-                          className="text-xs px-2 py-1 rounded bg-red-50 text-[#d64545] hover:bg-red-100 font-medium">
-                          Delete
-                        </button>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                    {u.canEdit && !u.isSelf && (
+                      <AdminButton variant="outline" size="sm" onClick={() => toggleActive(u.id, u.isActive)}>
+                        {u.isActive ? "Deactivate" : "Activate"}
+                      </AdminButton>
+                    )}
+                    {u.canEdit && !u.isSelf && (
+                      <AdminButton variant="danger" size="sm" onClick={() => setModal({ kind: "delete", user: u })}>
+                        Delete
+                      </AdminButton>
+                    )}
+                  </div>
+                </AdminTd>
+              </AdminTableRow>
+            ))}
+          </AdminTableBody>
+        </AdminTable>
 
-        {/* Pagination */}
-        <div className="px-4 py-4 border-t border-[#ddddee] flex items-center justify-between text-sm">
-          <p className="text-[#5b6480]">Showing {((page - 1) * limit) + 1}–{Math.min(page * limit, total)} of {total}</p>
-          <div className="flex gap-1">
-            {Array.from({ length: totalPages }, (_, i) => i + 1)
-              .filter((p) => Math.abs(p - page) <= 2)
-              .map((p) => (
-                <button key={p} onClick={() => { const params = new URLSearchParams(); if (activeRole) params.set("role", activeRole); params.set("page", String(p)); router.push(`/admin/users?${params}`); }}
-                  className={twMerge("w-8 h-8 rounded-lg text-xs font-bold",
-                    p === page ? "bg-[#034795] text-white" : "bg-[#eeeef6] text-[#5b6480] hover:bg-[#ddddee]"
-                  )}>
-                  {p}
-                </button>
-              ))}
+        {totalPages > 1 && (
+          <div className="mt-4 flex items-center justify-between gap-4 border-t border-[#f0f2f7] pt-4 text-sm">
+            <p className="text-[#5b6480]">
+              Showing {((page - 1) * limit) + 1}–{Math.min(page * limit, total)} of {total}
+            </p>
+            <AdminPagination
+              currentPage={page}
+              totalPages={totalPages}
+              onPageChange={(p) => {
+                const params = new URLSearchParams();
+                if (activeRole) params.set("role", activeRole);
+                if (search) params.set("search", search);
+                params.set("page", String(p));
+                router.push(`/admin/users?${params}`);
+              }}
+            />
           </div>
-        </div>
-      </div>
+        )}
+      </AdminCard>
 
       {modal?.kind === "create" && (
         <UserFormModal createRoles={createRoles} onClose={closeModal} onSaved={onSaved} />

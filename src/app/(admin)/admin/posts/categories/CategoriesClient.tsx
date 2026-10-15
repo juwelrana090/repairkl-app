@@ -1,9 +1,20 @@
 "use client";
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { Modal, showToast } from "@/components/ui";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
+import { showToast } from "@/components/ui";
+import AdminButton from "@/components/admin/ui/Button";
+import AdminModal from "@/components/admin/ui/Modal";
+import { AdminCard } from "@/components/admin/ui/Card";
+import { AdminInput, AdminLabel } from "@/components/admin/ui/Field";
+import {
+  AdminTable,
+  AdminTableHead,
+  AdminTableBody,
+  AdminTableRow,
+  AdminTh,
+  AdminTd,
+} from "@/components/admin/ui/Table";
+import AppIcon from "@/components/ui/AppIcon";
 import { callApi } from "../../users/AdminUsersClient";
 
 export interface Category {
@@ -28,60 +39,52 @@ export default function CategoriesClient({ categories }: { categories: Category[
 
   return (
     <>
-      <div className="flex justify-end">
-        <button
-          onClick={() => setModal({ kind: "create" })}
-          className="h-10 px-5 bg-[#fb6f27] text-white rounded-[12px] text-sm font-bold"
-        >
-          New category
-        </button>
-      </div>
-
-      <div className="bg-white rounded-[24px] border border-[#ddddee] overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-[#f5f5fa] border-b border-[#ddddee]">
-              <tr>
-                {["Name", "Slug", "Posts", "Actions"].map((h) => (
-                  <th key={h} className="text-left px-4 py-3 text-xs font-bold text-[#5b6480] uppercase tracking-wide whitespace-nowrap">{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#ddddee]">
-              {categories.length === 0 && (
-                <tr>
-                  <td colSpan={4} className="px-4 py-10 text-center text-sm text-[#5b6480]">
-                    No categories yet. Create one to start filing blog posts.
-                  </td>
-                </tr>
-              )}
-              {categories.map((c) => (
-                <tr key={c.id} className="hover:bg-[#f5f5fa] transition-colors">
-                  <td className="px-4 py-3 text-sm font-medium text-[#001353]">{c.name}</td>
-                  <td className="px-4 py-3 text-sm text-[#5b6480] font-mono">{c.slug}</td>
-                  <td className="px-4 py-3 text-sm font-bold text-[#001353]">{c.postCount}</td>
-                  <td className="px-4 py-3">
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => setModal({ kind: "edit", category: c })}
-                        className="text-xs px-2 py-1 rounded bg-[#eaf0f8] text-[#034795] hover:bg-[#dbe6f4] font-medium"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => setModal({ kind: "delete", category: c })}
-                        className="text-xs px-2 py-1 rounded bg-red-50 text-[#d64545] hover:bg-red-100 font-medium"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <AdminCard
+        title="Categories"
+        desc={`${categories.length} ${categories.length === 1 ? "category" : "categories"}`}
+        actions={
+          <AdminButton variant="primary" size="sm" startIcon={<AppIcon name="plus" className="h-4 w-4" />} onClick={() => setModal({ kind: "create" })}>
+            New category
+          </AdminButton>
+        }
+      >
+        <AdminTable>
+          <AdminTableHead>
+            <tr>
+              <AdminTh>Name</AdminTh>
+              <AdminTh>Slug</AdminTh>
+              <AdminTh>Posts</AdminTh>
+              <AdminTh>Actions</AdminTh>
+            </tr>
+          </AdminTableHead>
+          <AdminTableBody>
+            {categories.length === 0 && (
+              <AdminTableRow>
+                <AdminTd colSpan={4} className="py-12 text-center text-[#5b6480]">
+                  No categories yet. Create one to start filing blog posts.
+                </AdminTd>
+              </AdminTableRow>
+            )}
+            {categories.map((c) => (
+              <AdminTableRow key={c.id}>
+                <AdminTd className="font-medium text-[#001353]">{c.name}</AdminTd>
+                <AdminTd className="font-mono text-xs text-[#5b6480]">{c.slug}</AdminTd>
+                <AdminTd className="font-semibold text-[#001353]">{c.postCount}</AdminTd>
+                <AdminTd>
+                  <div className="flex items-center gap-2">
+                    <AdminButton variant="outline" size="sm" onClick={() => setModal({ kind: "edit", category: c })}>
+                      Edit
+                    </AdminButton>
+                    <AdminButton variant="danger" size="sm" onClick={() => setModal({ kind: "delete", category: c })}>
+                      Delete
+                    </AdminButton>
+                  </div>
+                </AdminTd>
+              </AdminTableRow>
+            ))}
+          </AdminTableBody>
+        </AdminTable>
+      </AdminCard>
 
       {modal?.kind === "create" && <CategoryFormModal onClose={closeModal} onSaved={onSaved} />}
       {modal?.kind === "edit" && (
@@ -124,21 +127,36 @@ function CategoryFormModal({
   };
 
   return (
-    <Modal open onClose={onClose} title={isCreate ? "New category" : "Edit category"} size="sm">
-      <form onSubmit={submit} className="flex flex-col gap-4">
-        <Input label="Name" value={name} onChange={(e) => setName(e.target.value)} required minLength={2} maxLength={100} />
+    <AdminModal isOpen onClose={onClose} className="max-w-md p-6 sm:p-8">
+      <h2 className="pr-12 text-xl font-semibold text-[#001353]">
+        {isCreate ? "New category" : "Edit category"}
+      </h2>
+      <form onSubmit={submit} className="mt-6 flex flex-col gap-5">
+        <div>
+          <AdminLabel htmlFor="category-name">Name</AdminLabel>
+          <AdminInput
+            id="category-name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+            minLength={2}
+            maxLength={100}
+          />
+        </div>
         {!isCreate && (
           <p className="text-xs text-[#5b6480]">
             Slug: <span className="font-mono text-[#001353]">{category.slug}</span> (fixed after creation so URLs stay stable)
           </p>
         )}
-        {formError && <p className="text-sm text-[#d64545]">{formError}</p>}
-        <div className="flex justify-end gap-2 pt-2">
-          <Button type="button" variant="secondary" onClick={onClose}>Cancel</Button>
-          <Button type="submit" loading={saving}>{isCreate ? "Create category" : "Save changes"}</Button>
+        {formError && <p className="text-sm text-[#f04438]">{formError}</p>}
+        <div className="flex items-center justify-end gap-3 pt-2">
+          <AdminButton type="button" variant="outline" onClick={onClose}>Cancel</AdminButton>
+          <AdminButton type="submit" variant="primary" disabled={saving}>
+            {saving ? "Saving…" : isCreate ? "Create category" : "Save changes"}
+          </AdminButton>
         </div>
       </form>
-    </Modal>
+    </AdminModal>
   );
 }
 
@@ -165,18 +183,21 @@ function DeleteCategoryModal({
   };
 
   return (
-    <Modal open onClose={onClose} title="Delete category" size="sm">
-      <div className="flex flex-col gap-4">
+    <AdminModal isOpen onClose={onClose} className="max-w-md p-6 sm:p-8">
+      <h2 className="pr-12 text-xl font-semibold text-[#001353]">Delete category</h2>
+      <div className="mt-6 flex flex-col gap-5">
         <p className="text-sm text-[#5b6480]">
           Delete <strong className="text-[#001353]">{category.name}</strong>? This cannot be undone.
           {category.postCount > 0 && " Posts in this category must be moved first."}
         </p>
-        {formError && <p className="text-sm text-[#d64545]">{formError}</p>}
-        <div className="flex justify-end gap-2">
-          <Button type="button" variant="secondary" onClick={onClose}>Cancel</Button>
-          <Button type="button" variant="danger" loading={saving} onClick={remove}>Delete</Button>
+        {formError && <p className="text-sm text-[#f04438]">{formError}</p>}
+        <div className="flex items-center justify-end gap-3">
+          <AdminButton type="button" variant="outline" onClick={onClose}>Cancel</AdminButton>
+          <AdminButton type="button" variant="danger" disabled={saving} onClick={remove}>
+            {saving ? "Deleting…" : "Delete"}
+          </AdminButton>
         </div>
       </div>
-    </Modal>
+    </AdminModal>
   );
 }

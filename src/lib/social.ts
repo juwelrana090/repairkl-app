@@ -10,10 +10,10 @@ const SOCIAL_ENV: Record<string, string | undefined> = {
 };
 
 const ALL_SOCIAL_LINKS = [
-  { name: "Facebook", icon: "/images/icons/facebook.png" },
-  { name: "Instagram", icon: "/images/icons/instagram.png" },
-  { name: "Twitter", icon: "/images/icons/twitter.png" },
-  { name: "YouTube", icon: "/images/icons/youtube.png" },
+  { name: "Facebook", icon: "/assets/images/icons/facebook.png" },
+  { name: "Instagram", icon: "/assets/images/icons/instagram.png" },
+  { name: "Twitter", icon: "/assets/images/icons/twitter.png" },
+  { name: "YouTube", icon: "/assets/images/icons/youtube.png" },
 ] as const;
 
 export const SOCIAL_LINKS = ALL_SOCIAL_LINKS.map((s) => ({

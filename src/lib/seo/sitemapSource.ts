@@ -7,8 +7,8 @@ import { SITE_URL } from "./site";
 /**
  * Data sources for the sitemap. Static routes are hand-curated here (no
  * fake "changed today" lastmod — lastModified only appears where a real
- * date exists, i.e. DB rows). DB sections are reserved for Step 15+:
- * `pages` (SeoPage/CMS) and `blog` have no content sources yet.
+ * date exists, i.e. DB rows). `pages` (SeoPage/CMS) is still reserved for
+ * Step 15+; `blog` carries only published, already-dated posts.
  */
 export interface SitemapSources {
   static: MetadataRoute.Sitemap;
@@ -64,7 +64,20 @@ export async function loadSitemapSources(): Promise<SitemapSources> {
     // real lastmod dates for service pages.
   }
 
-  return { static: staticEntries, db: { services, pages: [], blog: [] } };
+  let blog: SitemapSources["db"]["blog"] = [];
+  try {
+    // Same visibility rule as the public blog pages (publishedWhere in
+    // lib/posts/publicPosts.ts): scheduled and draft posts never enter the sitemap.
+    blog = await prisma.post.findMany({
+      where: { status: "PUBLISHED", publishedAt: { lte: new Date() } },
+      select: { slug: true, updatedAt: true },
+      orderBy: { updatedAt: "desc" },
+    });
+  } catch {
+    // DB unreachable — the blog index still ships, posts are omitted.
+  }
+
+  return { static: staticEntries, db: { services, pages: [], blog } };
 }
 
 export function buildSitemap(sources: SitemapSources): MetadataRoute.Sitemap {
@@ -83,5 +96,17 @@ export function buildSitemap(sources: SitemapSources): MetadataRoute.Sitemap {
     };
   });
 
-  return [...sources.static, ...serviceEntries];
+  // The blog index is always live (it renders an empty state with no posts),
+  // so it is listed unconditionally; each post carries its real updatedAt.
+  const blogEntries: MetadataRoute.Sitemap = [
+    { url: `${SITE_URL}/blog`, changeFrequency: "weekly", priority: 0.8 },
+    ...sources.db.blog.map((p) => ({
+      url: `${SITE_URL}/blog/${p.slug}`,
+      lastModified: p.updatedAt,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
+  ];
+
+  return [...sources.static, ...serviceEntries, ...blogEntries];
 }

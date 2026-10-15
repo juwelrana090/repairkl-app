@@ -1,10 +1,18 @@
 "use client";
 import AppIcon from "@/components/ui/AppIcon";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { showToast } from "@/components/ui";
-import { twMerge } from "tailwind-merge";
+import AdminBadge from "@/components/admin/ui/Badge";
+import { AdminCard } from "@/components/admin/ui/Card";
+import {
+  AdminTable,
+  AdminTableHead,
+  AdminTableBody,
+  AdminTableRow,
+  AdminTh,
+  AdminTd,
+} from "@/components/admin/ui/Table";
 
 interface Service {
   id: string; name: string; slug: string; categoryName: string; categoryColor: string; categorySlug: string;
@@ -15,7 +23,6 @@ interface Service {
 export default function AdminServicesClient({ services: initial }: { services: Service[] }) {
   const [services, setServices] = useState(initial);
   const [search, setSearch] = useState("");
-  const router = useRouter();
 
   const filtered = search ? services.filter((s) => s.name.toLowerCase().includes(search.toLowerCase()) || s.categoryName.toLowerCase().includes(search.toLowerCase())) : services;
 
@@ -33,72 +40,116 @@ export default function AdminServicesClient({ services: initial }: { services: S
 
   return (
     <>
-      <div className="flex gap-3">
-        <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search services..."
-          className="flex-1 h-10 px-4 border border-[#ddddee] rounded-[12px] text-sm outline-none focus:border-[#034795]" />
-        <span className="h-10 px-3 bg-[#eeeef6] rounded-[12px] text-sm text-[#5b6480] flex items-center">{filtered.length} results</span>
+      {/* Toolbar */}
+      <div className="flex flex-col gap-3 rounded-2xl border border-[#e4e7f0] bg-white p-4 shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] sm:flex-row sm:items-center">
+        <div className="relative w-full sm:max-w-sm">
+          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#98a2b3]">
+            <AppIcon name="search" className="h-4 w-4" />
+          </span>
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search services..."
+            className="h-11 w-full rounded-lg border border-[#d0d5dd] bg-white pl-9 pr-3 text-sm text-[#001353] shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] outline-none transition placeholder:text-[#98a2b3] focus:border-[#034795]"
+          />
+        </div>
+        <span className="text-sm text-[#5b6480] sm:ml-auto">{filtered.length} shown</span>
       </div>
 
-      <div className="bg-white rounded-[24px] border border-[#ddddee] overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-[#f5f5fa] border-b border-[#ddddee]">
-              <tr>
-                {["Service", "Category", "Price", "Rating", "Bookings", "Featured", "Status", "Actions"].map((h) => (
-                  <th key={h} className="text-left px-4 py-3 text-xs font-bold text-[#5b6480] uppercase tracking-wide whitespace-nowrap">{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#ddddee]">
-              {filtered.map((s) => (
-                <tr key={s.id} className="hover:bg-[#f5f5fa]">
-                  <td className="px-4 py-3">
-                    <p className="text-sm font-medium text-[#001353] max-w-[160px] truncate">{s.name}</p>
+      <AdminCard title="Services" desc={`Showing ${filtered.length} of ${services.length}`}>
+        <AdminTable>
+          <AdminTableHead>
+            <tr>
+              <AdminTh>Service</AdminTh>
+              <AdminTh>Category</AdminTh>
+              <AdminTh>Price</AdminTh>
+              <AdminTh>Rating</AdminTh>
+              <AdminTh>Bookings</AdminTh>
+              <AdminTh>Featured</AdminTh>
+              <AdminTh>Status</AdminTh>
+              <AdminTh>Actions</AdminTh>
+            </tr>
+          </AdminTableHead>
+          <AdminTableBody>
+            {filtered.length === 0 ? (
+              <AdminTableRow>
+                <AdminTd colSpan={8} className="py-12 text-center text-[#5b6480]">No services found</AdminTd>
+              </AdminTableRow>
+            ) : (
+              filtered.map((s) => (
+                <AdminTableRow key={s.id}>
+                  <AdminTd>
+                    <p className="max-w-[200px] truncate font-medium text-[#001353]">{s.name}</p>
                     <p className="text-xs text-[#5b6480]">{s.packageCount} packages</p>
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className="text-xs font-bold px-2 py-1 rounded-full text-white" style={{ background: s.categoryColor }}>
+                  </AdminTd>
+                  <AdminTd>
+                    <span
+                      className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
+                      style={{ background: `${s.categoryColor}20`, color: s.categoryColor }}
+                    >
                       {s.categoryName}
                     </span>
-                  </td>
-                  <td className="px-4 py-3 text-sm font-bold text-[#034795]">
+                  </AdminTd>
+                  <AdminTd className="whitespace-nowrap font-semibold text-[#001353]">
                     RM{s.basePrice.toLocaleString()}
-                    <span className="text-xs text-[#5b6480] font-normal">/{s.priceUnit}</span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-1">
-                      <span className="text-yellow-400"><AppIcon name="star" className="w-3.5 h-3.5" filled /></span>
-                      <span className="text-sm text-[#001353]">{s.rating.toFixed(1)}</span>
+                    <span className="text-xs font-normal text-[#5b6480]">/{s.priceUnit}</span>
+                  </AdminTd>
+                  <AdminTd>
+                    <div className="flex items-center gap-1.5">
+                      <AppIcon name="star" filled className="h-4 w-4 text-[#fb6f27]" />
+                      <span className="text-sm font-medium text-[#001353]">{s.rating.toFixed(1)}</span>
                       <span className="text-xs text-[#5b6480]">({s.reviewCount})</span>
                     </div>
-                  </td>
-                  <td className="px-4 py-3 text-sm text-center font-bold text-[#001353]">{s.bookingCount}</td>
-                  <td className="px-4 py-3">
-                    <button onClick={() => toggle(s.id, "isFeatured", s.isFeatured)} aria-label={s.isFeatured ? "Unfeature service" : "Feature service"}
-                      className={twMerge("w-8 h-8 rounded-full text-sm", s.isFeatured ? "text-yellow-500 bg-yellow-50" : "text-[#c9c9de] bg-[#eeeef6]")}>
-                      <AppIcon name="star" filled={s.isFeatured} className="w-4 h-4" />
+                  </AdminTd>
+                  <AdminTd className="font-semibold text-[#001353]">{s.bookingCount}</AdminTd>
+                  <AdminTd>
+                    <button
+                      type="button"
+                      onClick={() => toggle(s.id, "isFeatured", s.isFeatured)}
+                      aria-label={s.isFeatured ? "Unfeature service" : "Feature service"}
+                      className={`flex h-8 w-8 cursor-pointer items-center justify-center rounded-full transition-colors ${
+                        s.isFeatured ? "bg-[#fff4e6] text-[#fb6f27]" : "bg-[#f2f4f7] text-[#98a2b3] hover:text-[#5b6480]"
+                      }`}
+                    >
+                      <AppIcon name="star" filled={s.isFeatured} className="h-4 w-4" />
                     </button>
-                  </td>
-                  <td className="px-4 py-3">
-                    <button onClick={() => toggle(s.id, "isActive", s.isActive)}
-                      className={twMerge("text-xs font-bold px-2 py-1 rounded-full", s.isActive ? "bg-green-100 text-green-600" : "bg-red-100 text-red-500")}>
-                      {s.isActive ? "Active" : "Hidden"}
+                  </AdminTd>
+                  <AdminTd>
+                    <button
+                      type="button"
+                      onClick={() => toggle(s.id, "isActive", s.isActive)}
+                      className="cursor-pointer"
+                    >
+                      <AdminBadge color={s.isActive ? "success" : "error"} size="sm">
+                        {s.isActive ? "Active" : "Hidden"}
+                      </AdminBadge>
                     </button>
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex gap-1">
+                  </AdminTd>
+                  <AdminTd>
+                    <div className="flex items-center gap-2">
                       {/* Public marketing pages are per-category (/our-services/[categorySlug]);
                           DB service slugs (e.g. "fridge-repair-general") have no public page until Step 15 */}
-                      <Link href={`/our-services/${s.categorySlug}`} target="_blank" className="text-xs px-2 py-1 bg-[#eeeef6] rounded text-[#5b6480] hover:bg-[#ddddee]">View</Link>
-                      <Link href={`/admin/services/${s.id}/edit`} className="text-xs px-2 py-1 bg-[#eaf0f8] rounded text-[#034795] hover:bg-[#d5e3f5] font-bold">Edit</Link>
+                      <Link
+                        href={`/our-services/${s.categorySlug}`}
+                        target="_blank"
+                        className="inline-flex h-8 items-center rounded-[16px] border border-[#d0d5dd] bg-white px-3 text-xs font-medium text-[#3d4766] transition-colors hover:bg-[#f9fafb]"
+                      >
+                        View
+                      </Link>
+                      <Link
+                        href={`/admin/services/${s.id}/edit`}
+                        className="inline-flex h-8 items-center rounded-[16px] bg-[#034795] px-3 text-xs font-medium text-white transition-colors hover:bg-[#023a78]"
+                      >
+                        Edit
+                      </Link>
                     </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+                  </AdminTd>
+                </AdminTableRow>
+              ))
+            )}
+          </AdminTableBody>
+        </AdminTable>
+      </AdminCard>
     </>
   );
 }

@@ -11,6 +11,7 @@
     "db:migrate": "prisma migrate dev",
     "db:seed": "tsx prisma/seed.ts",
     "db:seed:cms": "tsx prisma/seed-cms.ts",
+    "db:seed:blog": "tsx prisma/seed-blog.ts",
     "db:studio": "prisma studio",
     "db:reset": "prisma migrate reset --force && npm run db:seed",
     "test:seo": "tsx --test scripts/seo-schema.test.ts",

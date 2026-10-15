@@ -4,6 +4,7 @@ import { sessionHasPermission } from "@/lib/auth/permissionStore";
 import { PERMISSIONS } from "@/lib/auth/permissions";
 import { prisma } from "@/lib/prisma";
 import { saveUpload } from "@/lib/media/storage";
+import { MANAGED_UPLOAD_WHERE } from "@/lib/media/managedUploads";
 
 // GET /api/admin/media — recent assets for the Media picker (RichTextEditor).
 // Editors who can edit content need to pick images, so either permission works.
@@ -21,6 +22,7 @@ export async function GET() {
     }
 
     const rows = await prisma.mediaAsset.findMany({
+      where: MANAGED_UPLOAD_WHERE,
       orderBy: { createdAt: "desc" },
       take: 100,
       select: { id: true, url: true, alt: true, width: true, height: true },

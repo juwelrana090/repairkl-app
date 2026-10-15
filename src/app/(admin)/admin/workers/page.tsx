@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
-import { RatingStars } from "@/components/ui";
+import AdminPageHeader from "@/components/admin/ui/PageHeader";
 import AdminWorkersClient from "./AdminWorkersClient";
 import { buildPageMetadata } from "@/lib/seo/pageMeta";
 
@@ -24,24 +24,19 @@ export default async function AdminWorkersPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-[#001353] tracking-[-0.5px]">Workers</h1>
-          <p className="text-sm text-[#5b6480] mt-1">{stats.total} registered workers</p>
-        </div>
-      </div>
+      <AdminPageHeader title="Workers" description={`${stats.total} registered workers`} />
 
       {/* Quick stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         {[
-          { label: "Total Workers", value: stats.total, color: "#034795" },
-          { label: "Verified", value: stats.verified, color: "#1a8f5c" },
-          { label: "Available Now", value: stats.available, color: "#fb6f27" },
-          { label: "Avg Rating", value: stats.avgRating, color: "#e0972f" },
+          { label: "Total workers", value: stats.total },
+          { label: "Verified", value: stats.verified },
+          { label: "Available now", value: stats.available },
+          { label: "Avg rating", value: stats.avgRating },
         ].map((s) => (
-          <div key={s.label} className="bg-white rounded-[16px] border border-[#ddddee] p-4">
-            <p className="text-2xl font-bold" style={{ color: s.color }}>{s.value}</p>
-            <p className="text-sm text-[#5b6480] mt-1">{s.label}</p>
+          <div key={s.label} className="rounded-2xl border border-[#e4e7f0] bg-white p-5 shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)]">
+            <p className="text-sm text-[#5b6480]">{s.label}</p>
+            <p className="mt-2 text-2xl font-semibold text-[#001353]">{s.value}</p>
           </div>
         ))}
       </div>

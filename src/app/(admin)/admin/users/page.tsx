@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
-import { StatusBadge } from "@/components/ui";
+import AdminPageHeader from "@/components/admin/ui/PageHeader";
 import AdminUsersClient from "./AdminUsersClient";
 import { buildPageMetadata } from "@/lib/seo/pageMeta";
 import { getSession } from "@/lib/auth/session";
@@ -53,12 +53,7 @@ export default async function AdminUsersPage({
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-[#001353] tracking-[-0.5px]">Users</h1>
-          <p className="text-sm text-[#5b6480] mt-1">{total} total users</p>
-        </div>
-      </div>
+      <AdminPageHeader title="Users" description={`${total} total users`} />
 
       <AdminUsersClient
         users={users.map((u) => ({

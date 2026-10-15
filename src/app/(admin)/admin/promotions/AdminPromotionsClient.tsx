@@ -1,10 +1,19 @@
 "use client";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { Input } from "@/components/ui/Input";
-import { Button } from "@/components/ui/Button";
+import { useState, type ChangeEvent, type FormEvent } from "react";
 import { showToast } from "@/components/ui";
-import { twMerge } from "tailwind-merge";
+import AppIcon from "@/components/ui/AppIcon";
+import AdminButton from "@/components/admin/ui/Button";
+import AdminBadge from "@/components/admin/ui/Badge";
+import { AdminCard } from "@/components/admin/ui/Card";
+import { AdminInput, AdminLabel, AdminSelect } from "@/components/admin/ui/Field";
+import {
+  AdminTable,
+  AdminTableHead,
+  AdminTableBody,
+  AdminTableRow,
+  AdminTh,
+  AdminTd,
+} from "@/components/admin/ui/Table";
 
 interface Promo {
   id: string; code: string; title: string; discountType: string; discountValue: number;
@@ -13,7 +22,6 @@ interface Promo {
 }
 
 export default function AdminPromotionsClient({ promos: initial }: { promos: Promo[] }) {
-  const router = useRouter();
   const [promos, setPromos] = useState(initial);
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -22,10 +30,10 @@ export default function AdminPromotionsClient({ promos: initial }: { promos: Pro
     usageLimit: "", validFrom: new Date().toISOString().split("T")[0], validUntil: "2026-12-31",
   });
 
-  const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
+  const set = (k: keyof typeof form) => (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
     setForm({ ...form, [k]: e.target.value });
 
-  const handleCreate = async (e: React.FormEvent) => {
+  const handleCreate = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
@@ -63,82 +71,139 @@ export default function AdminPromotionsClient({ promos: initial }: { promos: Pro
   };
 
   return (
-    <>
-      <div className="flex justify-end">
-        <Button onClick={() => setShowForm(!showForm)} variant={showForm ? "secondary" : "primary"}>
-          {showForm ? "Cancel" : "+ New Promo Code"}
-        </Button>
-      </div>
-
+    <div className="flex flex-col gap-6">
       {showForm && (
-        <div className="bg-white rounded-[24px] border border-[#ddddee] p-6">
-          <h2 className="font-bold text-[#001353] mb-5">Create Promo Code</h2>
-          <form onSubmit={handleCreate} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Input label="Code (e.g. SAVE20)" value={form.code} onChange={set("code")} />
-            <Input label="Title" value={form.title} onChange={set("title")} />
+        <AdminCard title="Create promo code" desc="New discount code for bookings">
+          <form onSubmit={handleCreate} className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <p className="text-xs text-[#5b6480] mb-1">Discount Type</p>
-              <select value={form.discountType} onChange={set("discountType")} className="w-full h-14 border-2 border-[#ddddee] rounded-[16px] px-4 text-sm outline-none focus:border-[#034795]">
-                <option value="percentage">Percentage (%)</option>
-                <option value="fixed">Fixed Amount (RM)</option>
-              </select>
+              <AdminLabel htmlFor="promo-code">Code</AdminLabel>
+              <AdminInput id="promo-code" value={form.code} onChange={set("code")} placeholder="e.g. SAVE20" />
             </div>
-            <Input label={form.discountType === "percentage" ? "Discount %" : "Discount RM"} type="number" value={form.discountValue} onChange={set("discountValue")} />
-            <Input label="Min Order Value (RM)" type="number" value={form.minOrderValue} onChange={set("minOrderValue")} />
-            <Input label="Usage Limit (blank = unlimited)" type="number" value={form.usageLimit} onChange={set("usageLimit")} />
-            <Input label="Valid From" type="date" value={form.validFrom} onChange={set("validFrom")} />
-            <Input label="Valid Until" type="date" value={form.validUntil} onChange={set("validUntil")} />
-            <div className="sm:col-span-2">
-              <Button type="submit" loading={loading} fullWidth>Create Promo Code</Button>
+            <div>
+              <AdminLabel htmlFor="promo-title">Title</AdminLabel>
+              <AdminInput id="promo-title" value={form.title} onChange={set("title")} />
+            </div>
+            <div>
+              <AdminLabel htmlFor="promo-type">Discount type</AdminLabel>
+              <AdminSelect id="promo-type" value={form.discountType} onChange={set("discountType")}>
+                <option value="percentage">Percentage (%)</option>
+                <option value="fixed">Fixed amount (RM)</option>
+              </AdminSelect>
+            </div>
+            <div>
+              <AdminLabel htmlFor="promo-value">{form.discountType === "percentage" ? "Discount %" : "Discount RM"}</AdminLabel>
+              <AdminInput id="promo-value" type="number" value={form.discountValue} onChange={set("discountValue")} />
+            </div>
+            <div>
+              <AdminLabel htmlFor="promo-min">Min order value (RM)</AdminLabel>
+              <AdminInput id="promo-min" type="number" value={form.minOrderValue} onChange={set("minOrderValue")} />
+            </div>
+            <div>
+              <AdminLabel htmlFor="promo-limit">Usage limit</AdminLabel>
+              <AdminInput id="promo-limit" type="number" value={form.usageLimit} onChange={set("usageLimit")} placeholder="Blank = unlimited" />
+            </div>
+            <div>
+              <AdminLabel htmlFor="promo-from">Valid from</AdminLabel>
+              <AdminInput id="promo-from" type="date" value={form.validFrom} onChange={set("validFrom")} />
+            </div>
+            <div>
+              <AdminLabel htmlFor="promo-until">Valid until</AdminLabel>
+              <AdminInput id="promo-until" type="date" value={form.validUntil} onChange={set("validUntil")} />
+            </div>
+            <div className="flex items-center justify-end gap-3 sm:col-span-2">
+              <AdminButton type="button" variant="outline" disabled={loading} onClick={() => setShowForm(false)}>
+                Cancel
+              </AdminButton>
+              <AdminButton type="submit" variant="primary" disabled={loading}>
+                {loading ? "Creating…" : "Create promo code"}
+              </AdminButton>
             </div>
           </form>
-        </div>
+        </AdminCard>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-        {promos.map((p) => {
-          const isExpired = new Date(p.validUntil) < new Date();
-          const usagePct = p.usageLimit ? (p.usedCount / p.usageLimit) * 100 : (p.usedCount > 0 ? 50 : 0);
-          return (
-            <div key={p.id} className={twMerge("bg-white rounded-[20px] border p-5 relative overflow-hidden", p.isActive && !isExpired ? "border-[#034795]/30" : "border-[#ddddee] opacity-70")}>
-              {p.isActive && !isExpired && <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#034795] to-[#e0972f]" />}
-              <div className="flex items-start justify-between mb-3">
-                <div>
-                  <span className="font-mono text-lg font-black text-[#034795] tracking-wider">{p.code}</span>
-                  <p className="text-sm text-[#5b6480] mt-0.5">{p.title}</p>
-                </div>
-                <button onClick={() => toggleActive(p.id, p.isActive)}
-                  className={twMerge("text-xs font-bold px-2 py-1 rounded-full", p.isActive ? "bg-green-100 text-green-600" : "bg-gray-100 text-gray-500")}>
-                  {p.isActive ? "Active" : "Paused"}
-                </button>
-              </div>
-              <div className="bg-[#eaf0f8] rounded-[12px] px-4 py-2 mb-3 text-center">
-                <span className="text-2xl font-black text-[#034795]">
-                  {p.discountType === "percentage" ? `${p.discountValue}%` : `RM${p.discountValue}`}
-                </span>
-                <span className="text-sm text-[#034795]/70 ml-1">OFF</span>
-              </div>
-              <div className="space-y-1.5 text-xs text-[#5b6480]">
-                <p>Min order: RM{p.minOrderValue.toLocaleString()}</p>
-                <p>Valid: {new Date(p.validFrom).toLocaleDateString()} – {new Date(p.validUntil).toLocaleDateString()}</p>
-                <div className="flex items-center gap-2">
-                  <span>Used: {p.usedCount}{p.usageLimit ? `/${p.usageLimit}` : ""}</span>
-                  {p.usageLimit && (
-                    <div className="flex-1 h-1.5 bg-[#ddddee] rounded-full overflow-hidden">
-                      <div className="h-full bg-[#034795] rounded-full" style={{ width: `${Math.min(100, usagePct)}%` }} />
-                    </div>
-                  )}
-                </div>
-              </div>
-              {isExpired && (
-                <div className="mt-2 text-xs font-bold text-red-500 bg-red-50 rounded-[8px] px-3 py-1.5 text-center">
-                  Expired
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </div>
-    </>
+      <AdminCard
+        title="All promo codes"
+        desc={`${promos.length} code(s)`}
+        actions={
+          <AdminButton
+            type="button"
+            variant={showForm ? "outline" : "primary"}
+            size="sm"
+            onClick={() => setShowForm(!showForm)}
+            startIcon={showForm ? undefined : <AppIcon name="plus" className="h-4 w-4" />}
+          >
+            {showForm ? "Close form" : "New promo code"}
+          </AdminButton>
+        }
+      >
+        <AdminTable>
+          <AdminTableHead>
+            <tr>
+              <AdminTh>Code</AdminTh>
+              <AdminTh>Discount</AdminTh>
+              <AdminTh>Min order</AdminTh>
+              <AdminTh>Valid</AdminTh>
+              <AdminTh>Usage</AdminTh>
+              <AdminTh>Status</AdminTh>
+            </tr>
+          </AdminTableHead>
+          <AdminTableBody>
+            {promos.length === 0 ? (
+              <AdminTableRow>
+                <AdminTd colSpan={6} className="py-12 text-center text-[#5b6480]">No promo codes yet.</AdminTd>
+              </AdminTableRow>
+            ) : (
+              promos.map((p) => {
+                const isExpired = new Date(p.validUntil) < new Date();
+                return (
+                  <AdminTableRow key={p.id} className={p.isActive && !isExpired ? "" : "opacity-70"}>
+                    <AdminTd>
+                      <p className="font-mono font-semibold tracking-wider text-[#034795]">{p.code}</p>
+                      <p className="text-xs text-[#5b6480]">{p.title}</p>
+                    </AdminTd>
+                    <AdminTd className="font-medium text-[#001353]">
+                      {p.discountType === "percentage" ? `${p.discountValue}%` : `RM${p.discountValue}`} off
+                    </AdminTd>
+                    <AdminTd>RM{p.minOrderValue.toLocaleString()}</AdminTd>
+                    <AdminTd className="whitespace-nowrap">
+                      {new Date(p.validFrom).toLocaleDateString()} – {new Date(p.validUntil).toLocaleDateString()}
+                      {isExpired && (
+                        <div className="mt-1">
+                          <AdminBadge color="error" size="sm">Expired</AdminBadge>
+                        </div>
+                      )}
+                    </AdminTd>
+                    <AdminTd className="whitespace-nowrap">
+                      {p.usedCount}{p.usageLimit ? ` / ${p.usageLimit}` : ""}
+                      {p.usageLimit ? (
+                        <div className="mt-1.5 h-1.5 w-24 overflow-hidden rounded-full bg-[#ddddee]">
+                          <div
+                            className="h-full rounded-full bg-[#034795]"
+                            style={{ width: `${Math.min(100, (p.usedCount / p.usageLimit) * 100)}%` }}
+                          />
+                        </div>
+                      ) : null}
+                    </AdminTd>
+                    <AdminTd>
+                      <button
+                        type="button"
+                        onClick={() => toggleActive(p.id, p.isActive)}
+                        className="cursor-pointer"
+                        title={p.isActive ? "Click to pause" : "Click to activate"}
+                      >
+                        <AdminBadge color={p.isActive ? "success" : "neutral"} size="sm">
+                          {p.isActive ? "Active" : "Paused"}
+                        </AdminBadge>
+                      </button>
+                    </AdminTd>
+                  </AdminTableRow>
+                );
+              })
+            )}
+          </AdminTableBody>
+        </AdminTable>
+      </AdminCard>
+    </div>
   );
 }

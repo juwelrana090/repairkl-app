@@ -39,6 +39,7 @@ const ADMIN_NAV: NavItem[] = [
       { href: "/admin/posts/categories", label: "Categories", icon: "archive" },
     ],
   },
+  { href: "/admin/pages", label: "Pages", icon: "package" },
   { href: "/admin/bookings", label: "Bookings", icon: "clipboard" },
   { href: "/admin/promotions", label: "Promotions", icon: "gift" },
   { href: "/admin/reports", label: "Reports", icon: "trendingUp" },

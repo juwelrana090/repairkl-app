@@ -2,8 +2,18 @@
 import AppIcon from "@/components/ui/AppIcon";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { RatingStars, showToast } from "@/components/ui";
-import { twMerge } from "tailwind-merge";
+import { showToast } from "@/components/ui";
+import AdminButton from "@/components/admin/ui/Button";
+import AdminBadge from "@/components/admin/ui/Badge";
+import { AdminCard } from "@/components/admin/ui/Card";
+import {
+  AdminTable,
+  AdminTableHead,
+  AdminTableBody,
+  AdminTableRow,
+  AdminTh,
+  AdminTd,
+} from "@/components/admin/ui/Table";
 
 interface Worker {
   id: string; userId: string; fullName: string; email: string; phone: string;
@@ -39,61 +49,92 @@ export default function AdminWorkersClient({ workers }: { workers: Worker[] }) {
 
   return (
     <>
-      <div className="flex gap-3">
-        <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search workers..."
-          className="flex-1 h-10 px-4 border border-[#ddddee] rounded-[12px] text-sm outline-none focus:border-[#034795]" />
+      {/* Toolbar */}
+      <div className="flex flex-col gap-4 rounded-2xl border border-[#e4e7f0] bg-white p-4 shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] sm:flex-row sm:items-center sm:justify-between">
+        <div className="relative w-full sm:max-w-sm">
+          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#98a2b3]">
+            <AppIcon name="search" className="h-4 w-4" />
+          </span>
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search by name or speciality..."
+            className="h-11 w-full rounded-lg border border-[#d0d5dd] bg-white pl-9 pr-3 text-sm text-[#001353] shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] outline-none transition placeholder:text-[#98a2b3] focus:border-[#034795]"
+          />
+        </div>
+        <p className="text-sm text-[#5b6480]">{filtered.length} shown</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-        {filtered.map((w) => (
-          <div key={w.id} className="bg-white rounded-[20px] border border-[#ddddee] p-5">
-            <div className="flex items-start gap-3 mb-4">
-              <div className="w-12 h-12 rounded-full bg-[#eaf0f8] flex items-center justify-center font-bold text-[#034795] text-lg shrink-0">
-                {w.fullName.charAt(0)}
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-start justify-between">
-                  <p className="font-bold text-[#001353] text-sm">{w.fullName}</p>
-                  <div className="flex gap-1 shrink-0">
-                    {w.isVerified && <span className="text-[9px] bg-blue-100 text-blue-600 px-1.5 py-0.5 rounded font-bold inline-flex items-center"><AppIcon name="check" className="w-2.5 h-2.5" /></span>}
-                    <span className={twMerge("text-[9px] px-1.5 py-0.5 rounded font-bold", w.isAvailable ? "bg-green-100 text-green-600" : "bg-gray-100 text-gray-500")}>
-                      {w.isAvailable ? "Free" : "Busy"}
-                    </span>
+      {/* Table */}
+      <AdminCard title="Workers" desc="Verify workers before they receive jobs.">
+        <AdminTable>
+          <AdminTableHead>
+            <tr>
+              <AdminTh>Worker</AdminTh>
+              <AdminTh>Speciality</AdminTh>
+              <AdminTh>Rating</AdminTh>
+              <AdminTh>Jobs</AdminTh>
+              <AdminTh>Rate / hr</AdminTh>
+              <AdminTh>Availability</AdminTh>
+              <AdminTh>Verified</AdminTh>
+              <AdminTh>Actions</AdminTh>
+            </tr>
+          </AdminTableHead>
+          <AdminTableBody>
+            {filtered.map((w) => (
+              <AdminTableRow key={w.id}>
+                <AdminTd>
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#eaf0f8] text-sm font-semibold text-[#034795]">
+                      {w.fullName.charAt(0)}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="font-medium text-[#001353]">{w.fullName}</p>
+                      <p className="truncate text-xs text-[#8a92a8]">{w.email}</p>
+                    </div>
                   </div>
-                </div>
-                <p className="text-xs text-[#5b6480]">{w.speciality} • {w.experience}yr exp</p>
-                <p className="text-xs text-[#5b6480]">{w.email}</p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-3 gap-2 text-center mb-4">
-              <div className="bg-[#f5f5fa] rounded-[10px] p-2">
-                <p className="text-sm font-bold text-[#034795]">{w.rating.toFixed(1)}</p>
-                <p className="text-[10px] text-[#5b6480]">Rating</p>
-              </div>
-              <div className="bg-[#f5f5fa] rounded-[10px] p-2">
-                <p className="text-sm font-bold text-[#001353]">{w.totalJobs}</p>
-                <p className="text-[10px] text-[#5b6480]">Jobs</p>
-              </div>
-              <div className="bg-[#f5f5fa] rounded-[10px] p-2">
-                <p className="text-sm font-bold text-[#1a8f5c]">RM{w.hourlyRate.toLocaleString()}</p>
-                <p className="text-[10px] text-[#5b6480]">Rate/hr</p>
-              </div>
-            </div>
-
-            <button
-              onClick={() => toggleVerify(w.id, w.isVerified)}
-              disabled={loading === w.id}
-              className={twMerge(
-                "w-full h-9 rounded-[10px] text-xs font-bold transition-all",
-                w.isVerified ? "bg-blue-50 text-blue-600 hover:bg-blue-100" : "bg-[#eeeef6] text-[#5b6480] hover:bg-[#ddddee]"
-              )}
-            >
-              {loading === w.id ? "Updating..." : w.isVerified ? "Verified — Click to Unverify" : "Verify Worker"}
-            </button>
-          </div>
-        ))}
-      </div>
+                </AdminTd>
+                <AdminTd>
+                  <p>{w.speciality}</p>
+                  <p className="text-xs text-[#8a92a8]">{w.experience} yr exp</p>
+                </AdminTd>
+                <AdminTd>
+                  <span className="inline-flex items-center gap-1 font-semibold text-[#001353]">
+                    <AppIcon name="star" className="h-4 w-4 text-[#f79009]" />
+                    {w.rating.toFixed(1)}
+                  </span>
+                  <p className="text-xs text-[#8a92a8]">{w.reviewCount} reviews</p>
+                </AdminTd>
+                <AdminTd className="font-semibold text-[#001353]">{w.totalJobs}</AdminTd>
+                <AdminTd className="font-semibold text-[#1a8f5c]">RM{w.hourlyRate.toLocaleString()}</AdminTd>
+                <AdminTd>
+                  <AdminBadge color={w.isAvailable ? "success" : "neutral"} size="sm">
+                    {w.isAvailable ? "Available" : "Busy"}
+                  </AdminBadge>
+                </AdminTd>
+                <AdminTd>
+                  <AdminBadge color={w.isVerified ? "primary" : "warning"} size="sm">
+                    {w.isVerified ? "Verified" : "Unverified"}
+                  </AdminBadge>
+                </AdminTd>
+                <AdminTd>
+                  <AdminButton
+                    variant={w.isVerified ? "outline" : "primary"}
+                    size="sm"
+                    disabled={loading === w.id}
+                    onClick={() => toggleVerify(w.id, w.isVerified)}
+                  >
+                    {loading === w.id ? "Updating..." : w.isVerified ? "Unverify" : "Verify"}
+                  </AdminButton>
+                </AdminTd>
+              </AdminTableRow>
+            ))}
+          </AdminTableBody>
+        </AdminTable>
+        {filtered.length === 0 && (
+          <p className="py-10 text-center text-sm text-[#5b6480]">No workers match your search.</p>
+        )}
+      </AdminCard>
     </>
   );
 }

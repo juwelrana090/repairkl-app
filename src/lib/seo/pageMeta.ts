@@ -139,6 +139,7 @@ export const PAGE_META: Record<string, MetaInput> = {
   "admin.posts": { title: "Blog Posts", noIndex: true },
   "admin.posts-new": { title: "New Post", noIndex: true },
   "admin.posts-edit": { title: "Edit Post", noIndex: true },
+  "admin.pages": { title: "Pages", noIndex: true },
   "admin.promotions": { title: "Promotions", noIndex: true },
   "admin.reports": { title: "Reports", noIndex: true },
   "admin.seo": { title: "SEO Manager", noIndex: true },

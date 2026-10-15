@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { generateMeta, breadcrumbSchema, buildJsonLd } from "@/lib/seo";
+import { generateMeta, breadcrumbSchema, articleSchema, buildJsonLd } from "@/lib/seo";
 import JsonLd from "@/components/seo/JsonLd";
 import Breadcrumbs from "@/components/marketing/Breadcrumbs";
 import PostCard, { PostMeta } from "@/components/blog/PostCard";
@@ -39,11 +39,19 @@ export default async function BlogPostPage({
 
   const related = await relatedPublicPosts({ id: post.id, categoryId: post.categoryId });
 
-  const schema = breadcrumbSchema([
+  const crumbsSchema = breadcrumbSchema([
     { name: "Home", url: "/" },
     { name: "Blog", url: "/blog" },
     { name: post.title, url: `/blog/${post.slug}` },
   ]);
+  const article = articleSchema({
+    path: `/blog/${post.slug}`,
+    headline: post.seoMeta?.title || post.title,
+    description: post.seoMeta?.description || post.excerpt,
+    image: post.coverUrl,
+    datePublished: post.publishedAt ?? post.updatedAt,
+    dateModified: post.updatedAt,
+  });
 
   const crumbs = [
     { label: "Home", href: "/" },
@@ -54,7 +62,7 @@ export default async function BlogPostPage({
 
   return (
     <>
-      <JsonLd data={buildJsonLd([schema])} />
+      <JsonLd data={buildJsonLd([article, crumbsSchema])} />
 
       <article>
         <header className="relative pt-36 pb-14 overflow-hidden text-white">

@@ -5,6 +5,7 @@ import { sessionHasPermission } from "@/lib/auth/permissionStore";
 import { PERMISSIONS } from "@/lib/auth/permissions";
 import { prisma } from "@/lib/prisma";
 import { deleteLocal } from "@/lib/media/storage";
+import { isManagedUpload } from "@/lib/media/managedUploads";
 
 const mediaUpdateSchema = z.object({
   alt: z.string().trim().min(1).max(500),
@@ -33,6 +34,12 @@ export async function PUT(
       );
     }
 
+    const current = await prisma.mediaAsset.findUnique({ where: { id }, select: { url: true } });
+    if (!current) return NextResponse.json({ error: "Not found" }, { status: 404 });
+    if (!isManagedUpload(current.url)) {
+      return NextResponse.json({ error: "System assets cannot be edited" }, { status: 403 });
+    }
+
     const { focusKeyword, ...rest } = parsed.data;
     const asset = await prisma.mediaAsset.update({
       where: { id },
@@ -58,6 +65,12 @@ export async function DELETE(
     }
 
     const { id } = await params;
+    const current = await prisma.mediaAsset.findUnique({ where: { id }, select: { url: true } });
+    if (!current) return NextResponse.json({ error: "Not found" }, { status: 404 });
+    if (!isManagedUpload(current.url)) {
+      return NextResponse.json({ error: "System assets cannot be deleted" }, { status: 403 });
+    }
+
     const asset = await prisma.mediaAsset.delete({ where: { id } });
     await deleteLocal(asset.url);
 

@@ -1,12 +1,44 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import { prisma } from "@/lib/prisma";
-import { StatCard, BookingCard } from "@/components/shared/Cards";
-import { StatusBadge } from "@/components/ui";
 import Link from "next/link";
 import { buildPageMetadata } from "@/lib/seo/pageMeta";
-
+import AppIcon from "@/components/ui/AppIcon";
+import AdminPageHeader from "@/components/admin/ui/PageHeader";
+import { AdminCard } from "@/components/admin/ui/Card";
+import AdminBadge from "@/components/admin/ui/Badge";
+import {
+  AdminTable,
+  AdminTableHead,
+  AdminTableBody,
+  AdminTableRow,
+  AdminTh,
+  AdminTd,
+} from "@/components/admin/ui/Table";
 
 export const metadata: Metadata = buildPageMetadata("admin.dashboard");
+
+type BadgeColor = "primary" | "success" | "error" | "warning" | "info" | "neutral";
+
+const BOOKING_STATUS: Record<string, { label: string; color: BadgeColor }> = {
+  PENDING: { label: "Pending", color: "warning" },
+  CONFIRMED: { label: "Confirmed", color: "info" },
+  IN_PROGRESS: { label: "In Progress", color: "primary" },
+  COMPLETED: { label: "Completed", color: "success" },
+  CANCELLED: { label: "Cancelled", color: "error" },
+  NO_SHOW: { label: "No Show", color: "neutral" },
+};
+
+const ROLE_LABEL: Record<string, { label: string; color: BadgeColor; bar: string }> = {
+  CUSTOMER: { label: "Customer", color: "info", bar: "#0ba5ec" },
+  WORKER: { label: "Worker", color: "warning", bar: "#f79009" },
+  SUPPORT: { label: "Support", color: "primary", bar: "#034795" },
+  EDITOR: { label: "Editor", color: "success", bar: "#12b76a" },
+  ADMIN: { label: "Admin", color: "error", bar: "#f04438" },
+  SUPER_ADMIN: { label: "Super Admin", color: "neutral", bar: "#667085" },
+};
+
+const STAT_ICON = "flex h-12 w-12 items-center justify-center rounded-xl bg-[#eaf0f8] text-[#034795]";
 
 export default async function AdminDashboardPage() {
   const now = new Date();
@@ -39,110 +71,165 @@ export default async function AdminDashboardPage() {
   const bookingGrowth = lastMonthBookings > 0
     ? `${((monthBookings - lastMonthBookings) / lastMonthBookings * 100).toFixed(0)}%`
     : "+∞%";
+  const bookingGrowthUp = lastMonthBookings === 0 || monthBookings >= lastMonthBookings;
+
+  const dateLabel = now.toLocaleDateString("en-MY", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
 
   return (
-    <div className="flex flex-col gap-8">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-[#001353] tracking-[-0.5px]">Admin Dashboard</h1>
-          <p className="text-sm text-[#5b6480] mt-1">{now.toLocaleDateString("en-MY", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</p>
-        </div>
-        <div className="flex gap-3">
-          <Link href="/admin/services/new" className="bg-[#034795] text-white px-4 py-2.5 rounded-[12px] text-sm font-bold">+ New Service</Link>
-        </div>
-      </div>
+    <div className="flex flex-col gap-6">
+      <AdminPageHeader
+        title="Dashboard"
+        description={dateLabel}
+        actions={
+          <Link
+            href="/admin/services/new"
+            className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-[#034795] px-5 py-2.5 text-sm font-medium text-white shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] transition hover:bg-[#023a7a]"
+          >
+            <AppIcon name="plus" className="h-5 w-5" />
+            New service
+          </Link>
+        }
+      />
 
       {/* Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard label="Total Users" value={totalUsers.toLocaleString()} icon="users" change="+12%" changeType="up" color="#034795" />
-        <StatCard label="Total Bookings" value={totalBookings.toLocaleString()} icon="clipboard" change={bookingGrowth} changeType="up" color="#1a8f5c" />
-        <StatCard label="Total Revenue" value={`RM${(Number(totalRevenue._sum.amount) / 1000).toFixed(0)}K`} icon="wallet" change="+8%" changeType="up" color="#e0972f" />
-        <StatCard label="Active Workers" value={activeWorkers} icon="hardHat" color="#fb6f27" />
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <StatTile label="Total users" value={totalUsers.toLocaleString()} icon="users" />
+        <StatTile
+          label="Total bookings"
+          value={totalBookings.toLocaleString()}
+          icon="clipboard"
+          badge={
+            <AdminBadge color={bookingGrowthUp ? "success" : "error"} size="sm">
+              {bookingGrowth}
+            </AdminBadge>
+          }
+          hint="vs last month"
+        />
+        <StatTile label="Total revenue" value={`RM${(Number(totalRevenue._sum.amount) / 1000).toFixed(0)}K`} icon="wallet" />
+        <StatTile label="Active workers" value={String(activeWorkers)} icon="hardHat" />
       </div>
 
       {/* Month stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white rounded-[20px] border border-[#ddddee] p-5">
-          <p className="text-sm text-[#5b6480]">This Month Bookings</p>
-          <p className="text-2xl font-bold text-[#001353] mt-1">{monthBookings}</p>
-          <div className="h-1 bg-[#ddddee] rounded-full mt-3"><div className="h-full bg-[#034795] rounded-full" style={{ width: `${Math.min(100, (monthBookings / Math.max(lastMonthBookings, 1)) * 100)}%` }} /></div>
-        </div>
-        <div className="bg-white rounded-[20px] border border-[#ddddee] p-5">
-          <p className="text-sm text-[#5b6480]">This Month Revenue</p>
-          <p className="text-2xl font-bold text-[#001353] mt-1">RM{Number(monthRevenue._sum.amount ?? 0).toLocaleString()}</p>
-          <div className="h-1 bg-[#ddddee] rounded-full mt-3"><div className="h-full bg-[#1a8f5c] rounded-full" style={{ width: "65%" }} /></div>
-        </div>
-        <div className="bg-white rounded-[20px] border border-[#ddddee] p-5">
-          <p className="text-sm text-[#5b6480]">Pending Bookings</p>
-          <p className="text-2xl font-bold text-[#001353] mt-1">{pendingBookings}</p>
-          <p className="text-xs text-amber-600 mt-1 font-medium">Needs attention</p>
-        </div>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <StatTile label="Bookings this month" value={String(monthBookings)} icon="calendar" compact />
+        <StatTile label="Revenue this month" value={`RM${Number(monthRevenue._sum.amount ?? 0).toLocaleString()}`} icon="trendingUp" compact />
+        <StatTile label="Pending bookings" value={String(pendingBookings)} icon="clipboard" compact hint="Needs attention" />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Recent Bookings */}
-        <div className="lg:col-span-2 bg-white rounded-[24px] border border-[#ddddee] p-6">
-          <div className="flex items-center justify-between mb-5">
-            <h2 className="font-bold text-[#001353] tracking-[-0.4px]">Recent Bookings</h2>
-            <Link href="/admin/bookings" className="text-sm text-[#034795] font-medium">View all →</Link>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead><tr className="text-xs text-[#5b6480] border-b border-[#ddddee]">
-                <th className="text-left pb-3 font-medium">Customer</th>
-                <th className="text-left pb-3 font-medium">Service</th>
-                <th className="text-left pb-3 font-medium">Date</th>
-                <th className="text-left pb-3 font-medium">Amount</th>
-                <th className="text-left pb-3 font-medium">Status</th>
-              </tr></thead>
-              <tbody className="divide-y divide-[#ddddee]">
-                {recentBookings.map((b) => (
-                  <tr key={b.id} className="hover:bg-[#f5f5fa]">
-                    <td className="py-3 text-sm font-medium text-[#001353]">{b.customer.fullName}</td>
-                    <td className="py-3 text-sm text-[#5b6480]">{b.service.name}</td>
-                    <td className="py-3 text-sm text-[#5b6480]">{new Date(b.scheduledDate).toLocaleDateString()}</td>
-                    <td className="py-3 text-sm font-bold text-[#034795]">RM{Number(b.totalAmount).toLocaleString()}</td>
-                    <td className="py-3"><StatusBadge status={b.status} /></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
+        {/* Recent bookings */}
+        <AdminCard
+          title="Recent bookings"
+          desc="The latest 8 bookings across all services."
+          actions={
+            <Link href="/admin/bookings" className="text-sm font-medium text-[#034795] hover:text-[#023a7a]">
+              View all
+            </Link>
+          }
+          className="xl:col-span-2"
+        >
+          <AdminTable>
+            <AdminTableHead>
+              <tr>
+                <AdminTh>Customer</AdminTh>
+                <AdminTh>Service</AdminTh>
+                <AdminTh>Date</AdminTh>
+                <AdminTh>Amount</AdminTh>
+                <AdminTh>Status</AdminTh>
+              </tr>
+            </AdminTableHead>
+            <AdminTableBody>
+              {recentBookings.map((b) => {
+                const status = BOOKING_STATUS[b.status] ?? { label: b.status, color: "neutral" as const };
+                return (
+                  <AdminTableRow key={b.id}>
+                    <AdminTd className="font-medium text-[#001353]">{b.customer.fullName}</AdminTd>
+                    <AdminTd>{b.service.name}</AdminTd>
+                    <AdminTd>{new Date(b.scheduledDate).toLocaleDateString()}</AdminTd>
+                    <AdminTd className="font-semibold text-[#034795]">RM{Number(b.totalAmount).toLocaleString()}</AdminTd>
+                    <AdminTd>
+                      <AdminBadge color={status.color} size="sm">{status.label}</AdminBadge>
+                    </AdminTd>
+                  </AdminTableRow>
+                );
+              })}
+            </AdminTableBody>
+          </AdminTable>
+        </AdminCard>
 
-        {/* Users by role + Status distribution */}
-        <div className="flex flex-col gap-4">
-          <div className="bg-white rounded-[24px] border border-[#ddddee] p-5">
-            <h2 className="font-bold text-[#001353] mb-4 tracking-[-0.4px]">Users by Role</h2>
-            {usersByRole.map((r) => {
-              const colors: Record<string, string> = { CUSTOMER: "#034795", WORKER: "#1a8f5c", SUPPORT: "#fb6f27", ADMIN: "#001353" };
-              const pct = Math.round((r._count / totalUsers) * 100);
-              return (
-                <div key={r.role} className="mb-3">
-                  <div className="flex justify-between text-xs mb-1">
-                    <span className="font-medium text-[#001353]">{r.role}</span>
-                    <span className="text-[#5b6480]">{r._count} ({pct}%)</span>
+        {/* Users by role + booking status */}
+        <div className="flex flex-col gap-6">
+          <AdminCard title="Users by role" desc="Share of accounts in each role.">
+            <div className="space-y-4">
+              {usersByRole.map((r) => {
+                const meta = ROLE_LABEL[r.role] ?? { label: r.role, color: "neutral" as const, bar: "#667085" };
+                const pct = totalUsers > 0 ? Math.round((r._count / totalUsers) * 100) : 0;
+                return (
+                  <div key={r.role}>
+                    <div className="mb-1.5 flex items-center justify-between text-sm">
+                      <span className="font-medium text-[#001353]">{meta.label}</span>
+                      <span className="text-[#5b6480]">{r._count} ({pct}%)</span>
+                    </div>
+                    <div className="h-2 overflow-hidden rounded-full bg-[#f0f2f7]">
+                      <div className="h-full rounded-full" style={{ width: `${pct}%`, background: meta.bar }} />
+                    </div>
                   </div>
-                  <div className="h-2 bg-[#ddddee] rounded-full overflow-hidden">
-                    <div className="h-full rounded-full" style={{ width: `${pct}%`, background: colors[r.role] ?? "#034795" }} />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+          </AdminCard>
 
-          <div className="bg-white rounded-[24px] border border-[#ddddee] p-5">
-            <h2 className="font-bold text-[#001353] mb-4 tracking-[-0.4px]">Booking Status</h2>
-            {bookingsByStatus.map((b) => (
-              <div key={b.status} className="flex items-center justify-between py-1.5">
-                <StatusBadge status={b.status} />
-                <span className="text-sm font-bold text-[#001353]">{b._count}</span>
-              </div>
-            ))}
-          </div>
+          <AdminCard title="Booking status" desc="Count of bookings per status.">
+            <div className="divide-y divide-[#f0f2f7]">
+              {bookingsByStatus.map((b) => {
+                const status = BOOKING_STATUS[b.status] ?? { label: b.status, color: "neutral" as const };
+                return (
+                  <div key={b.status} className="flex items-center justify-between py-3 first:pt-0 last:pb-0">
+                    <AdminBadge color={status.color} size="sm">{status.label}</AdminBadge>
+                    <span className="text-sm font-semibold text-[#001353]">{b._count}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </AdminCard>
         </div>
       </div>
+    </div>
+  );
+}
+
+function StatTile({
+  label,
+  value,
+  icon,
+  badge,
+  hint,
+  compact = false,
+}: {
+  label: string;
+  value: string;
+  icon: string;
+  badge?: ReactNode;
+  hint?: string;
+  compact?: boolean;
+}) {
+  return (
+    <div className="rounded-2xl border border-[#e4e7f0] bg-white p-5 shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)]">
+      <div className="flex items-start justify-between gap-4">
+        <div className="min-w-0">
+          <p className="text-sm text-[#5b6480]">{label}</p>
+          <p className={`mt-2 font-semibold text-[#001353] ${compact ? "text-xl" : "text-2xl"}`}>{value}</p>
+        </div>
+        <div className={`${STAT_ICON} shrink-0`}>
+          <AppIcon name={icon} className="h-6 w-6" />
+        </div>
+      </div>
+      {(badge || hint) && (
+        <div className="mt-3 flex items-center gap-2 text-sm">
+          {badge}
+          {hint && <span className="text-[#5b6480]">{hint}</span>}
+        </div>
+      )}
     </div>
   );
 }

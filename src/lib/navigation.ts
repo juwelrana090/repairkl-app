@@ -17,6 +17,7 @@ export interface NavLink {
 export const PUBLIC_NAV_LINKS: NavLink[] = [
   { label: "Home", href: "/" },
   { label: "Services", href: "/our-services" },
+  { label: "Blog", href: "/blog" },
   { label: "About Us", href: "/about" },
   { label: "FAQ", href: "/faq" },
   { label: "Contact", href: "/contact" },

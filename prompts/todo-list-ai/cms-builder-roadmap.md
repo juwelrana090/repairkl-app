@@ -149,6 +149,45 @@ model PageRevision { id pageId snapshot Json createdBy createdAt }
 - [ ] G3. Tests (schemas, permissions, sanitize), `render:check` CI, a11y pass, Lighthouse
 - [ ] G4. `.context/overview.md` update + docs
 
+### Phase H — Rich text editor সম্পূর্ণ করা (DOCX-style toolbar)
+- [ ] H1. Tiptap toolbar পূর্ণাঙ্গ করা (Word/DOCX-এর মত): font-size/heading dropdown, bold/italic/underline/strike, text & highlight color, alignment, bullet/ordered list, indent/outdent, blockquote, code block, horizontal rule, link, image (media library), table (insert row/col, delete), youtube embed, clear formatting, undo/redo. Reference: https://tiptap.dev/
+- [ ] H2. `RichTextEditor` কে D2 blog post form-এ mount করা (আগে mount ছিল না) — full toolbar, cover image, save ঠিক থাকা
+- [ ] H3. `SchemaFields` এর rich text field (E3) এ একই editor ব্যবহার; page builder props form থেকে `html` save/load
+- [ ] H4. Editor runtime test: bold/heading/list/table/image/link প্রতিটা ঠিকমতো save → reload → public `PostBody` এ একই দেখাচ্ছে কিনা (sanitize সহ)
+
+### Phase I — Admin UI redesign (শুধু admin panel, public page না)
+Reference: `C:\Dev\Qawiun\Asses\admin-dashboard` (TailAdmin Pro). শুধু visual design ও component pattern কপি; next-intl/i18n কপি হবে না। RepairKL এর role/permission logic অপরিবর্তিত থাকবে।
+- [x] I1. Admin shell: sidebar (collapsible, expanded/collapsed/hover state) + header (mobile toggle, logout) — `src/components/admin/shell/*`, `(admin)/layout.tsx` (code done, awaiting user visual verification; search and user dropdown not yet built)
+  - I1 restyle (reference AppSidebar/AppHeader classes, admin palette): code done, `tsc` clean, awaiting user visual verification. Breakpoint moved `lg` → `xl` (290px / 90px widths); 1024–1279px now uses the off-canvas drawer. Header uses `z-40` (reference `z-99999`) so the collapsed-sidebar hover overlay is not covered.
+- [x] I2. Design tokens & base components: Button, Input, Select, Badge, Card, Table, Modal এর একই style সেট (`src/components/admin/ui/*`; code done, `tsc` clean, awaiting user verification; not yet used by any page)
+- [x] I3. Dashboard (`/admin/dashboard`) — code done: `AdminPageHeader` + "New service" button, 4 stat tiles, month stat tiles, `AdminCard` + `AdminTable` for recent bookings, users-by-role and booking-status cards (`AdminBadge`). Fake change values (+12%, +8%) and the fixed 65% bar removed; all Prisma queries and `bookingGrowth` unchanged. Chart area deferred to I8. `tsc` clean; awaiting user visual verification.
+- [ ] I4. Lists পেজ — split into one step per page (same table/toolbar/pagination pattern):
+  - [x] I4a. Users list (`/admin/users`) — users, role changes unchanged (code done, `tsc` clean, awaiting user verification)
+  - [x] I4b. Workers list (`/admin/workers`) — `AdminPageHeader`, 4 stat tiles, toolbar search, `AdminCard` + `AdminTable` (worker, speciality, rating, jobs, rate, availability, verified, Verify/Unverify button). Verify API, search filter and Prisma query unchanged. Layout choice: table (not cards). `tsc` clean, awaiting user visual verification.
+  - [x] I4c. Bookings list (`/admin/bookings`) — `AdminPageHeader`, 5 status tiles (active state kept), GET search toolbar, `AdminCard` + `AdminTable` with tone-mapped booking and payment badges, link pagination. Server-rendered; Prisma query, filters and `/orders/[id]` link unchanged. `tsc` clean, awaiting user visual verification.
+  - [x] I4d. Services list (`/admin/services`) — `AdminPageHeader`, category summary tiles (same `cat.color` circle and `getServiceIcon` image), toolbar search, `AdminCard` + `AdminTable`, tone-tinted category pill, Featured star and Active/Hidden badge toggles. Toggle API, search filter and Prisma query unchanged. View/Edit kept as styled links (no button inside link). `tsc` clean, awaiting user visual verification.
+  - [x] I4e. Posts list + Categories (`/admin/posts`, `/admin/posts/categories`) — `AdminPageHeader`, "New post" as a styled link (no button inside link), `AdminCard` + `AdminTable` with tone badges (Draft neutral, Scheduled warning, Published success); Categories uses `AdminCard` with the "New category" action, `AdminModal` create/edit/delete forms (`AdminLabel` + `AdminInput`), `AdminButton` Edit/Delete. Queries, `callApi` endpoints, slug rule and modal logic unchanged. `tsc` clean, awaiting user visual verification.
+  - [x] I4f. Pages list (`/admin/pages`) — `AdminPageHeader` ("Pages"), `AdminCard` + `AdminTable` ("All pages"), Published/Draft `AdminBadge`, Protected badge, View as styled link, Duplicate outline button, Delete danger button (disabled for protected pages), `AdminModal` delete confirm. Server query, `publicPath`, duplicate/delete API calls, toasts and `router.refresh()` unchanged. `tsc` clean, awaiting user visual verification.
+  - [x] I4g. Media library (`/admin/media`) — `AdminPageHeader` ("Media Library"), `AdminCard` "Upload new" with storage `AdminBadge`, `AdminInput` alt/keyword fields, `AdminButton` Upload; search with count badge; card grid with Copy URL / Edit / Delete (danger) buttons, all `cursor-pointer`; `AdminModal` delete confirm. `public/assets` protection (`MANAGED_UPLOAD_WHERE`), upload/save/delete API calls, toasts and search filter unchanged. `tsc` clean, awaiting user visual verification.
+  - [x] I4h. Promotions list (`/admin/promotions`) — `AdminPageHeader` ("Promotions"), "New promo code" toggle button opens an `AdminCard` create form (same fields, defaults and `POST /api/admin/promotions` payload), promo list in `AdminTable` inside `AdminCard` with Expired `AdminBadge`, usage bar and Active/Paused `AdminBadge` toggle (`POST .../toggle`, `cursor-pointer`). Server query, `Promo` shape, toasts and expired logic unchanged. `tsc` clean, awaiting user visual verification.
+  - [ ] I4i. Reports (`/admin/reports`)
+- [ ] I5. Forms পেজ: user edit/profile, service form, post form, SEO edit, settings — একই form layout
+- [ ] I6. Responsive + dark-free check, `pnpm render:check` (public unaffected), browser screenshot verify প্রতিটা ধাপে
+- [ ] I7. Reference item (not yet listed): Calendar page — `(admin)` calendar, reference calendar layout
+- [ ] I8. Reference item: Charts — bar chart and line chart pages/components
+- [ ] I9. Reference item: Form elements page (input, select, checkbox, radio, switch, file input styles)
+- [ ] I10. Reference item: Basic tables page
+- [ ] I11. Reference item: Blank page template
+- [ ] I12. Reference item: Profile page (admin's own profile view; separate from user edit in I5)
+- [ ] I13. Reference item: UI elements — Alerts, Avatars, Badge, Buttons, Images, Modals, Videos
+- [ ] I14. Reference item: Error 404 page for the admin panel
+- [ ] I15. Reference item: Ecommerce cards (stat/metric cards) — used by I3 dashboard
+- [ ] I16. Reference item: Notification dropdown in header (needs a real data source; defer until one exists)
+- [ ] I17. Reference item: User dropdown in header (profile, logout menu)
+- [ ] I18. Reference item: Theme toggle in header (reference has light/dark; admin should decide whether to keep light only)
+- [ ] I19. Reference item: Sidebar promo/widget card
+- [ ] I20. Header search behaviour: Ctrl/Cmd+K focus is done; the field is still not wired to search anything (decide scope: admin nav search, or user/booking lookup)
+
 ## 4a. Cross-check: emoji → SVG icon prompt (claude.ai chat tail)
 
 Chat এ যা করতে বলা হয়েছিল vs repo এখন কোথায় আছে।

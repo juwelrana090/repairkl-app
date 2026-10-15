@@ -291,7 +291,7 @@ export default function AdminSettingsClient({
             <Input
               label="Default OG image"
               value={form.defaultOgImage}
-              placeholder="/images/og-default.jpg"
+              placeholder="/assets/images/og-default.jpg"
               hint="Fallback image for pages without their own OG image"
               onChange={(e) => set({ defaultOgImage: e.target.value })}
             />

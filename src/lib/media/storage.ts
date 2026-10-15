@@ -102,7 +102,7 @@ export async function saveUpload(file: File): Promise<StoredFile> {
 
 /** Best-effort local deletion (Cloudinary objects are left in place). */
 export async function deleteLocal(url: string): Promise<void> {
-  if (!url.startsWith("/uploads/")) return;
+  if (!url.startsWith("/uploads/") || url.includes("..")) return;
   const { unlink } = await import("node:fs/promises");
   await unlink(path.join(process.cwd(), "public", url)).catch(() => undefined);
 }

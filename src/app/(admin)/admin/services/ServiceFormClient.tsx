@@ -362,7 +362,7 @@ export default function ServiceFormClient({
             <Input
               label="Image URL"
               value={form.imageUrl}
-              placeholder="/images/services/fridge-repair.jpg"
+              placeholder="/assets/images/services/fridge-repair.jpg"
               hint="Copy a URL from the Media library and paste it here"
               onChange={(e) => set({ imageUrl: e.target.value })}
             />

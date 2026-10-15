@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import AdminPromotionsClient from "./AdminPromotionsClient";
 import { buildPageMetadata } from "@/lib/seo/pageMeta";
+import AdminPageHeader from "@/components/admin/ui/PageHeader";
 
 export const metadata: Metadata = buildPageMetadata("admin.promotions");
 
@@ -10,10 +11,7 @@ export default async function AdminPromotionsPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div>
-        <h1 className="text-2xl font-bold text-[#001353] tracking-[-0.5px]">Promotions</h1>
-        <p className="text-sm text-[#5b6480] mt-1">Manage discount codes and offers</p>
-      </div>
+      <AdminPageHeader title="Promotions" description="Manage discount codes and offers" />
       <AdminPromotionsClient
         promos={promos.map((p) => ({
           id: p.id,
