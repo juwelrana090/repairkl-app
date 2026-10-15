@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth/session";
+import { sessionHasPermission } from "@/lib/auth/permissionStore";
+import { PERMISSIONS } from "@/lib/auth/permissions";
 import { prisma } from "@/lib/prisma";
 import { saveUpload } from "@/lib/media/storage";
 
@@ -7,7 +9,7 @@ import { saveUpload } from "@/lib/media/storage";
 export async function POST(request: NextRequest) {
   try {
     const session = await getSession();
-    if (!session || session.role !== "ADMIN") {
+    if (!session || !(await sessionHasPermission(session, PERMISSIONS.MEDIA_MANAGE))) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 

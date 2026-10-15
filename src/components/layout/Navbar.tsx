@@ -21,8 +21,11 @@ export default function Navbar({
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
 
+  const isAdminPanelRole =
+    user?.role === "ADMIN" || user?.role === "SUPER_ADMIN" || user?.role === "EDITOR";
+
   const dashboardHref =
-    user?.role === "ADMIN"
+    isAdminPanelRole
       ? "/admin/dashboard"
       : user?.role === "WORKER"
         ? "/worker/dashboard"
@@ -104,7 +107,7 @@ export default function Navbar({
                     <Link href={profileHref} className="menu-drop-item" onClick={() => setMenuOpen(false)}>
                       <AppIcon name="user" className="w-4 h-4 mr-2" /> My Profile
                     </Link>
-                    {user.role === "ADMIN" && (
+                    {isAdminPanelRole && (
                       <Link href="/admin/dashboard" className="menu-drop-item" onClick={() => setMenuOpen(false)}>
                         <AppIcon name="settings" className="w-4 h-4 mr-2" /> Admin Panel
                       </Link>

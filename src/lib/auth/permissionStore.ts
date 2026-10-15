@@ -4,8 +4,10 @@ import {
   PERMISSIONS,
   canGrantPermission,
   canManageRules,
+  hasPermission,
   type PermissionKey,
 } from "@/lib/auth/permissions";
+import { ADMIN_TIER_ROLES } from "@/lib/auth/roleHierarchy";
 
 const VALID_PERMISSIONS = Object.values(PERMISSIONS) as string[];
 
@@ -15,6 +17,36 @@ export async function getGrantedPermissions(userId: string): Promise<string[]> {
     select: { permission: true },
   });
   return rows.map((r) => r.permission);
+}
+
+// Live actor lookup for API routes. The JWT role can be stale (up to 7 days), so
+// the DB role and isActive flag are authoritative.
+async function loadActor(userId: string) {
+  const actor = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { role: true, isActive: true },
+  });
+  return actor && actor.isActive ? actor : null;
+}
+
+// DB-backed permission gate for admin API routes (role default + explicit grants).
+export async function sessionHasPermission(
+  session: SessionPayload,
+  permission: PermissionKey,
+): Promise<boolean> {
+  const actor = await loadActor(session.userId);
+  if (!actor) return false;
+  return hasPermission(
+    actor.role,
+    await getGrantedPermissions(session.userId),
+    permission,
+  );
+}
+
+// For ops that are not CMS permissions (user/worker moderation): ADMIN or SUPER_ADMIN.
+export async function sessionIsAdminTier(session: SessionPayload): Promise<boolean> {
+  const actor = await loadActor(session.userId);
+  return !!actor && (ADMIN_TIER_ROLES as readonly string[]).includes(actor.role);
 }
 
 // Server-side gate for role/permission management. Reads grants from the DB so

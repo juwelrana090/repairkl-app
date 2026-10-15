@@ -4,22 +4,43 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { StatusBadge, showToast } from "@/components/ui";
 import { twMerge } from "tailwind-merge";
+import { ALL_ROLES, canChangeUserRole } from "@/lib/auth/roleHierarchy";
 
 interface User {
   id: string; fullName: string; email: string; phone: string; role: string;
   isActive: boolean; isEmailVerified: boolean; isPhoneVerified: boolean;
-  bookingCount: number; city: string; createdAt: string;
+  bookingCount: number; city: string; createdAt: string; permissions: string[];
 }
 
-const ROLES = ["ALL", "CUSTOMER", "WORKER", "SUPPORT", "ADMIN"];
+const ROLES = ["ALL", ...ALL_ROLES];
 
 export default function AdminUsersClient({
-  users, total, page, limit, activeRole, search,
+  users, total, page, limit, activeRole, search, actorRole, canManageRoles,
 }: {
   users: User[]; total: number; page: number; limit: number; activeRole?: string; search?: string;
+  actorRole: string; canManageRoles: boolean;
 }) {
   const router = useRouter();
   const [searchQ, setSearchQ] = useState(search ?? "");
+
+  // Server enforces the same rules; this only hides options that would be rejected.
+  const roleOptionsFor = (user: User) =>
+    ALL_ROLES.filter((r) => r === user.role || canChangeUserRole(actorRole, user.role, r));
+
+  const changeRole = async (user: User, newRole: string) => {
+    if (newRole === user.role) return;
+    const res = await fetch(`/api/admin/users/${user.id}/role`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ role: newRole }),
+    });
+    if (res.ok) { showToast(`Role changed to ${newRole}`, "success"); router.refresh(); }
+    else {
+      const data = await res.json().catch(() => null);
+      showToast(data?.error ?? "Failed to change role", "error");
+      router.refresh();
+    }
+  };
 
   const applyFilter = (role?: string, q?: string) => {
     const params = new URLSearchParams();
@@ -97,7 +118,28 @@ export default function AdminUsersClient({
                     <p className="text-sm text-[#5b6480]">{u.email}</p>
                     <p className="text-xs text-[#5b6480]">{u.phone}</p>
                   </td>
-                  <td className="px-4 py-3"><StatusBadge status={u.role} /></td>
+                  <td className="px-4 py-3">
+                    {canManageRoles && roleOptionsFor(u).length > 1 ? (
+                      <select
+                        value={u.role}
+                        onChange={(e) => changeRole(u, e.target.value)}
+                        className="h-8 px-2 border border-[#ddddee] rounded-[8px] text-xs font-bold text-[#001353] outline-none focus:border-[#034795]"
+                      >
+                        {roleOptionsFor(u).map((r) => (
+                          <option key={r} value={r}>{r}</option>
+                        ))}
+                      </select>
+                    ) : (
+                      <StatusBadge status={u.role} />
+                    )}
+                    {u.permissions.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {u.permissions.map((p) => (
+                          <span key={p} className="text-[10px] font-bold bg-[#eaf0f8] text-[#034795] px-1.5 py-0.5 rounded">{p}</span>
+                        ))}
+                      </div>
+                    )}
+                  </td>
                   <td className="px-4 py-3 text-sm text-center font-bold text-[#001353]">{u.bookingCount}</td>
                   <td className="px-4 py-3 text-sm text-[#5b6480]">{u.city}</td>
                   <td className="px-4 py-3">

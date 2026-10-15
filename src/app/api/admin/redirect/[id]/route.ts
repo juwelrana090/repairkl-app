@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { getSession } from "@/lib/auth/session";
+import { sessionHasPermission } from "@/lib/auth/permissionStore";
+import { PERMISSIONS } from "@/lib/auth/permissions";
 import { prisma } from "@/lib/prisma";
 import { redirectInputSchema } from "@/lib/admin/validators";
 
@@ -13,7 +15,7 @@ export async function PUT(
 ) {
   try {
     const session = await getSession();
-    if (!session || session.role !== "ADMIN") {
+    if (!session || !(await sessionHasPermission(session, PERMISSIONS.SEO_MANAGE))) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -51,7 +53,7 @@ export async function DELETE(
 ) {
   try {
     const session = await getSession();
-    if (!session || session.role !== "ADMIN") {
+    if (!session || !(await sessionHasPermission(session, PERMISSIONS.SEO_MANAGE))) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 

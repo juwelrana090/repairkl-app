@@ -40,20 +40,28 @@ const SUPPORT_NAV: NavItem[] = [
   { href: "/support/bookings", label: "Bookings", icon: "clipboard" },
 ];
 
+// EDITOR sees the full admin nav for now; links they lack permission for return 403.
+// Filtering nav items by permission is a follow-up.
 const NAV_BY_ROLE: Record<string, NavItem[]> = {
+  SUPER_ADMIN: ADMIN_NAV,
   ADMIN: ADMIN_NAV,
+  EDITOR: ADMIN_NAV,
   WORKER: WORKER_NAV,
   SUPPORT: SUPPORT_NAV,
 };
 
 const COLORS: Record<string, string> = {
+  SUPER_ADMIN: "#001353",
   ADMIN: "#034795",
+  EDITOR: "#5b6480",
   WORKER: "#1a8f5c",
   SUPPORT: "#fb6f27",
 };
 
 const TITLES: Record<string, string> = {
+  SUPER_ADMIN: "Super Admin Panel",
   ADMIN: "Admin Panel",
+  EDITOR: "Editor Panel",
   WORKER: "Worker Portal",
   SUPPORT: "Support Center",
 };
@@ -62,7 +70,7 @@ export default function PanelSidebar({
   role,
   user,
 }: {
-  role: "ADMIN" | "WORKER" | "SUPPORT";
+  role: "SUPER_ADMIN" | "ADMIN" | "EDITOR" | "WORKER" | "SUPPORT";
   user: { fullName: string; email: string };
 }) {
   const pathname = usePathname();

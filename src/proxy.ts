@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { jwtVerify } from "jose";
+import { ROLE_DEFAULT_PATHS } from "@/lib/auth/roles";
 
 function resolveJwtSecret(): Uint8Array {
   const secret = process.env.JWT_SECRET;
@@ -30,13 +31,8 @@ const PUBLIC_PATHS = [
   "/onboarding",
 ];
 
-// Roles allowed in the app (CUSTOMER goes to /home, others to role dashboards)
-const ROLE_DEFAULT_PATHS: Record<string, string> = {
-  ADMIN: "/admin/dashboard",
-  WORKER: "/worker/dashboard",
-  SUPPORT: "/support/dashboard",
-  CUSTOMER: "/home",
-};
+// Roles that may enter /admin/. Page-level permissions are checked in the layout and API routes.
+const ADMIN_PANEL_ROLES = ["ADMIN", "SUPER_ADMIN", "EDITOR"];
 
 export async function proxy(request: NextRequest) {
   const { pathname, searchParams } = request.nextUrl;
@@ -99,8 +95,8 @@ export async function proxy(request: NextRequest) {
         }
       }
 
-      // Block non-ADMIN from /admin/ paths
-      if (role !== "ADMIN" && pathname.startsWith("/admin/")) {
+      // Block roles outside the admin panel from /admin/ paths
+      if (!ADMIN_PANEL_ROLES.includes(role) && pathname.startsWith("/admin/")) {
         return NextResponse.redirect(
           new URL(ROLE_DEFAULT_PATHS[role] ?? "/home", request.url),
         );
@@ -117,6 +113,7 @@ export async function proxy(request: NextRequest) {
       if (
         role !== "SUPPORT" &&
         role !== "ADMIN" &&
+        role !== "SUPER_ADMIN" &&
         pathname.startsWith("/support/")
       ) {
         return NextResponse.redirect(

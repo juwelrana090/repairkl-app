@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth/session";
+import { sessionIsAdminTier } from "@/lib/auth/permissionStore";
 import { prisma } from "@/lib/prisma";
 
 export async function POST(
@@ -22,7 +23,7 @@ export async function POST(
       return NextResponse.json({ error: "Booking not found" }, { status: 404 });
     }
 
-    if (booking.customerId !== session.userId && session.role !== "ADMIN") {
+    if (booking.customerId !== session.userId && !(await sessionIsAdminTier(session))) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 

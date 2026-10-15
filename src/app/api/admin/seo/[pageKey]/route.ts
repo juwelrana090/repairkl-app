@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { getSession } from "@/lib/auth/session";
+import { sessionHasPermission } from "@/lib/auth/permissionStore";
+import { PERMISSIONS } from "@/lib/auth/permissions";
 import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@prisma/client";
 
@@ -47,7 +49,7 @@ export async function PUT(
 ) {
   try {
     const session = await getSession();
-    if (!session || session.role !== "ADMIN") {
+    if (!session || !(await sessionHasPermission(session, PERMISSIONS.SEO_MANAGE))) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 

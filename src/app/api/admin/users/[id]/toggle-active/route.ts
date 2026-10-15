@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth/session";
+import { sessionIsAdminTier } from "@/lib/auth/permissionStore";
+import { isProtectedRole } from "@/lib/auth/roleHierarchy";
 import { prisma } from "@/lib/prisma";
 
 export async function POST(
@@ -10,9 +12,14 @@ export async function POST(
     const { id } = await params;
     const session = await getSession();
 
-    if (!session || session.role !== "ADMIN") {
+    if (!session || !(await sessionIsAdminTier(session))) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const actor = await prisma.user.findUnique({
+      where: { id: session.userId },
+      select: { role: true },
+    });
 
     const user = await prisma.user.findUnique({
       where: { id },
@@ -20,6 +27,11 @@ export async function POST(
 
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    // Only SUPER_ADMIN may deactivate or reactivate an ADMIN/SUPER_ADMIN account.
+    if (isProtectedRole(user.role) && actor?.role !== "SUPER_ADMIN") {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
     const updatedUser = await prisma.user.update({

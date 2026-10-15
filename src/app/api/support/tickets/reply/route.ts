@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth/session";
+import { sessionIsAdminTier } from "@/lib/auth/permissionStore";
 import { prisma } from "@/lib/prisma";
 
 export async function POST(request: NextRequest) {
   try {
     const session = await getSession();
 
-    if (!session || (session.role !== "SUPPORT" && session.role !== "ADMIN")) {
+    if (!session || (session.role !== "SUPPORT" && !(await sessionIsAdminTier(session)))) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
