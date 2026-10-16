@@ -66,6 +66,30 @@ export const ICON_GRIP = (
     <circle cx="7.5" cy="11.5" r="1.2" />
   </svg>
 );
+// ── Add palette + Layers tree (VB5) ─────────────────────────────────────────
+export const ICON_LOCK = (
+  <BuilderIcon>
+    <rect x="3.5" y="7" width="9" height="6.5" rx="1.2" />
+    <path d="M5.5 7V5A2.5 2.5 0 0 1 10.5 5v2" />
+  </BuilderIcon>
+);
+export const ICON_UNLOCK = (
+  <BuilderIcon>
+    <rect x="3.5" y="7" width="9" height="6.5" rx="1.2" />
+    <path d="M5.5 7V5a2.5 2.5 0 0 1 4.8-1" />
+  </BuilderIcon>
+);
+export const ICON_SEARCH = (
+  <BuilderIcon>
+    <circle cx="7" cy="7" r="4.5" />
+    <path d="M10.5 10.5 14 14" />
+  </BuilderIcon>
+);
+export const ICON_CHEVRON = (
+  <BuilderIcon>
+    <path d="M6 3.5 10.5 8 6 12.5" />
+  </BuilderIcon>
+);
 
 // ── Top bar ────────────────────────────────────────────────────────────────
 export const ICON_BACK = (

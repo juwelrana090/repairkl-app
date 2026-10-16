@@ -24,6 +24,17 @@ export type BuilderSection = {
   type: string;
   props: Record<string, unknown>;
   isVisible: boolean;
+  /**
+   * Custom Layers name (VB5). null/undefined → the Layers list and canvas chip
+   * fall back to the section type label. Builder-only; public render ignores it.
+   */
+  label?: string | null;
+  /**
+   * Layers lock (VB5): when true the section is read-only — move, remove,
+   * hide, rename and prop edits are rejected by the reducer. Duplicate is
+   * allowed and the copy starts unlocked. Builder-only.
+   */
+  isLocked?: boolean;
 };
 
 export type BuilderDevice = "desktop" | "tablet" | "mobile";
@@ -48,11 +59,13 @@ export type BuilderState = BuilderSnapshot & {
 
 export type BuilderAction =
   | { kind: "init"; sections: BuilderSection[] }
-  | { kind: "add"; type: string; props: Record<string, unknown> }
+  | { kind: "add"; type: string; props: Record<string, unknown>; index?: number }
   | { kind: "remove"; id: string }
   | { kind: "move"; id: string; index: number }
   | { kind: "duplicate"; id: string }
   | { kind: "toggleHidden"; id: string }
+  | { kind: "rename"; id: string; label: string | null }
+  | { kind: "toggleLock"; id: string }
   | { kind: "setProp"; id: string; path: string; value: unknown }
   | { kind: "applyTemplate"; sections: BuilderSection[] }
   | { kind: "select"; id: string | null }
@@ -62,6 +75,15 @@ export type BuilderAction =
   | { kind: "undo" }
   | { kind: "redo" }
   | { kind: "markSaved" };
+
+/** Max length of a custom section name (matches PageSection.label @db.VarChar(120)). */
+export const LABEL_MAX = 120;
+
+/** Normalizes a Layers rename input: trim, cap length, empty → null (type label). */
+export function normalizeLabel(input: string | null | undefined): string | null {
+  const trimmed = (input ?? "").trim().slice(0, LABEL_MAX);
+  return trimmed.length > 0 ? trimmed : null;
+}
 
 let keyCounter = 0;
 
@@ -87,6 +109,13 @@ export function createInitialState(sections: BuilderSection[] = []): BuilderStat
 
 function snapshot(state: BuilderState): BuilderSnapshot {
   return { sections: state.sections, selectedId: state.selectedId };
+}
+
+/** True when the section exists and is locked (§4.2 layers lock) — callers
+ * keep their toast; the reducer is the last line of defense. A locked section
+ * is fully read-only: move, remove, hide, rename and prop edits all bounce. */
+function locked(state: BuilderState, id: string): boolean {
+  return state.sections.some((s) => s.key === id && s.isLocked === true);
 }
 
 function sameSections(a: BuilderSection[], b: BuilderSection[]): boolean {
@@ -134,10 +163,21 @@ export function builderReducer(state: BuilderState, action: BuilderAction): Buil
         props: action.props,
         isVisible: true,
       };
-      return commit(state, (snap) => ({ sections: [...snap.sections, section], selectedId: section.key }));
+      return commit(state, (snap) => {
+        // No index → append; palette clicks pass selected+1, canvas drag-drop
+        // passes the gap index (§4.2/§4.3 insert-at).
+        const at =
+          action.index === undefined
+            ? snap.sections.length
+            : Math.max(0, Math.min(action.index, snap.sections.length));
+        const sections = [...snap.sections];
+        sections.splice(at, 0, section);
+        return { sections, selectedId: section.key };
+      });
     }
 
     case "remove":
+      if (locked(state, action.id)) return state;
       if (!state.sections.some((s) => s.key === action.id)) return state;
       return commit(state, (snap) => ({
         sections: snap.sections.filter((s) => s.key !== action.id),
@@ -145,6 +185,7 @@ export function builderReducer(state: BuilderState, action: BuilderAction): Buil
       }));
 
     case "move": {
+      if (locked(state, action.id)) return state;
       const from = state.sections.findIndex((s) => s.key === action.id);
       if (from === -1) return state;
       const to = Math.max(0, Math.min(action.index, state.sections.length - 1));
@@ -162,7 +203,15 @@ export function builderReducer(state: BuilderState, action: BuilderAction): Buil
       if (index === -1) return state;
       return commit(state, (snap) => {
         const source = snap.sections[index];
-        const copy: BuilderSection = { ...source, props: { ...source.props }, key: newKey() };
+        // The copy keeps the custom name but starts unlocked — duplicating is a
+        // safe read-only operation on the original, and a fresh copy is meant
+        // to be edited (§4.2 layers duplicate).
+        const copy: BuilderSection = {
+          ...source,
+          props: { ...source.props },
+          key: newKey(),
+          isLocked: false,
+        };
         const sections = [...snap.sections];
         sections.splice(index + 1, 0, copy);
         return { sections, selectedId: copy.key };
@@ -170,13 +219,35 @@ export function builderReducer(state: BuilderState, action: BuilderAction): Buil
     }
 
     case "toggleHidden":
+      if (locked(state, action.id)) return state;
       if (!state.sections.some((s) => s.key === action.id)) return state;
       return commit(state, (snap) => ({
         sections: snap.sections.map((s) => (s.key === action.id ? { ...s, isVisible: !s.isVisible } : s)),
         selectedId: snap.selectedId,
       }));
 
+    case "rename": {
+      if (locked(state, action.id)) return state;
+      const label = normalizeLabel(action.label);
+      const target = state.sections.find((s) => s.key === action.id);
+      // Unknown id, or the normalized label is already the current one → no-op
+      // (no junk history entry for re-committing an unchanged name).
+      if (!target || target.label === label) return state;
+      return commit(state, (snap) => ({
+        sections: snap.sections.map((s) => (s.key === action.id ? { ...s, label } : s)),
+        selectedId: snap.selectedId,
+      }));
+    }
+
+    case "toggleLock":
+      if (!state.sections.some((s) => s.key === action.id)) return state;
+      return commit(state, (snap) => ({
+        sections: snap.sections.map((s) => (s.key === action.id ? { ...s, isLocked: !s.isLocked } : s)),
+        selectedId: snap.selectedId,
+      }));
+
     case "setProp": {
+      if (locked(state, action.id)) return state;
       if (!state.sections.some((s) => s.key === action.id)) return state;
       return commit(state, (snap) => ({
         sections: snap.sections.map((s) =>

@@ -6,12 +6,14 @@
  * The reducer is a pure function, so these tests cover the full §4.6
  * contract: structural actions push history, transient ones do not, undo and
  * redo round-trip exactly, the history stack is capped, and `dirty` tracks
- * the saved baseline across every path.
+ * the saved baseline across every path. The VB5 block adds the palette
+ * insert-at index, Layers rename normalization and the lock guards.
  */
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import {
   HISTORY_LIMIT,
+  LABEL_MAX,
   builderReducer,
   createInitialState,
   newKey,
@@ -24,6 +26,9 @@ function section(partial: Partial<BuilderSection> = {}): BuilderSection {
     type: partial.type ?? "RICH_TEXT",
     props: partial.props ?? { html: "<p>Hello</p>" },
     isVisible: partial.isVisible ?? true,
+    // Optional VB5 fields stay absent unless the test passes them.
+    ...(partial.label !== undefined ? { label: partial.label } : {}),
+    ...(partial.isLocked !== undefined ? { isLocked: partial.isLocked } : {}),
   };
 }
 
@@ -235,4 +240,88 @@ test("applyTemplate replaces the layout and undoes back", () => {
 test("newKey never repeats within a session", () => {
   const keys = new Set(Array.from({ length: 500 }, () => newKey()));
   assert.equal(keys.size, 500);
+});
+
+/* ── VB5: palette insert index, rename, layers lock ────────────────────── */
+
+test("add inserts at the given index and clamps out-of-range values", () => {
+  const a = section();
+  const b = section();
+  const c = section();
+  let state = withSections(a, b, c);
+  // Middle insert — the canvas drag-drop gap index (§4.3 insert-at).
+  state = builderReducer(state, { kind: "add", type: "FAQ", props: { items: [] }, index: 1 });
+  assert.equal(state.sections[1].type, "FAQ");
+  assert.deepEqual(state.sections.map((s) => s.type), ["RICH_TEXT", "FAQ", "RICH_TEXT", "RICH_TEXT"]);
+  assert.equal(state.selectedId, state.sections[1].key);
+  // Negative and huge indexes clamp instead of corrupting the array.
+  state = builderReducer(state, { kind: "add", type: "CTA", props: {}, index: -3 });
+  assert.equal(state.sections[0].type, "CTA");
+  state = builderReducer(state, { kind: "add", type: "STATS", props: {}, index: 99 });
+  assert.equal(state.sections[state.sections.length - 1].type, "STATS");
+});
+
+test("rename normalizes input: trims, caps at LABEL_MAX, empty clears, undo restores", () => {
+  const a = section();
+  let state = withSections(a);
+  state = builderReducer(state, { kind: "rename", id: a.key, label: "  Summer Promo  " });
+  assert.equal(state.sections[0].label, "Summer Promo");
+  // Whitespace-only input clears the custom name (falls back to the type label).
+  state = builderReducer(state, { kind: "rename", id: a.key, label: "   " });
+  assert.equal(state.sections[0].label, null);
+  state = builderReducer(state, { kind: "undo" });
+  assert.equal(state.sections[0].label, "Summer Promo");
+  // Length cap matches PageSection.label @db.VarChar(120).
+  state = builderReducer(state, { kind: "rename", id: a.key, label: "x".repeat(500) });
+  assert.equal(state.sections[0].label?.length, LABEL_MAX);
+  // Renaming to the same normalized value is a no-op — no junk history entry.
+  const before = state;
+  state = builderReducer(state, { kind: "rename", id: a.key, label: `x`.repeat(500) });
+  assert.equal(state, before);
+  assert.equal(state.history.length, before.history.length);
+});
+
+test("toggleLock flips the lock and no-ops on unknown ids", () => {
+  const a = section();
+  let state = withSections(a);
+  state = builderReducer(state, { kind: "toggleLock", id: a.key });
+  assert.equal(state.sections[0].isLocked, true);
+  state = builderReducer(state, { kind: "toggleLock", id: a.key });
+  assert.equal(state.sections[0].isLocked, false);
+  const before = state;
+  state = builderReducer(state, { kind: "toggleLock", id: "nope" });
+  assert.equal(state, before);
+});
+
+test("locked sections reject move, remove, hide, rename and prop edits", () => {
+  const a = section();
+  const b = section();
+  let state = withSections(a, b);
+  state = builderReducer(state, { kind: "toggleLock", id: a.key });
+  const frozen = state;
+  assert.equal(builderReducer(frozen, { kind: "move", id: a.key, index: 1 }), frozen);
+  assert.equal(builderReducer(frozen, { kind: "remove", id: a.key }), frozen);
+  assert.equal(builderReducer(frozen, { kind: "toggleHidden", id: a.key }), frozen);
+  assert.equal(builderReducer(frozen, { kind: "rename", id: a.key, label: "Nope" }), frozen);
+  assert.equal(
+    builderReducer(frozen, { kind: "setProp", id: a.key, path: "html", value: "<p>x</p>" }),
+    frozen,
+  );
+  // The lock only guards its own section — b stays fully editable.
+  state = builderReducer(frozen, { kind: "setProp", id: b.key, path: "html", value: "<p>ok</p>" });
+  assert.equal((state.sections[1].props as { html: string }).html, "<p>ok</p>");
+});
+
+test("duplicate works on a locked section; the copy keeps the name and starts unlocked", () => {
+  const a = section({ label: "Hero — homepage", isLocked: true });
+  let state = withSections(a);
+  state = builderReducer(state, { kind: "duplicate", id: a.key });
+  assert.equal(state.sections.length, 2);
+  const copy = state.sections[1];
+  assert.equal(copy.label, "Hero — homepage");
+  assert.equal(copy.isLocked, false);
+  assert.equal(a.isLocked, true); // the original keeps its lock
+  // And the copy is editable right away.
+  state = builderReducer(state, { kind: "setProp", id: copy.key, path: "html", value: "<p>v2</p>" });
+  assert.equal((state.sections[1].props as { html: string }).html, "<p>v2</p>");
 });

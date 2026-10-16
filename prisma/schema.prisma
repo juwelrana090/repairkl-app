@@ -563,6 +563,8 @@ model Page {
 /// One renderable block of a Page, ordered top-to-bottom. props shape is
 /// validated per SectionType by the Zod schemas in src/lib/sections/schemas.ts
 /// (Step 17); parse failures skip the section, never crash the page.
+/// label (custom Layers name) and isLocked (Layers lock) are BUILDER-ONLY —
+/// SectionRenderer never reads them, so the public page render is unchanged.
 model PageSection {
   id        String      @id @default(cuid()) @db.VarChar(36)
   pageId    String      @db.VarChar(36)
@@ -571,6 +573,8 @@ model PageSection {
   type      SectionType
   props     Json
   isVisible Boolean     @default(true)
+  label     String?     @db.VarChar(120)
+  isLocked  Boolean     @default(false)
   updatedAt DateTime    @updatedAt
 
   @@index([pageId, order])

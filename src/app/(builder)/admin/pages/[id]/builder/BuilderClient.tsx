@@ -7,20 +7,16 @@
 // out. All section mutations go through the VB2 reducer
 // (src/lib/builder/store.ts), which powers undo/redo and the dirty flag.
 //
-// VB3 scope: the canvas is still the save-refreshed preview iframe (VB4 makes
-// it live via postMessage), the Add tab is a placeholder (VB5), and the
-// inspector keeps the existing Content form (Style/Advanced in VB6). The save
-// flow is unchanged: validate locally, PUT /api/admin/pages/[id]/sections,
-// then markSaved() to rebase the undo baseline.
+// VB4: the canvas is a live preview iframe — every state change is posted to
+// /builder-preview/[id]?edit=1 within 50 ms (§4.3), and select/hover/toolbar
+// events come back the same way, so the canvas updates without saving.
+// VB5: the Add tab is the real palette (search, grouped tiles, click-to-insert
+// and drag-to-canvas via the §4.3 insert-at message); Layers is a tree with
+// rename/lock (persisted as PageSection.label/isLocked). The inspector keeps
+// the Content form (Style/Advanced in VB6). Saving: validate locally, PUT
+// /api/admin/pages/[id]/sections, then markSaved() rebases the undo baseline.
 
-import {
-  useEffect,
-  useReducer,
-  useRef,
-  useState,
-  type KeyboardEvent as ReactKeyboardEvent,
-  type PointerEvent as ReactPointerEvent,
-} from "react";
+import { useEffect, useReducer, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { useRouter } from "next/navigation";
 import { showToast } from "@/components/ui";
 import AdminButton from "@/components/admin/ui/Button";
@@ -32,18 +28,16 @@ import {
   type BuilderDevice,
   type BuilderSection,
 } from "@/lib/builder/store";
+import type {
+  EditorToPreviewMessage,
+  PreviewToEditorMessage,
+  SectionAction,
+} from "@/lib/builder/protocol";
 import SectionFieldsForm from "./SectionFieldsForm";
 import BuilderTopBar, { DEVICE_WIDTHS } from "./BuilderTopBar";
 import BuilderRail, { type BuilderTool } from "./BuilderRail";
-import {
-  ICON_COPY,
-  ICON_DOWN,
-  ICON_EYE,
-  ICON_EYE_OFF,
-  ICON_GRIP,
-  ICON_TRASH,
-  ICON_UP,
-} from "./icons";
+import AddPalette from "./AddPalette";
+import LayersPanel from "./LayersPanel";
 
 export type BuilderPageInfo = {
   id: string;
@@ -55,9 +49,6 @@ export type BuilderPageInfo = {
 // Same shape as the store's BuilderSection — kept as its own export because
 // the server page maps DB rows into it.
 export type BuilderSectionRow = BuilderSection;
-
-const ICON_BTN =
-  "inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-[10px] text-[#5b6480] transition-colors hover:bg-[#eaf0f8] hover:text-[#034795] disabled:cursor-not-allowed disabled:opacity-40";
 
 const LEFT_TAB_BASE = "h-8 flex-1 cursor-pointer rounded-[10px] text-sm font-medium transition-colors";
 const LEFT_TAB = (active: boolean) =>
@@ -108,25 +99,30 @@ export default function BuilderClient({
   page,
   sections: initialSections,
   typeLabels,
+  typeDefaults,
 }: {
   page: BuilderPageInfo;
   sections: BuilderSectionRow[];
   typeLabels: Record<string, string>;
+  /** Default props per section type (registry defaults, resolved server-side). */
+  typeDefaults: Record<string, Record<string, unknown>>;
 }) {
   const router = useRouter();
   const [state, dispatch] = useReducer(builderReducer, initialSections, createInitialState);
-  const { sections, selectedId, device, zoom, dirty } = state;
+  const { sections, selectedId, hoverId, device, zoom, dirty } = state;
   const [saving, setSaving] = useState(false);
-  const [previewVersion, setPreviewVersion] = useState(0);
   const [deleteKey, setDeleteKey] = useState<string | null>(null);
-  const [dragKey, setDragKey] = useState<string | null>(null);
-  const [dropKey, setDropKey] = useState<string | null>(null);
   const [tool, setTool] = useState<BuilderTool>("layers");
   const [width, setWidth] = useState(DEVICE_WIDTHS.desktop);
   const [leftWidth, setLeftWidth] = useState(300);
   const [rightWidth, setRightWidth] = useState(360);
-  // Keyboard reorder moves the DOM row, so focus is restored to it after the re-render.
-  const refocusKey = useRef<string | null>(null);
+  // Add palette (VB5): the type being dragged onto the canvas (drives the
+  // §4.3 drag-start/drag-end messages) and the section a canvas "+" targets
+  // (the next palette click inserts below it instead of below the selection).
+  const [paletteDrag, setPaletteDrag] = useState<string | null>(null);
+  const [pendingInsertAfter, setPendingInsertAfter] = useState<string | null>(null);
+  // The live-canvas iframe (same-origin /builder-preview/[id]?edit=1).
+  const iframeRef = useRef<HTMLIFrameElement | null>(null);
 
   const labelOf = (type: string) => typeLabels[type] ?? type;
   const selected = sections.find((s) => s.key === selectedId) ?? null;
@@ -185,13 +181,6 @@ export default function BuilderClient({
     return () => window.removeEventListener("beforeunload", onBeforeUnload);
   }, [dirty]);
 
-  useEffect(() => {
-    if (!refocusKey.current) return;
-    const row = document.querySelector<HTMLElement>(`[data-section-key="${refocusKey.current}"] [data-row-handle]`);
-    refocusKey.current = null;
-    row?.focus();
-  }, [sections]);
-
   const moveTo = (from: number, to: number) => {
     if (from === to || from < 0 || to < 0 || from >= sections.length || to >= sections.length) return;
     dispatch({ kind: "move", id: sections[from].key, index: to });
@@ -199,34 +188,136 @@ export default function BuilderClient({
 
   const move = (index: number, delta: -1 | 1) => moveTo(index, index + delta);
 
-  const onRowKeyDown = (e: ReactKeyboardEvent<HTMLLIElement>, index: number) => {
-    if (!e.altKey || (e.key !== "ArrowUp" && e.key !== "ArrowDown")) return;
-    e.preventDefault();
-    const target = e.key === "ArrowUp" ? index - 1 : index + 1;
-    if (target < 0 || target >= sections.length) return;
-    refocusKey.current = sections[index].key;
-    moveTo(index, target);
-  };
-
-  const onDrop = (index: number) => {
-    if (dragKey) {
-      const from = sections.findIndex((s) => s.key === dragKey);
-      if (from !== -1) moveTo(from, index);
-    }
-    setDragKey(null);
-    setDropKey(null);
-  };
-
   const duplicate = (index: number) => dispatch({ kind: "duplicate", id: sections[index].key });
+
+  // ── Add palette inserts (VB5, §4.2) ───────────────────────────────────────
+
+  /** Adds a block with its registry defaults — no index appends at the end. */
+  const insertSection = (type: string, index?: number) => {
+    dispatch({
+      kind: "add",
+      type,
+      props: typeDefaults[type] ?? {},
+      ...(index === undefined ? {} : { index }),
+    });
+    showToast(`${typeLabels[type] ?? type} added${index === undefined ? " at the end" : ""}.`, "success");
+  };
+
+  /** Palette click / Enter: insert after the selection, or after the section
+   * a canvas "+" picked (pendingInsertAfter), or append. */
+  const insertFromPalette = (type: string) => {
+    const anchor = pendingInsertAfter ?? selectedId;
+    const anchorIndex = anchor ? sections.findIndex((s) => s.key === anchor) : -1;
+    setPendingInsertAfter(null);
+    insertSection(type, anchorIndex >= 0 ? anchorIndex + 1 : undefined);
+  };
+
+  /** Palette tile drag: tell the canvas to show insertion gaps (§4.3). */
+  const onPaletteDragState = (type: string | null) => {
+    setPaletteDrag(type);
+    iframeRef.current?.contentWindow?.postMessage(
+      type
+        ? ({ type: "drag-start", sectionType: type } satisfies EditorToPreviewMessage)
+        : ({ type: "drag-end" } satisfies EditorToPreviewMessage),
+      window.location.origin,
+    );
+  };
+
+  // ── Live canvas link (VB4, §4.3) ─────────────────────────────────────────
+  // The iframe mirrors the reducer state: every change is posted within
+  // 50 ms (no save needed) and the iframe answers with select/hover/action
+  // messages. Both sides are same-origin; the listener checks origin and
+  // source so no other page can inject canvas events.
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      iframeRef.current?.contentWindow?.postMessage(
+        { type: "state", sections, selectedId, device } satisfies EditorToPreviewMessage,
+        window.location.origin,
+      );
+    }, 40);
+    return () => clearTimeout(timer);
+  }, [sections, selectedId, device]);
+
+  useEffect(() => {
+    const runCanvasAction = (action: SectionAction, id: string | null) => {
+      if (action === "open-add") {
+        setTool("add");
+        return;
+      }
+      if (action === "open-templates") {
+        showToast("Templates arrive in a later build step.", "info");
+        return;
+      }
+      if (!id) return;
+      const index = sections.findIndex((s) => s.key === id);
+      if (index === -1) return;
+      const target = sections[index];
+      // Locked sections are read-only on the canvas too (§4.2).
+      if (
+        target.isLocked === true &&
+        (action === "up" || action === "down" || action === "hide" || action === "delete")
+      ) {
+        showToast("This section is locked. Unlock it in the Layers panel first.", "info");
+        return;
+      }
+      if (action === "up") move(index, -1);
+      else if (action === "down") move(index, 1);
+      else if (action === "duplicate") duplicate(index);
+      else if (action === "hide") dispatch({ kind: "toggleHidden", id });
+      else if (action === "delete") setDeleteKey(id);
+      else if (action === "add-below") {
+        // Open the palette for a choice; the next tile click inserts below here.
+        setPendingInsertAfter(id);
+        setTool("add");
+        showToast(`Pick a block in the Add tab — it will be inserted below section ${index + 1}.`, "info");
+      }
+    };
+
+    const onMessage = (event: MessageEvent) => {
+      if (event.origin !== window.location.origin) return;
+      if (event.source !== iframeRef.current?.contentWindow) return;
+      const data = event.data as PreviewToEditorMessage | null;
+      if (!data || typeof data !== "object") return;
+      if (data.type === "ready") {
+        // Fresh iframe (first load / HMR): push the current state once.
+        iframeRef.current?.contentWindow?.postMessage(
+          { type: "state", sections, selectedId, device } satisfies EditorToPreviewMessage,
+          window.location.origin,
+        );
+      } else if (data.type === "select" && data.id) {
+        dispatch({ kind: "select", id: data.id });
+      } else if (data.type === "hover") {
+        dispatch({ kind: "hover", id: data.id });
+      } else if (data.type === "insert-at") {
+        // Palette tile dropped at a canvas gap (§4.3): index comes from the
+        // iframe; the dragged type is only known on this side.
+        if (paletteDrag) insertSection(paletteDrag, Math.max(0, data.index));
+      } else if (data.type === "action") {
+        runCanvasAction(data.action, data.id);
+      }
+    };
+    window.addEventListener("message", onMessage);
+    return () => window.removeEventListener("message", onMessage);
+    // Re-subscribed on state changes so the handlers close over fresh values.
+  }, [sections, selectedId, device, paletteDrag]);
 
   const editField = (path: string, value: unknown) => {
     if (!selected) return;
+    if (selected.isLocked === true) {
+      showToast("This section is locked. Unlock it in the Layers panel first.", "info");
+      return;
+    }
     dispatch({ kind: "setProp", id: selected.key, path, value });
   };
 
   // Turns an optional object group on (empty object) or off (key removed).
   const toggleGroup = (path: string, on: boolean) => {
     if (!selected) return;
+    if (selected.isLocked === true) {
+      showToast("This section is locked. Unlock it in the Layers panel first.", "info");
+      return;
+    }
     dispatch({ kind: "setProp", id: selected.key, path, value: on ? {} : undefined });
   };
 
@@ -269,7 +360,13 @@ export default function BuilderClient({
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          sections: sections.map((s) => ({ type: s.type, props: s.props, isVisible: s.isVisible })),
+          sections: sections.map((s) => ({
+            type: s.type,
+            props: s.props,
+            isVisible: s.isVisible,
+            label: s.label ?? null,
+            isLocked: s.isLocked === true,
+          })),
         }),
       });
       const body = (await res.json().catch(() => ({}))) as {
@@ -285,8 +382,9 @@ export default function BuilderClient({
       }
       showToast("Changes saved", "success");
       // Rebase the undo baseline so dirty clears and undo past save works.
+      // The canvas already shows this state (live link), so the iframe is not
+      // reloaded — refresh only updates the server-rendered shell props.
       dispatch({ kind: "markSaved" });
-      setPreviewVersion((v) => v + 1);
       router.refresh();
     } finally {
       setSaving(false);
@@ -357,125 +455,24 @@ export default function BuilderClient({
               Layers
             </button>
           </div>
-          <div className="admin-scrollbar min-h-0 flex-1 overflow-y-auto p-3">
+          <div className={`admin-scrollbar min-h-0 flex-1 overflow-y-auto ${tool === "add" ? "" : "p-3"}`}>
             {tool === "add" ? (
-              <div className="rounded-[16px] border border-dashed border-[#d0d5dd] p-4">
-                <p className="text-sm font-medium text-[#001353]">Add sections</p>
-                <p className="mt-1 text-sm text-[#5b6480]">
-                  The searchable palette with grouped section tiles arrives in the next step.
-                </p>
-              </div>
-            ) : sections.length === 0 ? (
-              <p className="text-sm text-[#5b6480]">No sections yet. Adding sections comes in the next step.</p>
+              <AddPalette labelOf={labelOf} onInsert={insertFromPalette} onDragStateChange={onPaletteDragState} />
             ) : (
-              <>
-                <p className="px-1 pb-2 text-xs text-[#5b6480]">{sections.length} section(s), top to bottom</p>
-                <ol className="flex flex-col gap-2">
-                  {sections.map((section, index) => {
-                    const active = section.key === selectedId;
-                    const dropping = dropKey === section.key && dragKey !== section.key;
-                    return (
-                      <li
-                        key={section.key}
-                        data-section-key={section.key}
-                        draggable
-                        onDragStart={(e) => {
-                          setDragKey(section.key);
-                          e.dataTransfer.effectAllowed = "move";
-                          e.dataTransfer.setData("text/plain", section.key);
-                        }}
-                        onDragOver={(e) => {
-                          if (!dragKey) return;
-                          e.preventDefault();
-                          e.dataTransfer.dropEffect = "move";
-                          if (dropKey !== section.key) setDropKey(section.key);
-                        }}
-                        onDragLeave={() => {
-                          if (dropKey === section.key) setDropKey(null);
-                        }}
-                        onDrop={(e) => {
-                          e.preventDefault();
-                          onDrop(index);
-                        }}
-                        onDragEnd={() => {
-                          setDragKey(null);
-                          setDropKey(null);
-                        }}
-                        onKeyDown={(e) => onRowKeyDown(e, index)}
-                        className={`flex items-center gap-2 rounded-[16px] border p-2 transition-colors ${
-                          dragKey === section.key ? "opacity-50" : ""
-                        } ${
-                          dropping
-                            ? "border-dashed border-[#034795] bg-[#f0f5fb]"
-                            : active
-                              ? "border-[#034795] bg-[#eaf0f8]"
-                              : "border-[#e4e7f0] bg-white hover:bg-[#f9fafb]"
-                        }`}
-                      >
-                        <span
-                          data-row-handle
-                          tabIndex={0}
-                          role="button"
-                          aria-label={`Reorder ${labelOf(section.type)}. Drag, or press Alt with Up or Down arrow.`}
-                          title="Drag to reorder, or Alt+↑ / Alt+↓"
-                          className="flex h-8 w-4 shrink-0 cursor-grab touch-none items-center justify-center rounded text-[#8a92a8] hover:text-[#034795] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#034795] active:cursor-grabbing"
-                        >
-                          {ICON_GRIP}
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() => dispatch({ kind: "select", id: section.key })}
-                          className="flex min-w-0 flex-1 cursor-pointer items-center gap-2 text-left"
-                        >
-                          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#034795] text-xs font-semibold text-white">
-                            {index + 1}
-                          </span>
-                          <span className="min-w-0 flex-1">
-                            <span className="block truncate text-sm font-medium text-[#001353]">{labelOf(section.type)}</span>
-                            {!section.isVisible && <span className="block text-xs text-[#8a92a8]">Hidden</span>}
-                          </span>
-                        </button>
-                        <div className="flex shrink-0 items-center">
-                          <button type="button" className={ICON_BTN} onClick={() => move(index, -1)} disabled={index === 0} aria-label="Move up" title="Move up">
-                            {ICON_UP}
-                          </button>
-                          <button
-                            type="button"
-                            className={ICON_BTN}
-                            onClick={() => move(index, 1)}
-                            disabled={index === sections.length - 1}
-                            aria-label="Move down"
-                            title="Move down"
-                          >
-                            {ICON_DOWN}
-                          </button>
-                          <button
-                            type="button"
-                            className={ICON_BTN}
-                            onClick={() => dispatch({ kind: "toggleHidden", id: section.key })}
-                            aria-label={section.isVisible ? "Hide section" : "Show section"}
-                            title={section.isVisible ? "Hide" : "Show"}
-                          >
-                            {section.isVisible ? ICON_EYE : ICON_EYE_OFF}
-                          </button>
-                          <button type="button" className={ICON_BTN} onClick={() => duplicate(index)} aria-label="Duplicate section" title="Duplicate">
-                            {ICON_COPY}
-                          </button>
-                          <button
-                            type="button"
-                            className={`${ICON_BTN} hover:bg-[#fef3f2] hover:text-[#d92d20]`}
-                            onClick={() => setDeleteKey(section.key)}
-                            aria-label="Delete section"
-                            title="Delete"
-                          >
-                            {ICON_TRASH}
-                          </button>
-                        </div>
-                      </li>
-                    );
-                  })}
-                </ol>
-              </>
+              <LayersPanel
+                sections={sections}
+                selectedId={selectedId}
+                hoverId={hoverId}
+                labelOf={labelOf}
+                onSelect={(id) => dispatch({ kind: "select", id })}
+                onHover={(id) => dispatch({ kind: "hover", id })}
+                onMove={moveTo}
+                onDuplicate={duplicate}
+                onDelete={setDeleteKey}
+                onToggleHidden={(id) => dispatch({ kind: "toggleHidden", id })}
+                onRename={(id, label) => dispatch({ kind: "rename", id, label })}
+                onToggleLock={(id) => dispatch({ kind: "toggleLock", id })}
+              />
             )}
           </div>
         </aside>
@@ -489,15 +486,15 @@ export default function BuilderClient({
         {/* ── Canvas: device-width frame, zoom-scaled (§4.3) ── */}
         <main className="flex min-h-0 min-w-0 flex-1 flex-col">
           <div className="admin-scrollbar min-h-0 flex-1 overflow-auto p-6">
-            {/* Save-refreshed preview iframe (VB4 replaces it with the live
-                postMessage canvas). The iframe is the real device width and
-                only the wrapper is scaled, so media queries respond to the
-                true viewport. */}
+            {/* Live canvas (VB4): same-origin iframe at the true device
+                width — only the wrapper is scaled, so media queries respond
+                to the real viewport. State flows in over postMessage, so the
+                iframe is never re-keyed/reloaded while editing. */}
             <div className="mx-auto h-full overflow-hidden rounded-xl bg-white shadow-xl" style={{ width: frameWidth }}>
               <div className="origin-top-left" style={{ width, height: `${100 / zoom}%`, transform: `scale(${zoom})` }}>
                 <iframe
-                  key={previewVersion}
-                  src={`/builder-preview/${page.id}`}
+                  ref={iframeRef}
+                  src={`/builder-preview/${page.id}?edit=1`}
                   title="Page preview"
                   className="h-full w-full border-0 bg-white"
                 />
@@ -515,12 +512,23 @@ export default function BuilderClient({
         {/* ── Inspector: Content (Style/Advanced tabs arrive in VB6) ── */}
         <aside style={{ width: rightWidth }} className="flex shrink-0 flex-col border-l border-[#e4e7f0] bg-white">
           <div className="border-b border-[#e4e7f0] px-4 py-3">
-            <h2 className="text-sm font-semibold text-[#001353]">{selected ? labelOf(selected.type) : "Inspector"}</h2>
+            <h2 className="text-sm font-semibold text-[#001353]">
+              {selected ? selected.label ?? labelOf(selected.type) : "Inspector"}
+            </h2>
             <p className="mt-0.5 text-xs text-[#5b6480]">
-              {selected ? "Content — Style and Advanced tabs arrive in a later step" : "Select a section to see its settings"}
+              {selected
+                ? selected.isLocked === true
+                  ? "Locked — unlock in the Layers panel to edit"
+                  : "Content — Style and Advanced tabs arrive in a later step"
+                : "Select a section to see its settings"}
             </p>
           </div>
           <div className="admin-scrollbar min-h-0 flex-1 overflow-y-auto p-4">
+            {selected && selected.isLocked === true ? (
+              <p className="mb-3 rounded-xl border border-dashed border-[#d0d5dd] bg-[#f6f7fb] px-3 py-2.5 text-xs leading-relaxed text-[#5b6480]">
+                This section is locked. Unlock it in the Layers panel (padlock icon) to edit its content.
+              </p>
+            ) : null}
             {selected && SECTION_FIELDS[selected.type] ? (
               <SectionFieldsForm
                 key={selected.key}
@@ -544,7 +552,9 @@ export default function BuilderClient({
           <div className="flex flex-col gap-2">
             <h2 className="text-lg font-semibold text-[#001353]">Delete section?</h2>
             <p className="text-sm text-[#5b6480]">
-              {deleteTarget ? `“${labelOf(deleteTarget.type)}” will be removed from this layout when you save.` : ""}
+              {deleteTarget
+                ? `“${deleteTarget.label ?? labelOf(deleteTarget.type)}” will be removed from this layout when you save.`
+                : ""}
             </p>
           </div>
           <div className="flex justify-end gap-2">

@@ -25,7 +25,7 @@ export default async function AdminPageBuilderPage({
       status: true,
       sections: {
         orderBy: { order: "asc" },
-        select: { id: true, type: true, props: true, isVisible: true },
+        select: { id: true, type: true, props: true, isVisible: true, label: true, isLocked: true },
       },
     },
   });
@@ -43,15 +43,22 @@ export default async function AdminPageBuilderPage({
     type: s.type,
     props: (s.props ?? {}) as Record<string, unknown>,
     isVisible: s.isVisible,
+    label: s.label,
+    isLocked: s.isLocked,
   }));
 
-  // Labels are resolved here: the registry imports server-only sections, so the client
-  // component must not import it.
-  const typeLabels = Object.fromEntries(
-    Object.entries(SECTION_REGISTRY).map(([type, reg]) => [type, reg.label]),
-  );
+  // Labels + default props are resolved here: the registry imports server-only
+  // sections, so the client component must not import it. typeDefaults feeds
+  // the Add palette (VB5): every inserted block starts from its registry
+  // defaults instead of an empty, invalid props object.
+  const typeLabels: Record<string, string> = {};
+  const typeDefaults: Record<string, Record<string, unknown>> = {};
+  for (const [type, reg] of Object.entries(SECTION_REGISTRY)) {
+    typeLabels[type] = reg.label;
+    typeDefaults[type] = reg.defaults;
+  }
 
   // The builder renders its own full-screen shell (top bar, rail, panels) —
   // no AdminPageHeader wrapper, which would add padding and break h-dvh.
-  return <BuilderClient page={info} sections={sections} typeLabels={typeLabels} />;
+  return <BuilderClient page={info} sections={sections} typeLabels={typeLabels} typeDefaults={typeDefaults} />;
 }

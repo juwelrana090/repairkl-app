@@ -18,6 +18,10 @@ const bodySchema = z.object({
         type: z.string(),
         props: z.unknown(),
         isVisible: z.boolean(),
+        // Builder-only fields (VB5): custom Layers name + lock. Optional so
+        // older payloads keep saving; blank/whitespace names collapse to null.
+        label: z.string().max(120).nullable().optional(),
+        isLocked: z.boolean().optional(),
       }),
     )
     .max(100),
@@ -45,7 +49,13 @@ export async function PUT(request: NextRequest, { params }: Ctx) {
       return NextResponse.json({ error: "Invalid body", issues: parsedBody.error.issues }, { status: 400 });
     }
 
-    const rows: { type: keyof typeof SECTION_REGISTRY; props: Prisma.InputJsonValue; isVisible: boolean }[] = [];
+    const rows: {
+      type: keyof typeof SECTION_REGISTRY;
+      props: Prisma.InputJsonValue;
+      isVisible: boolean;
+      label: string | null;
+      isLocked: boolean;
+    }[] = [];
     for (const [index, section] of parsedBody.data.sections.entries()) {
       if (!Object.hasOwn(SECTION_REGISTRY, section.type)) {
         return NextResponse.json(
@@ -61,11 +71,14 @@ export async function PUT(request: NextRequest, { params }: Ctx) {
           { status: 422 },
         );
       }
+      const trimmedLabel = (section.label ?? "").trim();
       rows.push({
         type,
         // Legacy `/assets/images/...` values heal to `/images/...` on save (P4).
         props: normalizeAssetPathsDeep(parsed.data) as Prisma.InputJsonValue,
         isVisible: section.isVisible,
+        label: trimmedLabel.length > 0 ? trimmedLabel : null,
+        isLocked: section.isLocked === true,
       });
     }
 
@@ -79,6 +92,8 @@ export async function PUT(request: NextRequest, { params }: Ctx) {
             type: row.type,
             props: row.props,
             isVisible: row.isVisible,
+            label: row.label,
+            isLocked: row.isLocked,
           })),
         });
       }
