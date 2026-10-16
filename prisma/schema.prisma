@@ -555,7 +555,13 @@ model Page {
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 
+  // Builder draft layout (VB8): [{ type, props, isVisible, label, isLocked }].
+  // Only the builder and the edit-mode preview read it — the public site
+  // renders `sections` (published) exclusively, so drafts can never leak.
+  draftLayout Json?
+
   sections    PageSection[]
+  revisions   PageRevision[]
 
   @@map("pages")
 }
@@ -579,6 +585,23 @@ model PageSection {
 
   @@index([pageId, order])
   @@map("page_sections")
+}
+
+/// Snapshot of the published layout, written on every publish (VB8). Only the
+/// newest KEEP_REVISIONS (20) snapshots are kept. Restoring loads a snapshot
+/// back into the builder as the DRAFT — never straight to the live page.
+model PageRevision {
+  id         String   @id @default(cuid()) @db.VarChar(36)
+  pageId     String   @db.VarChar(36)
+  page       Page     @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  // Same entry shape as Page.draftLayout (order = array position).
+  sections   Json
+  // Plain id, no FK on purpose: deleting a user must not erase publish history.
+  createdById String? @db.VarChar(36)
+  createdAt  DateTime @default(now())
+
+  @@index([pageId, createdAt])
+  @@map("page_revisions")
 }
 
 /// Media library entry. alt is REQUIRED (accessibility + image SEO) — the

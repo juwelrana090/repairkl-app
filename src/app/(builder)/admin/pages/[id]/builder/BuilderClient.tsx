@@ -12,16 +12,25 @@
 // events come back the same way, so the canvas updates without saving.
 // VB5: the Add tab is the real palette (search, grouped tiles, click-to-insert
 // and drag-to-canvas via the §4.3 insert-at message); Layers is a tree with
-// rename/lock (persisted as PageSection.label/isLocked). The inspector keeps
-// the Content form (Style/Advanced in VB6). Saving: validate locally, PUT
-// /api/admin/pages/[id]/sections, then markSaved() rebases the undo baseline.
+// rename/lock (persisted as PageSection.label/isLocked).
+// VB6: the inspector grows Content | Style | Advanced tabs. Style/Advanced
+// write props.style through the same editField (lock guard, undo/redo, dirty)
+// and render live via the shared StyledSection wrapper in the canvas. Saving:
+// validate locally, PUT /api/admin/pages/[id]/sections, then markSaved()
+// rebases the undo baseline.
+// VB8: Save writes the DRAFT layout (Page.draftLayout) — the live
+// page_sections rows only change when Publish runs (save first, then the
+// publish endpoint validates server-side, copies the draft to live and
+// snapshots a revision). The Revisions drawer lists snapshots; restoring one
+// loads it into the draft for review, never straight to the live page.
 
 import { useEffect, useReducer, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { showToast } from "@/components/ui";
 import AdminButton from "@/components/admin/ui/Button";
 import AdminModal from "@/components/admin/ui/Modal";
-import { SECTION_FIELDS, validateSection } from "@/lib/sections/fields";
+import { SECTION_FIELDS, setPath, validateSection } from "@/lib/sections/fields";
 import {
   builderReducer,
   createInitialState,
@@ -38,6 +47,8 @@ import BuilderTopBar, { DEVICE_WIDTHS } from "./BuilderTopBar";
 import BuilderRail, { type BuilderTool } from "./BuilderRail";
 import AddPalette from "./AddPalette";
 import LayersPanel from "./LayersPanel";
+import StylePanel from "./StylePanel";
+import AdvancedPanel from "./AdvancedPanel";
 
 export type BuilderPageInfo = {
   id: string;
@@ -49,6 +60,9 @@ export type BuilderPageInfo = {
 // Same shape as the store's BuilderSection — kept as its own export because
 // the server page maps DB rows into it.
 export type BuilderSectionRow = BuilderSection;
+
+/** One row of the revisions drawer (GET /api/admin/pages/[id]/revisions). */
+type RevisionRow = { id: string; createdAt: string; sectionCount: number };
 
 const LEFT_TAB_BASE = "h-8 flex-1 cursor-pointer rounded-[10px] text-sm font-medium transition-colors";
 const LEFT_TAB = (active: boolean) =>
@@ -111,6 +125,17 @@ export default function BuilderClient({
   const [state, dispatch] = useReducer(builderReducer, initialSections, createInitialState);
   const { sections, selectedId, hoverId, device, zoom, dirty } = state;
   const [saving, setSaving] = useState(false);
+  // VB8 draft/publish state: the live status badge, the publish in-flight
+  // flag, and the revisions drawer (its list + the restore awaiting
+  // confirmation). `revisions === null` means "not loaded yet" and refetches
+  // the next time the drawer opens (a publish invalidates the cache).
+  const [status, setStatus] = useState<BuilderPageInfo["status"]>(page.status);
+  const [publishing, setPublishing] = useState(false);
+  const [revisionsOpen, setRevisionsOpen] = useState(false);
+  const [revisions, setRevisions] = useState<RevisionRow[] | null>(null);
+  const [revisionsLoading, setRevisionsLoading] = useState(false);
+  const [restoreKey, setRestoreKey] = useState<string | null>(null);
+  const [restoring, setRestoring] = useState(false);
   const [deleteKey, setDeleteKey] = useState<string | null>(null);
   const [tool, setTool] = useState<BuilderTool>("layers");
   const [width, setWidth] = useState(DEVICE_WIDTHS.desktop);
@@ -121,6 +146,9 @@ export default function BuilderClient({
   // (the next palette click inserts below it instead of below the selection).
   const [paletteDrag, setPaletteDrag] = useState<string | null>(null);
   const [pendingInsertAfter, setPendingInsertAfter] = useState<string | null>(null);
+  // Inspector tabs (VB6): Content | Style | Advanced. Kept across selection
+  // changes — switching sections usually means styling the next one too.
+  const [inspectorTab, setInspectorTab] = useState<"content" | "style" | "advanced">("content");
   // The live-canvas iframe (same-origin /builder-preview/[id]?edit=1).
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
 
@@ -170,7 +198,7 @@ export default function BuilderClient({
   }, []);
 
   // Warn before losing unsaved work on tab close / hard refresh. (Client-side
-  // navigation events are covered when autosave lands in VB8.)
+  // navigation events are covered when autosave lands in a later roadmap step.)
   useEffect(() => {
     if (!dirty) return;
     const onBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -295,6 +323,38 @@ export default function BuilderClient({
         if (paletteDrag) insertSection(paletteDrag, Math.max(0, data.index));
       } else if (data.type === "action") {
         runCanvasAction(data.action, data.id);
+      } else if (data.type === "prop-edit") {
+        // Inline canvas edit (VB7): batched prop writes, one undo entry. The
+        // iframe already validated; re-check here before dispatching.
+        const target = sections.find((s) => s.key === data.id);
+        if (!target || !Array.isArray(data.edits) || data.edits.length === 0) return;
+        if (target.isLocked === true) {
+          showToast("This section is locked. Unlock it in the Layers panel first.", "info");
+          return;
+        }
+        let draft = target.props ?? {};
+        for (const e of data.edits) draft = setPath(draft, e.path, e.value);
+        const errors = validateSection(target.type, draft);
+        const bad = Object.keys(errors).filter((k) =>
+          data.edits.some((e) => k === e.path || k.startsWith(`${e.path}.`)),
+        );
+        if (bad.length > 0) {
+          showToast(`Could not apply the inline edit: ${errors[bad[0]]}`, "error");
+          return;
+        }
+        dispatch({ kind: "setProps", id: data.id, edits: data.edits });
+      } else if (data.type === "edit-rejected") {
+        // The iframe restored the original text; surface why it bounced.
+        showToast(`Could not apply the inline edit: ${data.message}`, "error");
+      } else if (data.type === "rich-edit") {
+        // Rich text keeps its formatting UI in the inspector for now; a
+        // Tiptap bubble menu on the canvas is a later step.
+        if (selectedId !== data.id) dispatch({ kind: "select", id: data.id });
+        setInspectorTab("content");
+        showToast(
+          "Rich text editing lives in the Content tab — inline rich editing arrives in a later step.",
+          "info",
+        );
       }
     };
     window.addEventListener("message", onMessage);
@@ -336,13 +396,14 @@ export default function BuilderClient({
 
   const onRailPlaceholder = (label: string) => showToast(`${label} arrives here in a later build step.`, "info");
 
-  const publish = () =>
-    showToast("Publishing arrives with the draft/publish model in a later step. Save updates the live page for now.", "info");
-
-  const save = async () => {
+  // VB8 (§4.7): Save writes the DRAFT only. Returns whether the draft on the
+  // server now matches the canvas — Publish calls it first so what the user
+  // sees is exactly what goes live. `silentNoChanges` lets Publish skip the
+  // "nothing to save" toast (publishing an unchanged draft is a no-op republish).
+  const save = async (silentNoChanges = false): Promise<boolean> => {
     if (!dirty) {
-      showToast("No changes to save yet.", "info");
-      return;
+      if (!silentNoChanges) showToast("No changes to save yet.", "info");
+      return true;
     }
     // Check every section locally first so the user lands on the broken one.
     const invalidIndex = sections.findIndex((s) => Object.keys(validateSection(s.type, s.props)).length > 0);
@@ -351,7 +412,7 @@ export default function BuilderClient({
       const [, message] = Object.entries(validateSection(target.type, target.props))[0];
       dispatch({ kind: "select", id: target.key });
       showToast(`Section ${invalidIndex + 1} (${labelOf(target.type)}): ${message}`, "error");
-      return;
+      return false;
     }
 
     setSaving(true);
@@ -378,16 +439,132 @@ export default function BuilderClient({
         if (typeof body.index === "number" && sections[body.index]) dispatch({ kind: "select", id: sections[body.index].key });
         const first = body.issues?.[0];
         showToast(first ? `${first.path.join(".")}: ${first.message}` : body.error || "Save failed", "error");
-        return;
+        return false;
       }
-      showToast("Changes saved", "success");
+      showToast("Draft saved — publish to update the live page.", "success");
       // Rebase the undo baseline so dirty clears and undo past save works.
       // The canvas already shows this state (live link), so the iframe is not
       // reloaded — refresh only updates the server-rendered shell props.
       dispatch({ kind: "markSaved" });
       router.refresh();
+      return true;
     } finally {
       setSaving(false);
+    }
+  };
+
+  // VB8 (§4.7): Publish = save the draft first, then POST the publish
+  // endpoint — it re-validates server-side, copies the draft into the live
+  // rows in one transaction, snapshots a revision and revalidates the public
+  // paths. Never silently disabled (P1): while in flight the buttons show
+  // their pending state instead.
+  const publish = async () => {
+    if (saving || publishing) return;
+    setPublishing(true);
+    try {
+      if (!(await save(true))) return; // save already explained the problem
+      const res = await fetch(`/api/admin/pages/${page.id}/publish`, { method: "POST" });
+      const body = (await res.json().catch(() => ({}))) as {
+        error?: string;
+        index?: number;
+        issues?: { path: (string | number)[]; message: string }[];
+      };
+      if (!res.ok) {
+        if (typeof body.index === "number" && sections[body.index]) {
+          dispatch({ kind: "select", id: sections[body.index].key });
+        }
+        const first = body.issues?.[0];
+        showToast(first ? `${first.path.join(".")}: ${first.message}` : body.error || "Publish failed", "error");
+        return;
+      }
+      setStatus("PUBLISHED");
+      setRevisions(null); // a new snapshot exists — refetch on next open
+      showToast("Published — the live page is now up to date.", "success");
+    } finally {
+      setPublishing(false);
+    }
+  };
+
+  // ── Revisions drawer (VB8, §4.7) ─────────────────────────────────────────
+  // Lists publish snapshots newest-first. Preview opens a snapshot in a
+  // read-only preview tab (?revision=); Restore loads it into the DRAFT —
+  // the live page still only changes through Publish.
+
+  useEffect(() => {
+    if (!revisionsOpen || revisions !== null) return;
+    let cancelled = false;
+    setRevisionsLoading(true);
+    fetch(`/api/admin/pages/${page.id}/revisions`)
+      .then(async (res) => {
+        const body = (await res.json().catch(() => ({}))) as { data?: RevisionRow[]; error?: string };
+        if (cancelled) return;
+        if (!res.ok || !Array.isArray(body.data)) {
+          showToast(body.error || "Could not load revisions.", "error");
+          setRevisions([]);
+          return;
+        }
+        setRevisions(body.data);
+      })
+      .catch(() => {
+        if (!cancelled) showToast("Could not load revisions.", "error");
+      })
+      .finally(() => {
+        if (!cancelled) setRevisionsLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [revisionsOpen, revisions, page.id]);
+
+  const openRevisions = () => {
+    setRestoreKey(null);
+    setRevisionsOpen(true);
+  };
+
+  const restoreRevision = async (revisionId: string) => {
+    if (restoring) return;
+    if (dirty) {
+      showToast("Save or undo your current changes first — restoring replaces the draft.", "info");
+      return;
+    }
+    setRestoring(true);
+    try {
+      const res = await fetch(`/api/admin/pages/${page.id}/revisions/${revisionId}/restore`, {
+        method: "POST",
+      });
+      const body = (await res.json().catch(() => ({}))) as {
+        ok?: boolean;
+        error?: string;
+        sections?: {
+          type: string;
+          props?: Record<string, unknown>;
+          isVisible?: boolean;
+          label?: string | null;
+          isLocked?: boolean;
+        }[];
+      };
+      if (!res.ok || !body.ok || !Array.isArray(body.sections)) {
+        showToast(body.error || "Restore failed.", "error");
+        return;
+      }
+      // `init` replaces the whole state with a fresh baseline (dirty=false),
+      // so undo history from the previous draft is intentionally dropped.
+      dispatch({
+        kind: "init",
+        sections: body.sections.map((s, i) => ({
+          key: `rev-${i}`,
+          type: s.type,
+          props: s.props ?? {},
+          isVisible: s.isVisible !== false,
+          label: s.label ?? null,
+          isLocked: s.isLocked === true,
+        })),
+      });
+      setRevisionsOpen(false);
+      setRestoreKey(null);
+      showToast("Draft restored from the revision. Review it, then publish.", "success");
+    } finally {
+      setRestoring(false);
     }
   };
 
@@ -425,12 +602,13 @@ export default function BuilderClient({
   return (
     <div className="admin-root flex h-dvh flex-col overflow-hidden bg-[#f5f5fa] text-[#001353]">
       <BuilderTopBar
-        page={page}
+        page={{ ...page, status }}
         device={device}
         width={width}
         zoom={zoom}
         dirty={dirty}
         saving={saving}
+        publishing={publishing}
         canUndo={state.history.length > 0}
         canRedo={state.future.length > 0}
         onDevice={chooseDevice}
@@ -438,8 +616,9 @@ export default function BuilderClient({
         onZoom={(z) => dispatch({ kind: "setZoom", zoom: z })}
         onUndo={() => dispatch({ kind: "undo" })}
         onRedo={() => dispatch({ kind: "redo" })}
-        onSave={save}
-        onPublish={publish}
+        onSave={() => void save()}
+        onPublish={() => void publish()}
+        onOpenRevisions={openRevisions}
       />
 
       <div className="flex min-h-0 flex-1">
@@ -509,7 +688,7 @@ export default function BuilderClient({
           onArrow={(d) => adjustPanel("right", -d)}
         />
 
-        {/* ── Inspector: Content (Style/Advanced tabs arrive in VB6) ── */}
+        {/* ── Inspector: Content | Style | Advanced (VB6) ── */}
         <aside style={{ width: rightWidth }} className="flex shrink-0 flex-col border-l border-[#e4e7f0] bg-white">
           <div className="border-b border-[#e4e7f0] px-4 py-3">
             <h2 className="text-sm font-semibold text-[#001353]">
@@ -519,30 +698,52 @@ export default function BuilderClient({
               {selected
                 ? selected.isLocked === true
                   ? "Locked — unlock in the Layers panel to edit"
-                  : "Content — Style and Advanced tabs arrive in a later step"
+                  : labelOf(selected.type)
                 : "Select a section to see its settings"}
             </p>
           </div>
+          {selected ? (
+            <div className="flex items-center gap-1 border-b border-[#e4e7f0] p-2" role="group" aria-label="Inspector tabs">
+              <button type="button" onClick={() => setInspectorTab("content")} aria-pressed={inspectorTab === "content"} className={LEFT_TAB(inspectorTab === "content")}>
+                Content
+              </button>
+              <button type="button" onClick={() => setInspectorTab("style")} aria-pressed={inspectorTab === "style"} className={LEFT_TAB(inspectorTab === "style")}>
+                Style
+              </button>
+              <button type="button" onClick={() => setInspectorTab("advanced")} aria-pressed={inspectorTab === "advanced"} className={LEFT_TAB(inspectorTab === "advanced")}>
+                Advanced
+              </button>
+            </div>
+          ) : null}
           <div className="admin-scrollbar min-h-0 flex-1 overflow-y-auto p-4">
             {selected && selected.isLocked === true ? (
               <p className="mb-3 rounded-xl border border-dashed border-[#d0d5dd] bg-[#f6f7fb] px-3 py-2.5 text-xs leading-relaxed text-[#5b6480]">
                 This section is locked. Unlock it in the Layers panel (padlock icon) to edit its content.
               </p>
             ) : null}
-            {selected && SECTION_FIELDS[selected.type] ? (
-              <SectionFieldsForm
-                key={selected.key}
-                spec={SECTION_FIELDS[selected.type]}
-                values={selected.props}
-                errors={validateSection(selected.type, selected.props)}
-                onChange={editField}
-                onGroup={toggleGroup}
-              />
-            ) : selected ? (
-              <p className="text-sm text-[#5b6480]">This section type has no editable fields.</p>
-            ) : (
+            {selected && inspectorTab === "content" ? (
+              SECTION_FIELDS[selected.type] ? (
+                <SectionFieldsForm
+                  key={selected.key}
+                  spec={SECTION_FIELDS[selected.type]}
+                  values={selected.props}
+                  errors={validateSection(selected.type, selected.props)}
+                  onChange={editField}
+                  onGroup={toggleGroup}
+                />
+              ) : (
+                <p className="text-sm text-[#5b6480]">This section type has no editable fields.</p>
+              )
+            ) : null}
+            {selected && inspectorTab === "style" ? (
+              <StylePanel key={selected.key} props={selected.props} onChange={editField} />
+            ) : null}
+            {selected && inspectorTab === "advanced" ? (
+              <AdvancedPanel key={selected.key} props={selected.props} onChange={editField} />
+            ) : null}
+            {!selected ? (
               <p className="text-sm text-[#5b6480]">Select a section on the left to see its settings.</p>
-            )}
+            ) : null}
           </div>
         </aside>
       </div>
@@ -565,6 +766,61 @@ export default function BuilderClient({
               Delete
             </AdminButton>
           </div>
+        </div>
+      </AdminModal>
+
+      {/* VB8 revisions drawer: publish history newest-first. Preview opens a
+          read-only snapshot tab; Restore loads it into the draft (two-step
+          confirm, blocked while unsaved changes exist — restore replaces the
+          draft). */}
+      <AdminModal isOpen={revisionsOpen} onClose={() => setRevisionsOpen(false)} className="max-w-lg">
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-1">
+            <h2 className="text-lg font-semibold text-[#001353]">Revisions</h2>
+            <p className="text-sm text-[#5b6480]">
+              Every publish saves a snapshot (newest 20 kept). Restoring loads a snapshot into your draft — the live page still only changes when you publish.
+            </p>
+          </div>
+          {revisionsLoading ? (
+            <p className="py-6 text-center text-sm text-[#5b6480]">Loading revisions…</p>
+          ) : !revisions || revisions.length === 0 ? (
+            <p className="py-6 text-center text-sm text-[#5b6480]">No revisions yet — publish once to create the first snapshot.</p>
+          ) : (
+            <ul className="admin-scrollbar flex max-h-80 flex-col divide-y divide-[#e4e7f0] overflow-y-auto rounded-xl border border-[#e4e7f0]">
+              {revisions.map((r) => (
+                <li key={r.id} className="flex flex-wrap items-center gap-x-3 gap-y-1.5 px-3 py-2.5">
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-medium text-[#001353]">
+                      {new Date(r.createdAt).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" })}
+                    </p>
+                    <p className="text-xs text-[#5b6480]">{r.sectionCount} section{r.sectionCount === 1 ? "" : "s"}</p>
+                  </div>
+                  <Link
+                    href={`/builder-preview/${page.id}?revision=${r.id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm font-medium text-[#034795] hover:underline"
+                  >
+                    Preview
+                  </Link>
+                  {restoreKey === r.id ? (
+                    <>
+                      <AdminButton size="sm" variant="danger" onClick={() => void restoreRevision(r.id)} disabled={restoring}>
+                        {restoring ? "Restoring…" : "Confirm restore"}
+                      </AdminButton>
+                      <AdminButton size="sm" variant="outline" onClick={() => setRestoreKey(null)} disabled={restoring}>
+                        Cancel
+                      </AdminButton>
+                    </>
+                  ) : (
+                    <AdminButton size="sm" variant="outline" onClick={() => setRestoreKey(r.id)} disabled={restoring}>
+                      Restore
+                    </AdminButton>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </AdminModal>
     </div>

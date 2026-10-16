@@ -24,6 +24,8 @@ import { normalizeAssetPathsDeep } from "@/lib/assetPath";
 import { contactInfoSchema, type ContactInfoProps } from "@/lib/sections/schemas";
 import { validateSection } from "@/lib/sections/fields";
 import { CLIENT_SECTION_REGISTRY } from "@/lib/sections/clientRegistry";
+import type { SectionStyle } from "@/lib/sections/style";
+import StyledSection from "@/components/sections/StyledSection";
 import ContactInfoSectionClient, {
   type ContactSettingsSnapshot,
 } from "@/components/sections/edit/ContactInfoSectionClient";
@@ -33,6 +35,7 @@ import type {
   PreviewToEditorMessage,
   SectionAction,
 } from "@/lib/builder/protocol";
+import InlineEditController from "./InlineEditController";
 
 const TOOLBAR_BTN =
   "inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-[8px] text-[#4d5672] transition-colors hover:bg-[#eaf0f8] hover:text-[#034795] disabled:cursor-not-allowed disabled:opacity-40";
@@ -307,17 +310,26 @@ export default function PreviewClient({
   };
 
   const renderBody = (section: BuilderSection, parsedProps: Record<string, unknown>) => {
-    const props = normalizeAssetPathsDeep(parsedProps);
-    if (section.type === "CONTACT_INFO") {
-      return (
+    const data = normalizeAssetPathsDeep(parsedProps) as Record<string, unknown> & {
+      style?: SectionStyle;
+    };
+    // props.style (VB6) goes to the shared StyledSection wrapper — the exact
+    // code path the public SectionRenderer uses — never to the section
+    // component itself. No style → no wrapper, render stays as before.
+    const { style, ...componentProps } = data;
+    const content =
+      section.type === "CONTACT_INFO" ? (
         <ContactInfoSectionClient
-          {...(props as unknown as ContactInfoProps)}
+          {...(componentProps as unknown as ContactInfoProps)}
           settings={contactSettings}
         />
+      ) : (
+        (() => {
+          const Section = CLIENT_SECTION_REGISTRY[section.type].component;
+          return <Section {...componentProps} />;
+        })()
       );
-    }
-    const Section = CLIENT_SECTION_REGISTRY[section.type].component;
-    return <Section {...props} />;
+    return style ? <StyledSection style={style}>{content}</StyledSection> : content;
   };
 
   // ── Direct open: public semantics (hidden/invalid skipped silently) ──────
@@ -455,6 +467,8 @@ export default function PreviewClient({
           {paletteDrag && insertIndex === sections.length ? <InsertionLine /> : null}
         </>
       )}
+      {/* Inline editing (VB7): stamps/popovers for the selected section. */}
+      <InlineEditController sections={sections} selectedId={selectedId} send={send} />
     </main>
   );
 }

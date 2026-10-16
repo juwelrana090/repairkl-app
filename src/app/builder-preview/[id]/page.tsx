@@ -5,6 +5,7 @@ import { sessionHasPermission } from "@/lib/auth/permissionStore";
 import { PERMISSIONS } from "@/lib/auth/permissions";
 import { prisma } from "@/lib/prisma";
 import { SECTION_REGISTRY } from "@/lib/sections/registry";
+import { normalizeDraftLayout, type DraftSection } from "@/lib/builder/draft";
 import type { BuilderSection } from "@/lib/builder/store";
 import type { ContactSettingsSnapshot } from "@/components/sections/edit/ContactInfoSectionClient";
 import PreviewClient from "./PreviewClient";
@@ -20,6 +21,8 @@ export const dynamic = "force-dynamic";
 // twin needs, and hands everything to PreviewClient — with ?edit=1 that tree
 // renders the editor's live postMessage state (§4.3); without it (top-bar
 // Preview tab) it renders the saved sections with public semantics.
+// VB8: the source is the DRAFT layout for ?edit=1, a publish snapshot for
+// ?revision=<id> (read-only), and the published rows otherwise.
 export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
@@ -29,10 +32,10 @@ export default async function BuilderPreviewPage({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ edit?: string }>;
+  searchParams: Promise<{ edit?: string; revision?: string }>;
 }) {
   const { id } = await params;
-  const { edit } = await searchParams;
+  const { edit, revision } = await searchParams;
   const session = await getSession();
   if (!session) redirect("/login");
   if (!(await sessionHasPermission(session, PERMISSIONS.CONTENT_EDIT))) redirect("/login");
@@ -41,6 +44,7 @@ export default async function BuilderPreviewPage({
     prisma.page.findUnique({
       where: { id },
       select: {
+        draftLayout: true,
         sections: {
           orderBy: { order: "asc" },
           // label feeds the edit-mode chip; isLocked is editor-side only.
@@ -52,13 +56,48 @@ export default async function BuilderPreviewPage({
   ]);
   if (!page) notFound();
 
-  const initialSections: BuilderSection[] = page.sections.map((s) => ({
-    key: s.id,
-    type: s.type,
-    props: (s.props ?? {}) as Record<string, unknown>,
-    isVisible: s.isVisible,
-    label: s.label,
-  }));
+  // VB8 source resolution:
+  //   ?revision=<id>  → that publish snapshot, rendered read-only (public
+  //                     semantics) for the revisions drawer preview;
+  //   ?edit=1         → the DRAFT layout (falls back to the published rows
+  //                     until the first save) — replaced by the editor's
+  //                     postMessage state right after the first paint;
+  //   otherwise       → the published rows (top-bar Preview tab).
+  const wantsRevision = typeof revision === "string" && revision.length > 0;
+  let revisionSections: DraftSection[] | null = null;
+  if (wantsRevision) {
+    const rev = await prisma.pageRevision.findUnique({
+      where: { id: revision },
+      select: { pageId: true, sections: true },
+    });
+    if (!rev || rev.pageId !== id) notFound();
+    revisionSections = normalizeDraftLayout(rev.sections);
+  }
+
+  const draft = edit === "1" && !wantsRevision ? normalizeDraftLayout(page.draftLayout) : null;
+  const initialSections: BuilderSection[] = revisionSections
+    ? revisionSections.map((s, i) => ({
+        key: `rev-${i}`,
+        type: s.type,
+        props: s.props,
+        isVisible: s.isVisible,
+        label: s.label,
+      }))
+    : draft
+      ? draft.map((s, i) => ({
+          key: `draft-${i}`,
+          type: s.type,
+          props: s.props,
+          isVisible: s.isVisible,
+          label: s.label,
+        }))
+      : page.sections.map((s) => ({
+          key: s.id,
+          type: s.type,
+          props: (s.props ?? {}) as Record<string, unknown>,
+          isVisible: s.isVisible,
+          label: s.label,
+        }));
 
   // Labels come from the server registry — the client registry deliberately
   // carries no labels (registry.ts must stay out of client bundles).
@@ -81,7 +120,7 @@ export default async function BuilderPreviewPage({
 
   return (
     <PreviewClient
-      editMode={edit === "1"}
+      editMode={edit === "1" && !wantsRevision}
       initialSections={initialSections}
       typeLabels={typeLabels}
       contactSettings={contactSettings}

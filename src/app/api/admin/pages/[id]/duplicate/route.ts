@@ -21,7 +21,13 @@ export async function POST(_request: NextRequest, { params }: Ctx) {
 
     const source = await prisma.page.findUnique({
       where: { id },
-      include: { sections: { orderBy: { order: "asc" } } },
+      select: {
+        slug: true,
+        title: true,
+        template: true,
+        draftLayout: true,
+        sections: { orderBy: { order: "asc" }, select: { order: true, type: true, props: true, isVisible: true } },
+      },
     });
     if (!source) {
       return NextResponse.json({ error: "Page not found" }, { status: 404 });
@@ -40,6 +46,11 @@ export async function POST(_request: NextRequest, { params }: Ctx) {
         template: source.template,
         isProtected: false,
         publishedAt: null,
+        // VB8: the draft layout travels with the copy so the duplicate's
+        // builder starts where the source's work left off.
+        ...(source.draftLayout
+          ? { draftLayout: source.draftLayout as Prisma.InputJsonValue }
+          : {}),
         sections: {
           create: source.sections.map((s) => ({
             order: s.order,

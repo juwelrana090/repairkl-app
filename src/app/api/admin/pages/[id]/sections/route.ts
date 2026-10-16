@@ -1,36 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
-import { revalidatePath } from "next/cache";
-import { z } from "zod";
 import type { Prisma } from "@prisma/client";
-import { normalizeAssetPathsDeep } from "@/lib/assetPath";
 import { getSession } from "@/lib/auth/session";
 import { sessionHasPermission } from "@/lib/auth/permissionStore";
 import { PERMISSIONS } from "@/lib/auth/permissions";
 import { prisma } from "@/lib/prisma";
-import { SECTION_REGISTRY } from "@/lib/sections/registry";
+import { validateDraftSections } from "@/lib/builder/publish";
+import { DRAFT_MAX_SECTIONS } from "@/lib/builder/draft";
 
 type Ctx = { params: Promise<{ id: string }> };
 
-const bodySchema = z.object({
-  sections: z
-    .array(
-      z.object({
-        type: z.string(),
-        props: z.unknown(),
-        isVisible: z.boolean(),
-        // Builder-only fields (VB5): custom Layers name + lock. Optional so
-        // older payloads keep saving; blank/whitespace names collapse to null.
-        label: z.string().max(120).nullable().optional(),
-        isLocked: z.boolean().optional(),
-      }),
-    )
-    .max(100),
-});
-
-// PUT /api/admin/pages/[id]/sections — replaces the page's section list in one transaction.
-// Each section's props are validated with its registry Zod schema (defaults applied) before
-// anything is written; the first invalid section rejects the whole save with its index.
-// `order` is stored as (i + 1) * 10 so later inserts can slot between rows.
+// PUT /api/admin/pages/[id]/sections — saves the page's DRAFT layout (VB8).
+// The payload is normalized and every section's props are validated with its
+// registry Zod schema (defaults applied) before anything is written; the
+// first invalid section rejects the whole save with its index. Only the
+// publish endpoint copies the draft into the live page_sections rows, so
+// saving never touches the public page.
 export async function PUT(request: NextRequest, { params }: Ctx) {
   try {
     const { id } = await params;
@@ -44,63 +28,28 @@ export async function PUT(request: NextRequest, { params }: Ctx) {
       return NextResponse.json({ error: "Page not found" }, { status: 404 });
     }
 
-    const parsedBody = bodySchema.safeParse(await request.json().catch(() => null));
-    if (!parsedBody.success) {
-      return NextResponse.json({ error: "Invalid body", issues: parsedBody.error.issues }, { status: 400 });
+    const payload = await request.json().catch(() => null);
+    const rawSections =
+      payload && typeof payload === "object" ? (payload as { sections?: unknown }).sections : null;
+    // Explicit refuse (not silent truncation) so a runaway layout is never
+    // half-saved; normalizeDraftLayout's cap only guards stored values.
+    if (Array.isArray(rawSections) && rawSections.length > DRAFT_MAX_SECTIONS) {
+      return NextResponse.json(
+        { error: `Too many sections (max ${DRAFT_MAX_SECTIONS})` },
+        { status: 400 },
+      );
+    }
+    const validated = validateDraftSections(rawSections);
+    if (!validated.ok) {
+      return NextResponse.json({ error: validated.body.error, index: validated.body.index, issues: validated.body.issues }, { status: validated.status });
     }
 
-    const rows: {
-      type: keyof typeof SECTION_REGISTRY;
-      props: Prisma.InputJsonValue;
-      isVisible: boolean;
-      label: string | null;
-      isLocked: boolean;
-    }[] = [];
-    for (const [index, section] of parsedBody.data.sections.entries()) {
-      if (!Object.hasOwn(SECTION_REGISTRY, section.type)) {
-        return NextResponse.json(
-          { error: `Unknown section type at position ${index + 1}`, index },
-          { status: 400 },
-        );
-      }
-      const type = section.type as keyof typeof SECTION_REGISTRY;
-      const parsed = SECTION_REGISTRY[type].schema.safeParse(section.props ?? {});
-      if (!parsed.success) {
-        return NextResponse.json(
-          { error: `Invalid props for ${type} at position ${index + 1}`, index, issues: parsed.error.issues },
-          { status: 422 },
-        );
-      }
-      const trimmedLabel = (section.label ?? "").trim();
-      rows.push({
-        type,
-        // Legacy `/assets/images/...` values heal to `/images/...` on save (P4).
-        props: normalizeAssetPathsDeep(parsed.data) as Prisma.InputJsonValue,
-        isVisible: section.isVisible,
-        label: trimmedLabel.length > 0 ? trimmedLabel : null,
-        isLocked: section.isLocked === true,
-      });
-    }
-
-    await prisma.$transaction(async (tx) => {
-      await tx.pageSection.deleteMany({ where: { pageId: id } });
-      if (rows.length > 0) {
-        await tx.pageSection.createMany({
-          data: rows.map((row, i) => ({
-            pageId: id,
-            order: (i + 1) * 10,
-            type: row.type,
-            props: row.props,
-            isVisible: row.isVisible,
-            label: row.label,
-            isLocked: row.isLocked,
-          })),
-        });
-      }
+    await prisma.page.update({
+      where: { id },
+      data: { draftLayout: validated.sections as Prisma.InputJsonValue },
     });
 
-    revalidatePath(page.slug === "home" ? "/" : `/${page.slug}`);
-    return NextResponse.json({ ok: true, count: rows.length });
+    return NextResponse.json({ ok: true, count: validated.sections.length });
   } catch (error) {
     console.error("[ADMIN_PAGE_SECTIONS_PUT]", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

@@ -134,6 +134,51 @@ test("setProp writes deep dotted paths", () => {
   assert.equal(slides[1].src, "/uploads/new.jpg");
 });
 
+test("setProps applies a whole batch as one undo step", () => {
+  const hero = section({
+    type: "HERO",
+    props: { primaryCta: { label: "Book", kind: "link", href: "/x" } },
+  });
+  let state = withSections(hero);
+  state = builderReducer(state, {
+    kind: "setProps",
+    id: hero.key,
+    edits: [
+      { path: "primaryCta.label", value: "Book now" },
+      { path: "primaryCta.href", value: "/booking" },
+    ],
+  });
+  const cta = (state.sections[0].props as { primaryCta: { label: string; href: string } }).primaryCta;
+  assert.equal(cta.label, "Book now");
+  assert.equal(cta.href, "/booking");
+  // The link popover's two inputs are one edit — one history entry.
+  assert.equal(state.history.length, 1);
+
+  // Undo reverts both paths together.
+  state = builderReducer(state, { kind: "undo" });
+  const restored = (state.sections[0].props as { primaryCta: { label: string; href: string } }).primaryCta;
+  assert.equal(restored.label, "Book");
+  assert.equal(restored.href, "/x");
+});
+
+test("locked sections reject batched prop edits; empty batches no-op", () => {
+  const a = section({ isLocked: true });
+  const b = section();
+  const frozen = withSections(a, b);
+  const bounced = builderReducer(frozen, {
+    kind: "setProps",
+    id: a.key,
+    edits: [{ path: "html", value: "<p>x</p>" }],
+  });
+  assert.equal(bounced, frozen);
+
+  const noop = builderReducer(frozen, { kind: "setProps", id: b.key, edits: [] });
+  assert.equal(noop, frozen);
+
+  const ok = builderReducer(frozen, { kind: "setProps", id: b.key, edits: [{ path: "html", value: "<p>v2</p>" }] });
+  assert.equal((ok.sections[1].props as { html: string }).html, "<p>v2</p>");
+});
+
 test("undo/redo round-trips exactly", () => {
   const a = section();
   let state = withSections(a);

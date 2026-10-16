@@ -6,6 +6,12 @@
 // never crash the page. The registry in registry.ts maps SectionType →
 // { component, schema, defaults, label }.
 //
+// Every schema also carries `style: sectionStyleSchema.optional()` (page
+// builder VB6): zod objects strip unknown keys, so props.style must be
+// declared or parsing would silently drop it. Declaring it once here gives
+// style validation in every place these schemas are reused — public render,
+// builder preview, the local save pre-check and the server PUT route.
+//
 // The HERO/SERVICE_GRID/… props seeded for the home page in
 // prisma/seed-cms.ts are the verbatim content of the original
 // MarketingHome.tsx — keep them in sync when the design copy changes.
@@ -16,6 +22,7 @@ import {
   sectionIconSchema,
   type SectionIconName,
 } from "./icons";
+import { sectionStyleSchema } from "./style";
 
 // Single source for icon names: ./icons.ts (page-builder P1). Re-exported for
 // existing imports; section schemas parse saved icons leniently
@@ -35,6 +42,7 @@ export type CtaProps = z.infer<typeof ctaSchema>;
 /* ─── HERO ─────────────────────────────────────────────────────────────────── */
 
 export const heroSchema = z.object({
+  style: sectionStyleSchema.optional(),
   slides: z
     .array(
       z.object({
@@ -94,6 +102,7 @@ export type HeroProps = z.infer<typeof heroSchema>;
 /* ─── SERVICE_GRID ─────────────────────────────────────────────────────────── */
 
 export const serviceGridSchema = z.object({
+  style: sectionStyleSchema.optional(),
   anchorId: z.string().max(60).optional(),
   ariaLabel: z.string().max(120).default("Our services"),
   heading: z.string().min(1),
@@ -117,6 +126,7 @@ export type ServiceGridProps = z.infer<typeof serviceGridSchema>;
 /* ─── STATS ────────────────────────────────────────────────────────────────── */
 
 export const statsSchema = z.object({
+  style: sectionStyleSchema.optional(),
   image: z.string().min(1),
   overlay: z.string().default("bg-[#001353]/85"),
   ariaLabel: z.string().max(120).default("Statistics"),
@@ -146,6 +156,7 @@ export const richTextBlockSchema = z.discriminatedUnion("type", [
 // `html` is Tiptap output from RichTextEditor (sanitized again at render time).
 // `blocks` is the legacy format; it renders only when `html` is absent.
 export const richTextSchema = z.object({
+  style: sectionStyleSchema.optional(),
   heading: z.string().min(1).optional(),
   lead: z.string().optional(),
   html: z.string().max(200_000).optional(),
@@ -156,6 +167,7 @@ export type RichTextProps = z.infer<typeof richTextSchema>;
 /* ─── FAQ ──────────────────────────────────────────────────────────────────── */
 
 export const faqSchema = z.object({
+  style: sectionStyleSchema.optional(),
   heading: z.string().min(1),
   intro: z.string().optional(),
   more: z
@@ -170,6 +182,7 @@ export type FaqProps = z.infer<typeof faqSchema>;
 /* ─── CTA ──────────────────────────────────────────────────────────────────── */
 
 export const ctaSectionSchema = z.object({
+  style: sectionStyleSchema.optional(),
   // Optional (P1): without an image the section renders on the gradient base.
   image: z.string().min(1).optional(),
   overlay: z
@@ -188,6 +201,7 @@ export type CtaSectionProps = z.infer<typeof ctaSectionSchema>;
 /* ─── TESTIMONIALS ─────────────────────────────────────────────────────────── */
 
 export const testimonialsSchema = z.object({
+  style: sectionStyleSchema.optional(),
   heading: z.string().min(1),
   ratingText: z.string().max(60).optional(),
   testimonials: z
@@ -207,6 +221,7 @@ export type TestimonialsProps = z.infer<typeof testimonialsSchema>;
 /* ─── CONTACT_INFO ─────────────────────────────────────────────────────────── */
 
 export const contactInfoSchema = z.object({
+  style: sectionStyleSchema.optional(),
   heading: z.string().min(1).default("Get in touch"),
   subheading: z.string().optional(),
   showMap: z.boolean().default(true),
@@ -216,6 +231,7 @@ export type ContactInfoProps = z.infer<typeof contactInfoSchema>;
 /* ─── TIMELINE ─────────────────────────────────────────────────────────────── */
 
 export const timelineSchema = z.object({
+  style: sectionStyleSchema.optional(),
   variant: z.enum(["steps"]).default("steps"),
   ariaLabel: z.string().max(120).default("How it works"),
   heading: z.string().min(1),
@@ -235,6 +251,7 @@ export type TimelineProps = z.infer<typeof timelineSchema>;
 /* ─── VALUES ───────────────────────────────────────────────────────────────── */
 
 export const valuesSchema = z.object({
+  style: sectionStyleSchema.optional(),
   ariaLabel: z.string().max(120).default("Why choose RepairKL"),
   heading: z.string().min(1),
   subheading: z.string().optional(),
@@ -260,6 +277,7 @@ export type ValuesProps = z.infer<typeof valuesSchema>;
 /* ─── IMAGE_TEXT ───────────────────────────────────────────────────────────── */
 
 export const imageTextSchema = z.object({
+  style: sectionStyleSchema.optional(),
   ariaLabel: z.string().max(120).default("About RepairKL"),
   image: z.string().min(1),
   overlay: z

@@ -42,6 +42,7 @@ export default function RichTextSectionClient({
         ) : null}
         {html ? (
           <div
+            data-rich-body=""
             className={RICH_HTML_CLASS}
             dangerouslySetInnerHTML={{ __html: html }}
           />

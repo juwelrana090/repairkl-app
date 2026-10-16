@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { buildPageMetadata } from "@/lib/seo/pageMeta";
 import { SECTION_REGISTRY } from "@/lib/sections/registry";
+import { draftOrPublished } from "@/lib/builder/draft";
 import BuilderClient, { type BuilderPageInfo, type BuilderSectionRow } from "./BuilderClient";
 
 export const metadata: Metadata = buildPageMetadata("admin.pages");
@@ -23,6 +24,7 @@ export default async function AdminPageBuilderPage({
       slug: true,
       title: true,
       status: true,
+      draftLayout: true,
       sections: {
         orderBy: { order: "asc" },
         select: { id: true, type: true, props: true, isVisible: true, label: true, isLocked: true },
@@ -38,10 +40,15 @@ export default async function AdminPageBuilderPage({
     status: page.status,
   };
 
-  const sections: BuilderSectionRow[] = page.sections.map((s) => ({
-    key: s.id,
+  // VB8: the builder edits the DRAFT layout — the stored Page.draftLayout
+  // when one exists, else the published rows (a page never saved as a draft
+  // starts from what is live). Draft entries have no DB ids, so they get
+  // synthetic keys; they are client-side identity only.
+  const layout = draftOrPublished(page.draftLayout, page.sections);
+  const sections: BuilderSectionRow[] = layout.map((s, i) => ({
+    key: `draft-${i}`,
     type: s.type,
-    props: (s.props ?? {}) as Record<string, unknown>,
+    props: s.props,
     isVisible: s.isVisible,
     label: s.label,
     isLocked: s.isLocked,

@@ -2,12 +2,12 @@
 
 // Builder top bar (page-builder §4.1): back to Pages, page title + status,
 // device toggle with editable width and zoom, Undo/Redo, save-status
-// indicator, Preview, Save and Publish.
+// indicator, Preview, Revisions, Save draft and Publish.
 //
-// VB3 notes: Save keeps the current behaviour (PUT the live layout — the
-// draft model arrives with VB8), so its label stays "Save", not "Save draft".
-// Publish is never silently disabled (P1): clicking it explains that the
-// publish flow arrives with the draft/publish model.
+// VB8: Save writes the DRAFT layout only — the live page changes when
+// Publish runs (save → validate → copy to live → revision snapshot).
+// Publish is disabled only while a save/publish is in flight (P1: never
+// silently disabled); Revisions opens the publish-history drawer.
 
 import type { ReactNode } from "react";
 import Link from "next/link";
@@ -50,6 +50,7 @@ export default function BuilderTopBar({
   zoom,
   dirty,
   saving,
+  publishing,
   canUndo,
   canRedo,
   onDevice,
@@ -59,6 +60,7 @@ export default function BuilderTopBar({
   onRedo,
   onSave,
   onPublish,
+  onOpenRevisions,
 }: {
   page: BuilderPageInfo;
   device: BuilderDevice;
@@ -66,6 +68,7 @@ export default function BuilderTopBar({
   zoom: number;
   dirty: boolean;
   saving: boolean;
+  publishing: boolean;
   canUndo: boolean;
   canRedo: boolean;
   onDevice: (device: BuilderDevice) => void;
@@ -75,6 +78,7 @@ export default function BuilderTopBar({
   onRedo: () => void;
   onSave: () => void;
   onPublish: () => void;
+  onOpenRevisions: () => void;
 }) {
   return (
     <header className="flex h-14 shrink-0 items-center gap-2 border-b border-[#e4e7f0] bg-white px-3">
@@ -156,7 +160,8 @@ export default function BuilderTopBar({
           {ICON_REDO}
         </button>
 
-        {/* Save-status indicator (§4.1). Autosave itself arrives with the draft model (VB8). */}
+        {/* Save-status indicator (§4.1). Autosave is a later roadmap step —
+            saving the draft is manual for now. */}
         {saving ? (
           <span className="hidden text-sm text-[#5b6480] md:inline">Saving…</span>
         ) : dirty ? (
@@ -182,24 +187,34 @@ export default function BuilderTopBar({
           <span className="hidden lg:inline">Preview</span>
         </Link>
 
-        {/* Labelled "Save" (not "Save draft") because this still writes the
-            live layout; the draft model arrives in VB8. Disabled only while
-            saving (P1: never silently disabled). */}
+        {/* VB8: Save draft writes Page.draftLayout — the live page only
+            changes on Publish. Disabled only while a save/publish is in
+            flight (P1: never silently disabled). */}
         <AdminButton
           size="sm"
           onClick={onSave}
-          disabled={saving}
-          title="Save — writes the live layout (draft saving arrives with the draft/publish step)"
+          disabled={saving || publishing}
+          title="Save draft — the live page only changes when you publish"
         >
-          {saving ? "Saving…" : "Save"}
+          {saving ? "Saving…" : "Save draft"}
+        </AdminButton>
+        <AdminButton
+          size="sm"
+          variant="outline"
+          onClick={onOpenRevisions}
+          disabled={saving || publishing}
+          title="Revisions — preview and restore past publishes"
+        >
+          Revisions
         </AdminButton>
         <AdminButton
           size="sm"
           variant="outline"
           onClick={onPublish}
-          title="Publish arrives with the draft/publish model in a later step"
+          disabled={saving || publishing}
+          title="Publish — copies the draft to the live page and snapshots a revision"
         >
-          Publish
+          {publishing ? "Publishing…" : "Publish"}
         </AdminButton>
       </div>
     </header>

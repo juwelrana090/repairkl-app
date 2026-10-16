@@ -45,4 +45,26 @@ export type PreviewToEditorMessage =
       /** Palette tile dropped at gap `index` (§4.3 reserved message, VB5). */
       type: "insert-at";
       index: number;
+    }
+  | {
+      /** Inline edit committed on the canvas (VB7): batched prop writes that
+       *  land as ONE undo step. Validated in the iframe; re-validated here. */
+      type: "prop-edit";
+      id: string;
+      edits: { path: string; value: unknown }[];
+    }
+  | {
+      /** A canvas inline edit failed validation — the editor toasts the
+       *  message; the iframe has already restored the original text. */
+      type: "edit-rejected";
+      id: string;
+      path: string;
+      message: string;
+    }
+  | {
+      /** Rich-text body double-clicked (VB7): the editor selects the section
+       *  and focuses the inspector Content tab — inline rich editing with a
+       *  Tiptap bubble menu is a later step. */
+      type: "rich-edit";
+      id: string;
     };

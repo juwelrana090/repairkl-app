@@ -67,6 +67,7 @@ export type BuilderAction =
   | { kind: "rename"; id: string; label: string | null }
   | { kind: "toggleLock"; id: string }
   | { kind: "setProp"; id: string; path: string; value: unknown }
+  | { kind: "setProps"; id: string; edits: { path: string; value: unknown }[] }
   | { kind: "applyTemplate"; sections: BuilderSection[] }
   | { kind: "select"; id: string | null }
   | { kind: "hover"; id: string | null }
@@ -252,6 +253,22 @@ export function builderReducer(state: BuilderState, action: BuilderAction): Buil
       return commit(state, (snap) => ({
         sections: snap.sections.map((s) =>
           s.key === action.id ? { ...s, props: setPath(s.props, action.path, action.value) } : s,
+        ),
+        selectedId: snap.selectedId,
+      }));
+    }
+
+    // Inline canvas edits arrive as one batch (VB7): a link popover commits
+    // label+href together, and the whole batch lands as ONE undo entry.
+    case "setProps": {
+      if (locked(state, action.id)) return state;
+      if (!state.sections.some((s) => s.key === action.id)) return state;
+      if (action.edits.length === 0) return state;
+      return commit(state, (snap) => ({
+        sections: snap.sections.map((s) =>
+          s.key === action.id
+            ? { ...s, props: action.edits.reduce((props, e) => setPath(props, e.path, e.value), s.props) }
+            : s,
         ),
         selectedId: snap.selectedId,
       }));

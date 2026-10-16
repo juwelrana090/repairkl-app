@@ -5,7 +5,9 @@
 
 import { normalizeAssetPathsDeep } from "@/lib/assetPath";
 import { SECTION_REGISTRY } from "@/lib/sections/registry";
+import type { SectionStyle } from "@/lib/sections/style";
 import type { SectionType } from "@prisma/client";
+import StyledSection from "./StyledSection";
 
 export type RenderableSection = {
   id: string;
@@ -47,12 +49,22 @@ export default function SectionRenderer({
           const Section = registration.component;
           // Legacy `/assets/images/...` paths in saved props are rewritten to
           // `/images/...` at render time (page-builder P4).
-          return (
-            <Section
-              key={section.id}
-              {...normalizeAssetPathsDeep(parsed.data)}
-            />
-          );
+          const data = normalizeAssetPathsDeep(parsed.data) as Record<
+            string,
+            unknown
+          > & { style?: SectionStyle };
+          // props.style (VB6) is consumed by the shared StyledSection wrapper,
+          // never by the section component itself. No style → no wrapper, the
+          // render is byte-identical to pre-builder pages.
+          const { style, ...componentProps } = data;
+          if (style) {
+            return (
+              <StyledSection key={section.id} style={style}>
+                <Section {...componentProps} />
+              </StyledSection>
+            );
+          }
+          return <Section key={section.id} {...componentProps} />;
         })}
     </>
   );
