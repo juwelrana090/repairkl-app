@@ -4,10 +4,11 @@
 // block tiles with per-type wireframe thumbnails. Click / Enter inserts after
 // the selected section (append when nothing is selected); dragging a tile
 // drops it at the blue insertion line on the canvas (§4.2/§4.3).
+// VB9: the "Start from a template" card opens the Templates modal (§4.8).
 
 import { useState, type DragEvent, type ReactNode } from "react";
 import { ADD_GROUPS, filterGroups } from "@/lib/builder/addPalette";
-import { ICON_CHEVRON, ICON_SEARCH } from "./icons";
+import { ICON_CHEVRON, ICON_SEARCH, ICON_TEMPLATES } from "./icons";
 
 // ── Thumbnails ─────────────────────────────────────────────────────────────
 // Hand-drawn 80×50 wireframes per section type (no image assets, §4.2). Shared
@@ -146,9 +147,11 @@ type AddPaletteProps = {
   /** Palette drag started (type) / finished or cancelled (null) — the editor
    * relays this to the canvas so it can show the insertion line. */
   onDragStateChange: (type: string | null) => void;
+  /** Opens the Templates modal (VB9, §4.8). */
+  onOpenTemplates: () => void;
 };
 
-export default function AddPalette({ labelOf, onInsert, onDragStateChange }: AddPaletteProps) {
+export default function AddPalette({ labelOf, onInsert, onDragStateChange, onOpenTemplates }: AddPaletteProps) {
   const [query, setQuery] = useState("");
   const [collapsed, setCollapsed] = useState<ReadonlySet<string>>(new Set());
 
@@ -187,6 +190,24 @@ export default function AddPalette({ labelOf, onInsert, onDragStateChange }: Add
           className="w-full rounded-xl border border-[#ddddee] bg-white py-2 pl-8 pr-3 text-sm text-[#001353] placeholder:text-[#5b648080] focus:border-[#034795] focus:outline-none"
         />
       </div>
+
+      {/* Whole-page starting points (VB9, §4.8) — one card above the blocks
+          so a new page begins with structure, not 9 empty defaults. */}
+      <button
+        type="button"
+        onClick={onOpenTemplates}
+        className="flex w-full items-center gap-3 rounded-xl border border-[#ddddee] bg-white px-3 py-2.5 text-left transition hover:border-[#034795] hover:bg-[#03479508] focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[#034795]"
+      >
+        <span className="shrink-0 text-[#034795]" aria-hidden="true">
+          {ICON_TEMPLATES}
+        </span>
+        <span className="min-w-0">
+          <span className="block text-xs font-semibold text-[#001353]">Start from a template</span>
+          <span className="block text-[11px] leading-snug text-[#5b6480]">
+            Whole-page layouts and ready-made section variants.
+          </span>
+        </span>
+      </button>
 
       {searching && groups.length === 0 ? (
         <p className="px-1 py-2 text-xs leading-relaxed text-[#5b6480]">

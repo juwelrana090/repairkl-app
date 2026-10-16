@@ -282,6 +282,29 @@ test("applyTemplate replaces the layout and undoes back", () => {
   assert.deepEqual(state.sections, [original]);
 });
 
+/* ── VB9: template append (page presets, §4.8) ─────────────────────────── */
+
+test("append adds the whole batch as ONE history entry and selects the first new section", () => {
+  const existing = section();
+  let state = withSections(existing);
+  const batch = [section({ type: "STATS" }), section({ type: "CTA" })];
+  state = builderReducer(state, { kind: "append", sections: batch });
+  assert.deepEqual(state.sections.map((s) => s.key), [existing.key, batch[0].key, batch[1].key]);
+  assert.equal(state.selectedId, batch[0].key);
+  assert.equal(state.dirty, true);
+  // A single undo removes the whole batch at once — that is the point of
+  // "append" instead of N sequential "add"s.
+  assert.equal(state.history.length, 1);
+  state = builderReducer(state, { kind: "undo" });
+  assert.deepEqual(state.sections, [existing]);
+  assert.equal(state.dirty, false);
+});
+
+test("append with an empty batch is a no-op (the Blank preset never appends)", () => {
+  const state = withSections(section());
+  assert.equal(builderReducer(state, { kind: "append", sections: [] }), state);
+});
+
 test("newKey never repeats within a session", () => {
   const keys = new Set(Array.from({ length: 500 }, () => newKey()));
   assert.equal(keys.size, 500);

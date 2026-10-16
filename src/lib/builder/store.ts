@@ -69,6 +69,7 @@ export type BuilderAction =
   | { kind: "setProp"; id: string; path: string; value: unknown }
   | { kind: "setProps"; id: string; edits: { path: string; value: unknown }[] }
   | { kind: "applyTemplate"; sections: BuilderSection[] }
+  | { kind: "append"; sections: BuilderSection[] }
   | { kind: "select"; id: string | null }
   | { kind: "hover"; id: string | null }
   | { kind: "setDevice"; device: BuilderDevice }
@@ -278,6 +279,16 @@ export function builderReducer(state: BuilderState, action: BuilderAction): Buil
       return commit(state, () => ({
         sections: action.sections,
         selectedId: action.sections.length > 0 ? action.sections[0].key : null,
+      }));
+
+    // VB9 (§4.8): a page template appended to the draft lands as ONE undoable
+    // change and selects the first new section. An empty batch is a no-op —
+    // no junk history entry for it.
+    case "append":
+      if (action.sections.length === 0) return state;
+      return commit(state, (snap) => ({
+        sections: [...snap.sections, ...action.sections],
+        selectedId: action.sections[0].key,
       }));
 
     case "select":

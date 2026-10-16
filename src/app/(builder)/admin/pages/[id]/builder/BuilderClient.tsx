@@ -23,6 +23,15 @@
 // publish endpoint validates server-side, copies the draft to live and
 // snapshots a revision). The Revisions drawer lists snapshots; restoring one
 // loads it into the draft for review, never straight to the live page.
+// VB9: Templates (§4.8) — the rail's Templates button, the Add tab's
+// "Start from a template" card and the empty canvas "Choose a template"
+// button all open the TemplatesModal. Page presets replace or append the
+// draft as ONE undo step; section presets insert a ready-made variant.
+// VB10: the rail's SEO button opens the page's SEO settings (SeoModal) —
+// meta title/description, robots, social cards and advanced fields with a
+// live SERP + social preview. Saves go to the page-scoped
+// /api/admin/pages/[id]/seo, which links Page.seoMetaId (independent of
+// the draft/publish flow: meta goes live immediately).
 
 import { useEffect, useReducer, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import Link from "next/link";
@@ -34,6 +43,7 @@ import { SECTION_FIELDS, setPath, validateSection } from "@/lib/sections/fields"
 import {
   builderReducer,
   createInitialState,
+  newKey,
   type BuilderDevice,
   type BuilderSection,
 } from "@/lib/builder/store";
@@ -42,6 +52,8 @@ import type {
   PreviewToEditorMessage,
   SectionAction,
 } from "@/lib/builder/protocol";
+import type { PagePreset, SectionPreset } from "@/lib/sections/presets";
+import type { SeoMetaRowJson } from "@/lib/seo/metaForm";
 import SectionFieldsForm from "./SectionFieldsForm";
 import BuilderTopBar, { DEVICE_WIDTHS } from "./BuilderTopBar";
 import BuilderRail, { type BuilderTool } from "./BuilderRail";
@@ -49,6 +61,8 @@ import AddPalette from "./AddPalette";
 import LayersPanel from "./LayersPanel";
 import StylePanel from "./StylePanel";
 import AdvancedPanel from "./AdvancedPanel";
+import TemplatesModal from "./TemplatesModal";
+import SeoModal from "./SeoModal";
 
 export type BuilderPageInfo = {
   id: string;
@@ -114,12 +128,16 @@ export default function BuilderClient({
   sections: initialSections,
   typeLabels,
   typeDefaults,
+  seo,
 }: {
   page: BuilderPageInfo;
   sections: BuilderSectionRow[];
   typeLabels: Record<string, string>;
   /** Default props per section type (registry defaults, resolved server-side). */
   typeDefaults: Record<string, Record<string, unknown>>;
+  /** Page-level SEO (VB10): the stored SeoMeta row, the public site URL for
+   * the SERP preview, and whether this session may edit SEO (seo:manage). */
+  seo: { row: SeoMetaRowJson | null; siteUrl: string; canEdit: boolean };
 }) {
   const router = useRouter();
   const [state, dispatch] = useReducer(builderReducer, initialSections, createInitialState);
@@ -149,6 +167,11 @@ export default function BuilderClient({
   // Inspector tabs (VB6): Content | Style | Advanced. Kept across selection
   // changes — switching sections usually means styling the next one too.
   const [inspectorTab, setInspectorTab] = useState<"content" | "style" | "advanced">("content");
+  // Templates modal (VB9, §4.8): opened from the rail, the Add tab's template
+  // card or the empty canvas.
+  const [templatesOpen, setTemplatesOpen] = useState(false);
+  // SEO settings modal (VB10, §4.4): opened from the rail.
+  const [seoOpen, setSeoOpen] = useState(false);
   // The live-canvas iframe (same-origin /builder-preview/[id]?edit=1).
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
 
@@ -251,6 +274,49 @@ export default function BuilderClient({
     );
   };
 
+  // ── Templates (VB9, §4.8) ────────────────────────────────────────────────
+  // The modal hands over the picked preset; props are cloned so editing an
+  // inserted section can never mutate the shared preset definition.
+
+  const applyPagePreset = (preset: PagePreset, mode: "replace" | "append") => {
+    const built: BuilderSection[] = preset.sections.map((s) => ({
+      key: newKey(),
+      type: s.type,
+      props: structuredClone(s.props),
+      isVisible: true,
+    }));
+    if (mode === "append") {
+      // The Blank preset never appends (the modal only offers Replace).
+      dispatch({ kind: "append", sections: built });
+      showToast(`${built.length} section${built.length === 1 ? "" : "s"} appended from "${preset.name}".`, "success");
+    } else {
+      dispatch({ kind: "applyTemplate", sections: built });
+      showToast(
+        built.length === 0
+          ? "Layout cleared — undo restores it."
+          : `"${preset.name}" applied — undo restores your previous layout.`,
+        "success",
+      );
+    }
+    setTemplatesOpen(false);
+  };
+
+  const insertPresetSection = (preset: SectionPreset) => {
+    // Same anchor rule as a palette tile: below the selection, below a canvas
+    // "+" target, or at the end.
+    const anchor = pendingInsertAfter ?? selectedId;
+    const anchorIndex = anchor ? sections.findIndex((s) => s.key === anchor) : -1;
+    setPendingInsertAfter(null);
+    dispatch({
+      kind: "add",
+      type: preset.type,
+      props: structuredClone(preset.props),
+      ...(anchorIndex >= 0 ? { index: anchorIndex + 1 } : {}),
+    });
+    setTemplatesOpen(false);
+    showToast(`${labelOf(preset.type)} preset "${preset.name}" added.`, "success");
+  };
+
   // ── Live canvas link (VB4, §4.3) ─────────────────────────────────────────
   // The iframe mirrors the reducer state: every change is posted within
   // 50 ms (no save needed) and the iframe answers with select/hover/action
@@ -274,7 +340,8 @@ export default function BuilderClient({
         return;
       }
       if (action === "open-templates") {
-        showToast("Templates arrive in a later build step.", "info");
+        // Empty canvas "Choose a template" (§4.3) → the picker (VB9).
+        setTemplatesOpen(true);
         return;
       }
       if (!id) return;
@@ -622,7 +689,13 @@ export default function BuilderClient({
       />
 
       <div className="flex min-h-0 flex-1">
-        <BuilderRail tool={tool} onTool={setTool} onPlaceholder={onRailPlaceholder} />
+        <BuilderRail
+          tool={tool}
+          onTool={setTool}
+          onOpenTemplates={() => setTemplatesOpen(true)}
+          onOpenSeo={() => setSeoOpen(true)}
+          onPlaceholder={onRailPlaceholder}
+        />
 
         {/* ── Left panel: Add | Layers tabs ── */}
         <aside style={{ width: leftWidth }} className="flex shrink-0 flex-col border-r border-[#e4e7f0] bg-white">
@@ -636,7 +709,12 @@ export default function BuilderClient({
           </div>
           <div className={`admin-scrollbar min-h-0 flex-1 overflow-y-auto ${tool === "add" ? "" : "p-3"}`}>
             {tool === "add" ? (
-              <AddPalette labelOf={labelOf} onInsert={insertFromPalette} onDragStateChange={onPaletteDragState} />
+              <AddPalette
+                labelOf={labelOf}
+                onInsert={insertFromPalette}
+                onDragStateChange={onPaletteDragState}
+                onOpenTemplates={() => setTemplatesOpen(true)}
+              />
             ) : (
               <LayersPanel
                 sections={sections}
@@ -823,6 +901,30 @@ export default function BuilderClient({
           )}
         </div>
       </AdminModal>
+
+      {/* VB9 templates picker: page presets (replace/append, with a confirm
+          step when the draft already has content) + section preset variants. */}
+      <TemplatesModal
+        isOpen={templatesOpen}
+        onClose={() => setTemplatesOpen(false)}
+        labelOf={labelOf}
+        hasSections={sections.length > 0}
+        onApplyPage={applyPagePreset}
+        onInsertSectionPreset={insertPresetSection}
+      />
+
+      {/* VB10 SEO settings. The key flips between open/closed so a reopened
+          modal remounts and starts from the stored row again — unsaved edits
+          from the previous visit are discarded, like closing without saving. */}
+      <SeoModal
+        key={seoOpen ? "seo-open" : "seo-closed"}
+        isOpen={seoOpen}
+        onClose={() => setSeoOpen(false)}
+        page={page}
+        initial={seo.row}
+        siteUrl={seo.siteUrl}
+        canEdit={seo.canEdit}
+      />
     </div>
   );
 }

@@ -1,41 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { z } from "zod";
 import { getSession } from "@/lib/auth/session";
 import { sessionHasPermission } from "@/lib/auth/permissionStore";
 import { PERMISSIONS } from "@/lib/auth/permissions";
 import { prisma } from "@/lib/prisma";
+import { seoMetaFormSchema } from "@/lib/seo/metaForm";
 import type { Prisma } from "@prisma/client";
-
-const seoMetaSchema = z.object({
-  title: z.string().trim().min(1).max(191),
-  description: z.string().trim().min(1).max(320),
-  canonical: z.string().trim().max(500).optional().nullable(),
-  keywords: z.array(z.string().trim().min(1).max(100)).max(30).optional().nullable(),
-  robots: z
-    .object({ index: z.boolean(), follow: z.boolean() })
-    .optional()
-    .nullable(),
-  og: z
-    .object({
-      title: z.string().trim().max(191).optional(),
-      description: z.string().trim().max(320).optional(),
-      image: z.string().trim().max(500).optional(),
-    })
-    .optional()
-    .nullable(),
-  twitter: z
-    .object({
-      card: z.enum(["summary", "summary_large_image"]).optional(),
-      title: z.string().trim().max(191).optional(),
-      description: z.string().trim().max(320).optional(),
-      image: z.string().trim().max(500).optional(),
-    })
-    .optional()
-    .nullable(),
-  schemaType: z.string().trim().max(120).optional().nullable(),
-  breadcrumbTitle: z.string().trim().max(191).optional().nullable(),
-});
 
 /** Marketing path a pageKey revalidates ("home" → "/", others → "/<key>"). */
 export function pathForPageKey(pageKey: string): string {
@@ -55,7 +25,7 @@ export async function PUT(
 
     const { pageKey } = await params;
     const decoded = decodeURIComponent(pageKey);
-    const parsed = seoMetaSchema.safeParse(await request.json());
+    const parsed = seoMetaFormSchema.safeParse(await request.json());
     if (!parsed.success) {
       return NextResponse.json(
         { error: "Invalid payload", issues: parsed.error.issues },

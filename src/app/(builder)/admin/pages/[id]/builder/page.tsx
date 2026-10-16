@@ -1,7 +1,12 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { getSession } from "@/lib/auth/session";
+import { sessionHasPermission } from "@/lib/auth/permissionStore";
+import { PERMISSIONS } from "@/lib/auth/permissions";
 import { buildPageMetadata } from "@/lib/seo/pageMeta";
+import { SITE_URL } from "@/lib/seo/site";
+import type { SeoMetaRowJson } from "@/lib/seo/metaForm";
 import { SECTION_REGISTRY } from "@/lib/sections/registry";
 import { draftOrPublished } from "@/lib/builder/draft";
 import BuilderClient, { type BuilderPageInfo, type BuilderSectionRow } from "./BuilderClient";
@@ -25,6 +30,19 @@ export default async function AdminPageBuilderPage({
       title: true,
       status: true,
       draftLayout: true,
+      seoMeta: {
+        select: {
+          title: true,
+          description: true,
+          canonical: true,
+          keywords: true,
+          robots: true,
+          og: true,
+          twitter: true,
+          schemaType: true,
+          breadcrumbTitle: true,
+        },
+      },
       sections: {
         orderBy: { order: "asc" },
         select: { id: true, type: true, props: true, isVisible: true, label: true, isLocked: true },
@@ -32,6 +50,33 @@ export default async function AdminPageBuilderPage({
     },
   });
   if (!page) notFound();
+
+  // VB10: the SEO tab is permission-gated (seo:manage), resolved here so the
+  // client never imports the session helpers. Without the permission the
+  // modal opens with an explanation instead of a silently dead button (P1).
+  const session = await getSession();
+  const canSeo = session ? await sessionHasPermission(session, PERMISSIONS.SEO_MANAGE) : false;
+
+  // The page's SeoMeta row: the Page link first, then a pageKey=slug lookup —
+  // rows saved through /admin/seo (the generic route) exist without the link
+  // and must still show up here. Json columns stay untyped; the client-side
+  // seoRowToForm coerces them.
+  const seoRow: SeoMetaRowJson | null =
+    page.seoMeta ??
+    (await prisma.seoMeta.findUnique({
+      where: { pageKey: page.slug },
+      select: {
+        title: true,
+        description: true,
+        canonical: true,
+        keywords: true,
+        robots: true,
+        og: true,
+        twitter: true,
+        schemaType: true,
+        breadcrumbTitle: true,
+      },
+    }));
 
   const info: BuilderPageInfo = {
     id: page.id,
@@ -67,5 +112,13 @@ export default async function AdminPageBuilderPage({
 
   // The builder renders its own full-screen shell (top bar, rail, panels) —
   // no AdminPageHeader wrapper, which would add padding and break h-dvh.
-  return <BuilderClient page={info} sections={sections} typeLabels={typeLabels} typeDefaults={typeDefaults} />;
+  return (
+    <BuilderClient
+      page={info}
+      sections={sections}
+      typeLabels={typeLabels}
+      typeDefaults={typeDefaults}
+      seo={{ row: seoRow, siteUrl: SITE_URL, canEdit: canSeo }}
+    />
+  );
 }

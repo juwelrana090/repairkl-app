@@ -15,7 +15,7 @@
     "db:studio": "prisma studio",
     "db:reset": "prisma migrate reset --force && npm run db:seed",
     "test:seo": "tsx --test scripts/seo-schema.test.ts",
-    "test:builder": "tsx --test scripts/builder-store.test.ts scripts/section-style.test.ts scripts/inline-targets.test.ts scripts/builder-draft.test.ts",
+    "test:builder": "tsx --test scripts/builder-store.test.ts scripts/section-style.test.ts scripts/inline-targets.test.ts scripts/builder-draft.test.ts scripts/section-presets.test.ts scripts/seo-form.test.ts",
     "check:assets": "node scripts/check-asset-paths.mjs",
     "render:baseline": "tsx scripts/compare-render.ts save",
     "render:check": "tsx scripts/compare-render.ts check"
