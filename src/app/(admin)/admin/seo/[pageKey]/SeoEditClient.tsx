@@ -208,7 +208,7 @@ export default function SeoEditClient({
           <Field label="OG image URL" hint="Pick one from the Media library and paste its URL.">
             <Input
               value={form.og.image}
-              placeholder="/assets/images/services/fridge-repair.jpg"
+              placeholder="/images/services/fridge-repair.jpg"
               onChange={(e) => setForm((f) => ({ ...f, og: { ...f.og, image: e.target.value } }))}
             />
           </Field>

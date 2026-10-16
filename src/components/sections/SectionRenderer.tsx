@@ -3,6 +3,7 @@
 // section's Zod schema first: an invalid or unknown section is skipped and
 // logged server-side (never crashes the page in production).
 
+import { normalizeAssetPathsDeep } from "@/lib/assetPath";
 import { SECTION_REGISTRY } from "@/lib/sections/registry";
 import type { SectionType } from "@prisma/client";
 
@@ -44,7 +45,14 @@ export default function SectionRenderer({
           }
 
           const Section = registration.component;
-          return <Section key={section.id} {...parsed.data} />;
+          // Legacy `/assets/images/...` paths in saved props are rewritten to
+          // `/images/...` at render time (page-builder P4).
+          return (
+            <Section
+              key={section.id}
+              {...normalizeAssetPathsDeep(parsed.data)}
+            />
+          );
         })}
     </>
   );

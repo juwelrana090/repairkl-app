@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import type { Prisma } from "@prisma/client";
+import { normalizeAssetPathsDeep } from "@/lib/assetPath";
 import { getSession } from "@/lib/auth/session";
 import { sessionHasPermission } from "@/lib/auth/permissionStore";
 import { PERMISSIONS } from "@/lib/auth/permissions";
@@ -62,7 +63,8 @@ export async function PUT(request: NextRequest, { params }: Ctx) {
       }
       rows.push({
         type,
-        props: parsed.data as Prisma.InputJsonValue,
+        // Legacy `/assets/images/...` values heal to `/images/...` on save (P4).
+        props: normalizeAssetPathsDeep(parsed.data) as Prisma.InputJsonValue,
         isVisible: section.isVisible,
       });
     }

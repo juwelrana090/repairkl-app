@@ -1,6 +1,6 @@
-# Image conventions — public/assets/images
+# Image conventions — public/images
 
-Naming, formats and alt-text rules for every image served from `/public/assets/images`.
+Naming, formats and alt-text rules for every image served from `/public/images`.
 Enforced by review + the audit script (see below), not by build tooling.
 
 ## File naming

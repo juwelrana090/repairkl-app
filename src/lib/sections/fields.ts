@@ -10,12 +10,12 @@
 // into client components because some section components import prisma.
 
 import type { ZodType } from "zod";
+import { SECTION_ICON_NAMES } from "./icons";
 import {
   contactInfoSchema,
   ctaSectionSchema,
   faqSchema,
   heroSchema,
-  iconNameSchema,
   imageTextSchema,
   richTextSchema,
   serviceGridSchema,
@@ -43,8 +43,8 @@ export type SectionFieldSpec = {
   deferred: string[];
 };
 
-/** Icon names offered in icon selects. Same enum the schemas validate against. */
-export const ICON_CHOICES: readonly string[] = iconNameSchema.options;
+/** Icon names offered in icon selects. Single source: ./icons.ts (P1). */
+export const ICON_CHOICES: readonly string[] = SECTION_ICON_NAMES;
 
 const CTA_KINDS = ["booking", "whatsapp", "link"] as const;
 
@@ -424,7 +424,85 @@ function setIn(obj: Container, path: string, value: unknown): Container {
   return next;
 }
 
-/** Collects the first zod message per dotted path (list items use the index, e.g. `slides.0.src`). */
+/** Resolved (field descriptor, owning item label) for a dotted error path. */
+type ResolvedPath = { def: FieldDef | null; owner: string | null };
+
+const PATH_INDEX = /^\d+$/;
+
+function resolveFieldPath(
+  spec: SectionFieldSpec | undefined,
+  segments: string[],
+): ResolvedPath {
+  let fields = spec?.fields ?? [];
+  let owner: string | null = null;
+  for (let i = 0; i < segments.length; i++) {
+    const seg = segments[i];
+    if (PATH_INDEX.test(seg)) continue;
+    const def = fields.find((f) => f.path === seg);
+    if (!def) return { def: null, owner };
+    if (i === segments.length - 1) return { def, owner };
+    if (def.kind === "group") {
+      fields = def.fields;
+      owner = def.label;
+    } else if (def.kind === "list") {
+      const idx = segments[i + 1];
+      owner = `${def.itemLabel} ${PATH_INDEX.test(idx) ? Number(idx) + 1 : ""}`.trim();
+      fields = def.fields;
+      i++; // skip the item index
+    } else if (def.kind === "stringList") {
+      // Leaf is the indexed string itself, e.g. `issues.0`.
+      const idx = segments[i + 1];
+      return { def, owner: `${def.itemLabel} ${PATH_INDEX.test(idx) ? Number(idx) + 1 : ""}`.trim() };
+    } else {
+      return { def: null, owner };
+    }
+  }
+  return { def: null, owner };
+}
+
+function articleFor(text: string): string {
+  return /^[aeiou]/i.test(text) ? "an" : "a";
+}
+
+/** Rewrites a raw zod message into a human sentence naming the field (P1). */
+function humanMessage(def: FieldDef | null, owner: string | null, raw: string): string {
+  if (!def) return owner ? `${owner}: ${raw}` : raw;
+  const label = def.label;
+  const lc = label.toLowerCase();
+  const suffix = owner ? ` for ${owner}` : "";
+  const withOwner = owner ? ` (${owner})` : "";
+  const required = raw.includes("received undefined") || /required/i.test(raw);
+  const tooLong = /too long|too_big/i.test(raw) && !/number/i.test(raw);
+
+  if (def.kind === "stringList" && owner) {
+    if (required) return `Enter the text for ${owner}`;
+    if (tooLong) return `${owner} is too long`;
+    return `${owner}: ${raw}`;
+  }
+  switch (def.kind) {
+    case "icon":
+      return `Pick ${articleFor(lc)} ${lc}${suffix}`;
+    case "image":
+      return required ? `Choose ${articleFor(lc)} ${lc}${suffix}` : `${label}${withOwner}: ${raw}`;
+    case "select":
+      return required ? `Choose ${articleFor(lc)} ${lc}${suffix}` : `Choose a valid ${lc}${suffix}`;
+    case "text":
+    case "textarea":
+    case "number":
+    case "stringList":
+      if (required) return `Enter the ${lc}${suffix}`;
+      if (tooLong) return `${label} is too long${withOwner}`;
+      if (/too small|too_small/i.test(raw)) return `${label} is out of range${withOwner}`;
+      return `${label}${withOwner}: ${raw}`;
+    default:
+      return `${label}${withOwner}: ${raw}`;
+  }
+}
+
+/**
+ * Collects the first zod message per dotted path (list items use the index,
+ * e.g. `slides.0.src`), rewritten as a human sentence from the field labels.
+ */
 export function validateSection(type: string, props: Record<string, unknown>): Record<string, string> {
   const schema = SECTION_SCHEMAS[type];
   if (!schema) return {};
@@ -434,7 +512,8 @@ export function validateSection(type: string, props: Record<string, unknown>): R
   for (const issue of result.error.issues) {
     const key = issue.path.map(String).join(".");
     if (key in errors) continue;
-    errors[key] = issue.message.includes("received undefined") ? "Required" : issue.message;
+    const { def, owner } = resolveFieldPath(SECTION_FIELDS[type], key.split("."));
+    errors[key] = humanMessage(def, owner, issue.message);
   }
   return errors;
 }

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import "./admin-theme.css";
+import "@/styles/admin-theme.css";
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth/session";
 import { prisma } from "@/lib/prisma";

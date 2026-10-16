@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { z } from "zod";
+import { normalizeAssetPath } from "@/lib/assetPath";
 import { SITE, TWITTER_HANDLE } from "./site";
 
 // Site identity (NAP single source) and all JSON-LD builders live in
@@ -68,9 +69,13 @@ export function generateMeta(input: MetaInput): Metadata {
   // Social images: explicit page image, else the root dynamic card
   // (/opengraph-image — file convention in src/app/). Pages with their own
   // file-convention card pass inheritOgImage so nothing overrides it.
+  // Explicit images are normalized so legacy `/assets/images/...` DB values resolve
+  // to the `/images/...` files (page-builder P4).
   const ogImage = options.inheritOgImage
     ? undefined
-    : (options.og?.image ?? "/opengraph-image");
+    : (options.og?.image
+      ? normalizeAssetPath(options.og.image)
+      : "/opengraph-image");
   const twitterImage = options.twitter?.image ?? ogImage;
   const robots = options.noIndex
     ? { index: false, follow: false }

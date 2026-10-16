@@ -15,7 +15,7 @@ The current builder at `/admin/pages/[id]/builder` is a **form-sidebar editor**,
 4. No device switcher (desktop/tablet/mobile), no zoom.
 5. No element palette (add Heading, Image, Button, Columns...), no templates, no section library with thumbnails.
 6. Validation is confusing: AC Installation TIMELINE `steps[n].icon` shows "Invalid option: expected one of 'fridge'|'washer'..." and the **Save button is disabled with no explanation**. CTA `image` missing blocks save too.
-7. Images broken after `public/images` moved to `public/assets/images` (stale DB paths).
+7. Images broken after `public/images` moved to `public/assets/images` (stale DB paths). RESOLVED 2026-10-16: owner moved the files back to `public/images` — see P4.
 8. An ordinary non-technical user cannot understand it.
 
 **Goal:** a Webflow / Elementor / Divi / Webiny-style **visual, WYSIWYG, canvas-centred builder** where a normal person builds a public page by clicking and dragging. Do not use or embed those tools; replicate the *workflow*.
@@ -82,7 +82,7 @@ Roadmap file with checklist: `prompts/todo-list-ai/cms-builder-roadmap.md` (45 d
 
 1. **Never commit/stage.** Owner commits.
 2. **Public pages must render identically** (`pnpm render:check` = zero diff) unless the owner asks otherwise.
-3. **Files under `public/assets/**` must never be deletable or listed in the admin media UI.** They are system design files. (Builder may *type/enter* built-in paths and show previews of them; it must not list or delete them.)
+3. **Files under `public/images/**` must never be deletable or listed in the admin media UI.** They are system design files. (Builder may *type/enter* built-in paths and show previews of them; it must not list or delete them.)
 4. **No next-intl.** English UI only.
 5. **DB writes (UPDATE/DELETE/seed) need explicit owner permission in chat.** Schema changes → `prisma db push` + tell owner; stop dev server first if `prisma generate` gives EPERM.
 6. Every protected route/API calls `getSession()` and checks role/permission (`ADMIN`, `SUPER_ADMIN`, `EDITOR` w/ `content:edit`). Validate input with zod. Revalidate paths after publish.
@@ -138,7 +138,7 @@ Full-screen route `/admin/pages/[id]/builder` (hide the admin sidebar; use its o
 
 ### 4.4 Inspector (right)
 Header: friendly element name (not an id) + ⋯ menu (duplicate, hide, reset to default, delete). Tabs:
-- **Content** — `SectionFieldsForm` (existing). Improve: group fields in collapsible cards with real labels; list items collapsible with first-field title as summary, drag handle; icon fields use a **visual icon grid picker** (not a raw select); image fields show real thumbnail for `/assets/images/**`, `/uploads/**`, Cloudinary; errors shown inline in red under the field + count badge on the tab.
+- **Content** — `SectionFieldsForm` (existing). Improve: group fields in collapsible cards with real labels; list items collapsible with first-field title as summary, drag handle; icon fields use a **visual icon grid picker** (not a raw select); image fields show real thumbnail for `/images/**`, `/uploads/**`, Cloudinary; errors shown inline in red under the field + count badge on the tab.
 - **Style** — collapsible groups mirroring Webflow: **Layout** (display), **Spacing** (box-model widget for padding/margin, per-device), **Size** (width, max-width, min-height), **Background** (colour from token palette, image, overlay), **Typography** (size, weight, colour, align), **Border & radius**, **Shadow**, **Visibility per device**. Stored in `props.style` (and `props.responsive.{tablet,mobile}`), validated by zod, rendered as CSS variables/classes by a shared `applySectionStyle()` used by BOTH preview and public renderer. Default (no style) must change nothing.
 - **Advanced** — anchor id, CSS class, hide on desktop/tablet/mobile, entrance animation (none/fade/slide), custom attributes (sanitised), "Reset to default".
 - Page-level settings (rail → Settings/SEO): title, slug (auto, unique, never reuse), SEO (title, description, OG image, robots, canonical, schema) with **SERP preview**.
@@ -178,19 +178,29 @@ Layers panel uses full section names, min panel width 280 px (resizable 240–42
 ### P3 Live preview
 Edits appear on the canvas within ~100 ms without saving. Device switcher + zoom work. Verified in browser.
 
-### P4 Images (stale paths after `public/images` → `public/assets/images`)
-1. Diagnosis (done): code is correct; **DB rows still hold `/images/...`** → 404. Working URL is `/assets/images/...`.
-2. Create `src/lib/assetPath.ts` with `normalizeAssetPath(url)` (prefix `/images/` → `/assets/images/`; leave `/assets/`, `/uploads/`, `https://` untouched) and apply it at **render time** in `SectionRenderer`, `ImageField`, `MediaPickerModal` preview, OG image generation — so old rows work immediately without a DB write.
-3. **Ask the owner for permission**, then run (one transaction, show affected row counts first via SELECT):
-   ```sql
-   UPDATE page_sections SET props = REPLACE(props, '"/images/', '"/assets/images/') WHERE props LIKE '%"/images/%';
-   UPDATE media_assets SET url = CONCAT('/assets', url) WHERE url LIKE '/images/%';
-   UPDATE site_settings SET defaultOgImage = CONCAT('/assets', defaultOgImage) WHERE defaultOgImage LIKE '/images/%';
-   ```
-   Also fix `prisma/seed.ts` line ~438 and any seed/constant still using `/images/`. Scan with `grep -rn "\"/images/" src prisma`.
-4. `banners.imageUrl = '/images/banner-repair.jpg'` — file is missing under both prefixes. Ask owner: (a) supply the file at `public/assets/images/banner-repair.jpg`, (b) point to an existing image, or (c) deactivate banner. Don't guess.
-5. Builder image previews must display `/assets/images/**` thumbnails (they currently show "Built-in image"). Previewing is fine; listing/deleting built-ins in media admin stays forbidden.
-6. Add a dev-time check script `scripts/check-asset-paths.mjs`: every `/assets/...` path found in DB props/seed exists on disk; exit non-zero otherwise.
+### P4 Images (RESOLVED 2026-10-16 — owner moved the files BACK to `public/images`; do not reverse this)
+1. **Owner decision**: instead of rewriting the DB, the files moved back — `public/assets/images/**` → `public/images/**` (plain `mv`; `public/assets/` no longer exists). The ~51 legacy `/images/...` DB rows became canonical with zero SQL. Never move them again; `/images/` is the canonical prefix for built-in images.
+2. `src/lib/assetPath.ts` `normalizeAssetPath` stays as the render-time safety net, now mapping the interim prefix `/assets/images/...` → `/images/...` (leave `/images/`, `/uploads/`, `https://` untouched). Applied in `SectionRenderer`, OG meta and the builder image field; PUT self-heals rows on save. The P4.3 SQL is obsolete — do not run it.
+3. Seeds and constants reference `/images/...` (`prisma/seed.ts`, `prisma/seed-cms.ts`, `brandAssets.ts`, `social.ts`, `seo/site.ts`, `registry.ts` defaults, marketing pages, admin placeholders). CONVENTION moved to `public/images/CONVENTION.md`.
+4. `banners.imageUrl = '/images/banner-repair.jpg'` — **file still missing (OPEN)**. Ask owner: (a) supply the file at `public/images/banner-repair.jpg`, (b) point to an existing image, or (c) deactivate banner. `pnpm check:assets` exits 1 until resolved. Don't guess.
+5. Builder image previews display `/images/**` thumbnails. Previewing is fine; listing/deleting built-ins in media admin stays forbidden.
+6. `scripts/check-asset-paths.mjs` (`pnpm check:assets`) verifies every DB/seed path exists on disk; interim `/assets/images/...` refs are warnings (render normalized, resave to heal).
+
+### P4b Image ownership policy: `public/images` (system) vs `public/uploads` (editable) — CRITICAL (owner confirmed 2026-10-16)
+Rule: **any image an editor might change through the builder, posts, SEO or settings must NOT live in `public/images`.** `public/images/**` is protected, read-only system design (logo, favicons, UI icons, fixed illustrations). Editable content images live in `public/uploads/**` (or Cloudinary) and are managed by the Media Library, so they can be replaced, re-picked and deleted safely.
+
+1. **Classify** every image path used in the DB and seed (`page_sections.props`, `seo_meta.og`, `site_settings`, `banners`, post covers, `services`, `media_assets`, brand constants, `prisma/seed*.ts`, `serviceContent.ts`):
+   - SYSTEM (stays in `public/images`): site logo, favicon, fixed UI icons and decorative parts referenced directly by component code.
+   - EDITABLE (move to `public/uploads/...`): hero backgrounds, brand logos, service photos, about/technician photo, OG/default share image, banners, CTA images, any image set through a builder `image` field.
+   Put the classification table in your report and get the owner's OK on borderline items before moving.
+2. **Copy, verify, then repoint.** Copy EDITABLE files to `public/uploads/<group>/` (`hero/`, `brands/`, `services/`, `og/`; keep file names). Do not delete originals in `public/images` (the owner decides). Add `scripts/migrate-editable-images.mjs` with `--dry-run` (default) and `--apply`; it prints every old → new path and the DB rows it will touch.
+3. **Register in the Media Library.** Each moved file gets a `media_assets` row with url `/uploads/...`, so `isManagedUpload()` is true, it shows in the library and picker, and can be replaced or deleted through the existing confirm modal.
+4. **Repoint** DB values (`/images/<editable>`, plus any interim `/assets/images/<editable>` refs) → `/uploads/<group>/<file>`, and fix seeds/constants so a fresh `db:seed` yields `/uploads/...` for editable images. DB UPDATEs need explicit owner permission after a SELECT preview with row counts.
+5. **Builder rules.** The `image` field and Media picker write only `/uploads/...` or Cloudinary URLs. The typed-path fallback **rejects** `/assets/...` and `/images/...` for editable fields ("Upload or pick an image from the Media Library"). `ImageField` previews any `/uploads/**` and `/images/**` path; the "Built-in image" label applies only to true system assets. "Replace image" on canvas opens the picker/uploader (drag-and-drop upload supported).
+6. **Never** list or delete `public/images` from the admin; the Media API keeps returning 403 for system paths. Deleting a media asset still referenced by a page/post must warn "Used in: …" (query `page_sections.props` and posts for the URL) and require confirmation.
+7. `normalizeAssetPath` (P4.2) stays as a render-time safety net for legacy rows only.
+8. Add `public/uploads/CONVENTION.md` documenting this split and update `.context/`. Extend `scripts/check-asset-paths.mjs` to fail if an editable field points into `public/images` or any referenced file is missing on disk.
+9. `pnpm render:check` must stay identical after the move (same images, new URLs only).
 
 ### P5 Runtime verification gaps
 E2b drag-and-drop & Alt+Arrow keyboard reorder were only type-checked. Test with real pointer events (drag in browser) and real key presses; fix `focus()` on the handle (use `tabIndex={0}` on a `button`, call `.focus()` after state update via `requestAnimationFrame`).
@@ -222,7 +232,7 @@ Use the in-app browser; resize to `desktop` preset first. Log in with the localh
 - Switch Mobile → iframe becomes 375 px and layout reflows.
 - Drag "Stats" from palette between two sections → inserted at the line; Undo removes it; Redo restores.
 - Reorder in Layers by drag and by Alt+↓.
-- Publish → open public URL → content matches; hard refresh shows `/assets/images/**` brand logos (samsung, lg, panasonic, sharp, daikin, mitsubishi, hitachi, toshiba) and icons.
+- Publish → open public URL → content matches; hard refresh shows `/images/**` brand logos (samsung, lg, panasonic, sharp, daikin, mitsubishi, hitachi, toshiba) and icons.
 - Reload builder → draft restored; Revisions → restore works.
 
 ---
@@ -230,7 +240,7 @@ Use the in-app browser; resize to `desktop` preset first. Log in with the localh
 ## 7. Definition of done
 - [ ] A non-technical user can build a page from blank by clicking/dragging, editing text on the canvas, switching devices, and publishing, with no tutorial.
 - [ ] All items P1–P6 closed with evidence (tsc, render:check, browser run).
-- [ ] No public page changes; `public/assets` still protected and hidden in admin media.
+- [ ] No public page changes; `public/images` still protected and hidden in admin media.
 - [ ] Roadmap, `.context/`, and memory updated. **Nothing committed.**
 
 ## 8. Final report format (keep short)

@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { buildPageMetadata } from "@/lib/seo/pageMeta";
 import { SECTION_REGISTRY } from "@/lib/sections/registry";
-import AdminPageHeader from "@/components/admin/ui/PageHeader";
 import BuilderClient, { type BuilderPageInfo, type BuilderSectionRow } from "./BuilderClient";
 
 export const metadata: Metadata = buildPageMetadata("admin.pages");
@@ -52,14 +51,7 @@ export default async function AdminPageBuilderPage({
     Object.entries(SECTION_REGISTRY).map(([type, reg]) => [type, reg.label]),
   );
 
-  return (
-    <div className="flex flex-col gap-6">
-      <AdminPageHeader
-        title={`Build: ${page.title}`}
-        description={page.slug === "home" ? "/" : `/${page.slug}`}
-        breadcrumbs={[{ label: "Pages", href: "/admin/pages" }, { label: page.title }]}
-      />
-      <BuilderClient page={info} sections={sections} typeLabels={typeLabels} />
-    </div>
-  );
+  // The builder renders its own full-screen shell (top bar, rail, panels) —
+  // no AdminPageHeader wrapper, which would add padding and break h-dvh.
+  return <BuilderClient page={info} sections={sections} typeLabels={typeLabels} />;
 }

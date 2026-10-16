@@ -435,7 +435,7 @@ async function main() {
       id: "default-banner",
       title: "30% OFF First Repair - Use code REPAIR30 at checkout",
       subtitle: "Professional appliance repair in Kuala Lumpur",
-      imageUrl: "/assets/images/banner-repair.jpg",
+      imageUrl: "/images/banner-repair.jpg",
       linkUrl: "/register",
       isActive: true,
     },

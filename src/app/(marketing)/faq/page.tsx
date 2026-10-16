@@ -135,7 +135,7 @@ export default function FaqPage() {
         <div className="absolute inset-0" aria-hidden="true">
           <div className="absolute inset-0 bg-gradient-to-br from-[#001353] via-[#0a1f63] to-[#001353]" />
           <Image
-            src="/assets/images/hero/fridge-repairbg.jpg"
+            src="/images/hero/fridge-repairbg.jpg"
             alt="Fridge repair technician working on a refrigerator"
             fill
             priority

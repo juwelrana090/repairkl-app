@@ -11,29 +11,18 @@
 // MarketingHome.tsx — keep them in sync when the design copy changes.
 
 import { z } from "zod";
+import {
+  iconNameSchema,
+  sectionIconSchema,
+  type SectionIconName,
+} from "./icons";
 
-/** Icon names available to section components (see components/sections/icons). */
-export const iconNameSchema = z.enum([
-  "fridge",
-  "washer",
-  "dryer",
-  "ac",
-  "wrench",
-  "shield",
-  "clock",
-  "tag",
-  "phone",
-  "userCheck",
-  "zap",
-  "calendar",
-  "check",
-  "star",
-  "arrow",
-  "pin",
-  "card",
-  "plus",
-]);
-export type SectionIconName = z.infer<typeof iconNameSchema>;
+// Single source for icon names: ./icons.ts (page-builder P1). Re-exported for
+// existing imports; section schemas parse saved icons leniently
+// (sectionIconSchema) so a legacy unknown value maps to the fallback icon
+// instead of skipping the whole section.
+export { iconNameSchema };
+export type { SectionIconName };
 
 /** A button/link. `kind` picks the href source; `href` is used for "link". */
 export const ctaSchema = z.object({
@@ -67,7 +56,7 @@ export const heroSchema = z.object({
   trustItems: z
     .array(
       z.object({
-        icon: iconNameSchema,
+        icon: sectionIconSchema,
         text: z.string().max(120),
         iconClass: z.string().max(120).optional(),
       }),
@@ -181,7 +170,8 @@ export type FaqProps = z.infer<typeof faqSchema>;
 /* ─── CTA ──────────────────────────────────────────────────────────────────── */
 
 export const ctaSectionSchema = z.object({
-  image: z.string().min(1),
+  // Optional (P1): without an image the section renders on the gradient base.
+  image: z.string().min(1).optional(),
   overlay: z
     .string()
     .default(
@@ -233,7 +223,7 @@ export const timelineSchema = z.object({
   steps: z
     .array(
       z.object({
-        icon: iconNameSchema,
+        icon: sectionIconSchema,
         title: z.string().min(1),
         desc: z.string(),
       }),
@@ -251,7 +241,7 @@ export const valuesSchema = z.object({
   features: z
     .array(
       z.object({
-        icon: iconNameSchema,
+        icon: sectionIconSchema,
         title: z.string().min(1),
         desc: z.string(),
       }),
@@ -280,7 +270,7 @@ export const imageTextSchema = z.object({
     .optional(),
   badgeCard: z
     .object({
-      icon: iconNameSchema,
+      icon: sectionIconSchema,
       title: z.string().min(1),
       subtitle: z.string(),
     })

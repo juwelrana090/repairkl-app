@@ -28,7 +28,7 @@ const MAP_LINK_URL = GBP_PLACE_ID
 
 const CONTACT_INFO = [
   {
-    icon: "/assets/images/icons/message.png",
+    icon: "/images/icons/message.png",
     title: "Email Us",
     value: "hello@repairkl.com",
     subtitle: "We reply within 2 business hours",
@@ -37,7 +37,7 @@ const CONTACT_INFO = [
     bg: "#eaf0f8",
   },
   {
-    icon: "/assets/images/icons/mobile.png",
+    icon: "/images/icons/mobile.png",
     title: "Call Us",
     value: "+60 11-5580 4809",
     subtitle: "Sat–Thu, 8AM–10PM",
@@ -46,7 +46,7 @@ const CONTACT_INFO = [
     bg: "#e6f5ee",
   },
   {
-    icon: "/assets/images/icons/whatsapp.png",
+    icon: "/images/icons/whatsapp.png",
     title: "WhatsApp",
     value: "+60 11-5580 4809",
     subtitle: "Instant replies 8AM–10PM",
@@ -55,7 +55,7 @@ const CONTACT_INFO = [
     bg: "#e6f5ee",
   },
   {
-    icon: "/assets/images/icons/pin.png",
+    icon: "/images/icons/pin.png",
     title: "Visit Us",
     value: "45 Kuala Lumpur, Kuala Lumpur 1212",
     subtitle: "By appointment only",
@@ -83,7 +83,7 @@ export default function ContactPage() {
         <div className="absolute inset-0" aria-hidden="true">
           <div className="absolute inset-0 bg-gradient-to-br from-[#001353] via-[#0a1f63] to-[#001353]" />
           <Image
-            src="/assets/images/services/air-conditioner-service.jpg"
+            src="/images/services/air-conditioner-service.jpg"
             alt="Air conditioner service technician in Kuala Lumpur"
             fill
             priority
@@ -181,7 +181,7 @@ export default function ContactPage() {
                 <div className="bg-[#f5f5fa] rounded-[24px] border border-[#ddddee] overflow-hidden aspect-square flex items-center justify-center text-center p-8">
                   <div>
                     <img
-                      src="/assets/images/icons/pin.png"
+                      src="/images/icons/pin.png"
                       alt=""
                       role="presentation"
                       width={64}

@@ -5,7 +5,7 @@
   wholesale: that file resets --breakpoint-* and --font-* and sets global body
   and border rules, which would change the public site. Everything here is a
   plain CSS variable or a class under .admin-root, so the public pages are
-  unaffected. Only the (admin) layout imports this file.
+  unaffected. Imported by the (admin) and (builder) layouts.
 
   Colours are mapped to the RepairKL palette (primary #034795, ink #001353).
 */

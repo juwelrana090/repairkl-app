@@ -112,10 +112,10 @@ export default function AdminSidebar({ role, user, expanded, mobileOpen, onHover
         mobileOpen ? "translate-x-0" : "-translate-x-full"
       } xl:translate-x-0 ${showLabels ? "w-[290px] px-5" : "w-[90px] px-3"}`}
     >
-      {/* Brand: same logo as the public site (public/assets/images/logo/logo.png) */}
+      {/* Brand: same logo as the public site (public/images/logo/logo.png) */}
       <div className={`flex shrink-0 items-center py-8 ${showLabels ? "" : "justify-center"}`}>
         <img
-          src="/assets/images/logo/logo.png"
+          src="/images/logo/logo.png"
           alt=""
           role="presentation"
           width={36}

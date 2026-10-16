@@ -5,6 +5,7 @@ import AdminButton from "@/components/admin/ui/Button";
 import { AdminInput, AdminLabel, AdminSelect, AdminSwitch, AdminTextarea } from "@/components/admin/ui/Field";
 import MediaPickerModal from "@/components/admin/rich-text/MediaPickerModal";
 import RichTextEditor from "@/components/admin/rich-text/RichTextEditor";
+import { isPreviewableAsset, normalizeAssetPath } from "@/lib/assetPath";
 import { getPath, ICON_CHOICES, type FieldDef, type SectionFieldSpec } from "@/lib/sections/fields";
 
 type Props = {
@@ -283,8 +284,9 @@ function renderField(field: FieldDef, ctx: Ctx): ReactNode {
 
 /**
  * Image path field. Picks from the managed media library (uploads and Cloudinary) and
- * also accepts a typed path, since built-in `/assets/images` files are not listed in the picker.
- * Previews only managed URLs, so built-in asset paths show a label and no thumbnail.
+ * also accepts a typed path, since built-in `/images` files are not listed in the
+ * picker. Thumbnails every previewable URL (uploads, Cloudinary and built-in
+ * `/images/**`); legacy `/assets/images/...` values are shown normalized (P4.5).
  */
 function ImageField({
   id,
@@ -302,7 +304,8 @@ function ImageField({
   onPick: (url: string) => void;
 }) {
   const [open, setOpen] = useState(false);
-  const previewable = url.startsWith("/uploads/") || url.startsWith("https://res.cloudinary.com/");
+  const shown = normalizeAssetPath(url);
+  const previewable = isPreviewableAsset(shown);
 
   return (
     <div>
@@ -311,15 +314,15 @@ function ImageField({
         <div className="flex h-16 w-24 shrink-0 items-center justify-center overflow-hidden rounded-[12px] border border-[#e4e7f0] bg-[#f5f5fa]">
           {previewable ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={url} alt="" className="h-full w-full object-cover" />
+            <img src={shown} alt="" className="h-full w-full object-cover" />
           ) : (
-            <span className="px-1 text-center text-[10px] text-[#5b6480]">{url ? "Built-in image" : "No image"}</span>
+            <span className="px-1 text-center text-[10px] text-[#5b6480]">{shown ? "Built-in image" : "No image"}</span>
           )}
         </div>
         <div className="flex min-w-0 flex-1 flex-col gap-2">
           <AdminInput
             id={id}
-            value={url}
+            value={shown}
             onChange={(e) => onPick(e.target.value)}
             error={Boolean(error)}
             hint={error ?? hint}

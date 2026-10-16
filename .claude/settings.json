@@ -37,7 +37,13 @@
       "Bash(pnpm render:check)",
       "Bash(pnpm test:seo)",
       "Bash(taskkill //F //PID 43912 //T)",
-      "Bash(npx next *)"
+      "Bash(npx next *)",
+      "Bash(pnpm check:assets)",
+      "Bash(sed -i 's#// Legacy `/images/...` paths in saved props are rewritten to#// Legacy `/assets/images/...` paths in saved props are rewritten to#' src/components/sections/SectionRenderer.tsx)",
+      "Bash(sed -i 's#// Legacy `/images/...` values heal to#// Legacy `/assets/images/...` values heal to#' \"src/app/api/admin/pages/[id]/sections/route.ts\")",
+      "Bash(sed -i 's#legacy `/images/...` DB values resolve#legacy `/assets/images/...` DB values resolve#; s#to the moved `/images/...` files#to the `/images/...` files#' src/lib/seo/index.ts)",
+      "Bash(sed -i 's#built-in `/assets/images` files#built-in `/images` files#; s#legacy `/images/...` values are shown normalized#legacy `/assets/images/...` values are shown normalized#' \"src/app/\\(admin\\)/admin/pages/[id]/builder/SectionFieldsForm.tsx\")",
+      "Bash(sed -i 's#files live in /public/assets/images#files live in /public/images#' src/lib/brandAssets.ts)"
     ],
     "deny": [
       "Write(~/**)",

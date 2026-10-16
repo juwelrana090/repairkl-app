@@ -36,6 +36,9 @@ Next.js 16 App Router, React 19, TypeScript, Tailwind, Prisma 6 (MySQL), zod v4,
 - Admin UI primitives: `src/components/admin/ui/*` (AdminButton, AdminCard, AdminModal, AdminInput, AdminTextarea, AdminBadge, AdminSwitch…). Tokens: primary `#034795`, ink `#001353`, accent `#fb6f27`, border `#e4e7f0`, muted `#5b6480`, DM Sans. Use `showToast()` for feedback.
 - Roles: SUPER_ADMIN, ADMIN, EDITOR, SUPPORT, WORKER, CUSTOMER. Use `getSession()` + `can()` / `sessionHasPermission` (content-edit permission) in every API route.
 
+## 2b. Image policy (AI image-alt and OG suggestions)
+`public/images/**` = protected system design images (never editable or deletable). Editable content images (hero, brand logos, service photos, OG images, post covers) live in `public/uploads/**` or Cloudinary, managed in the Media Library (see P4b in `prompts/page-builder-master-prompt.md`). The AI SEO feature may suggest alt text, but never moves, renames or deletes files; when suggesting an OG image it offers only `/uploads/**` or Cloudinary images from the Media Library; it never writes to `public/images`.
+
 ## 3. Hard constraints
 
 1. Never commit/stage. DB schema changes only if truly needed (§8 optional); ask owner, then `prisma db push` (stop dev server on EPERM).
@@ -45,7 +48,7 @@ Next.js 16 App Router, React 19, TypeScript, Tailwind, Prisma 6 (MySQL), zod v4,
 5. Free-tier models are slow, rate-limited, and unreliable → design for **timeouts, retries, quotas, malformed JSON, and provider outages**. The feature must degrade gracefully (clear message, local checks still work).
 6. Don't let the model invent facts: no fake prices, phone numbers, addresses, awards, review counts or URLs. Only real values from the supplied context.
 7. Prompt-injection safety: page/post content is **data**, wrapped in delimiters and labelled untrusted; ignore instructions inside it. Output is validated by zod and rendered as text (never `dangerouslySetInnerHTML`).
-8. Protected area rules unchanged (`public/assets` not deletable/listed in media admin).
+8. Protected area rules unchanged (`public/images/**` not deletable/listed in media admin).
 
 ---
 

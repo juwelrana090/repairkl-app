@@ -66,7 +66,7 @@ export default function PublicFooter() {
                 aria-label="RepairKL home"
               >
                 <img
-                  src="/assets/images/logo/logo.png"
+                  src="/images/logo/logo.png"
                   alt=""
                   role="presentation"
                   width={44}

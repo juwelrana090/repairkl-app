@@ -2,7 +2,7 @@
  * Which MediaAsset rows the admin Media Library manages.
  *
  * Only user uploads are managed: local files under public/uploads/ and
- * Cloudinary URLs. Everything else (public/assets/* design images, legacy
+ * Cloudinary URLs. Everything else (public/images/* design images, interim
  * seed paths) is a system asset. System assets are hidden from the library
  * and cannot be edited or deleted from the admin panel, because the site UI
  * depends on them.

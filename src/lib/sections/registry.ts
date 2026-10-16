@@ -82,7 +82,7 @@ export const SECTION_REGISTRY: Record<SectionType, SectionRegistration> = {
     },
   ),
   [SectionType.STATS]: register("Stats band", statsSchema, StatsSection, {
-    image: "/assets/images/services/stats-bg.jpg",
+    image: "/images/services/stats-bg.jpg",
     stats: [
       { value: "10K+", label: "Repairs completed", live: "bookings" },
       { value: "50+", label: "Verified technicians", live: "workers" },
@@ -100,7 +100,7 @@ export const SECTION_REGISTRY: Record<SectionType, SectionRegistration> = {
   [SectionType.CTA]: register("Call to action", ctaSectionSchema, CtaSection, {
     heading: "Something broken? Get it fixed this week.",
     body: "Send us a WhatsApp message and we'll book a technician for you.",
-    image: "/assets/images/services/cta-bg.jpg",
+    image: "/images/services/cta-bg.jpg",
     primaryCta: { label: "Book a repair", kind: "booking" },
   }),
   [SectionType.TESTIMONIALS]: register(
@@ -145,7 +145,7 @@ export const SECTION_REGISTRY: Record<SectionType, SectionRegistration> = {
     ImageTextSection,
     {
       heading: "About us",
-      image: "/assets/images/about-technician.jpg",
+      image: "/images/about-technician.jpg",
       paragraphs: ["Introduce your business here."],
       checklist: [],
     },

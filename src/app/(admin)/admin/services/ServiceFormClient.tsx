@@ -379,7 +379,7 @@ export default function ServiceFormClient({
                 id="svc-image-url"
                 label="Image URL"
                 value={form.imageUrl}
-                placeholder="/assets/images/services/fridge-repair.jpg"
+                placeholder="/images/services/fridge-repair.jpg"
                 hint="Copy a URL from the Media library and paste it here"
                 onChange={(e) => set({ imageUrl: e.target.value })}
               />

@@ -92,7 +92,7 @@ export default function WhatsAppChat() {
           <div className="bg-[#075e54] text-white px-4 py-3.5 flex items-center gap-3">
             <div className="relative shrink-0">
               <img
-                src="/assets/images/logo/logo.png"
+                src="/images/logo/logo.png"
                 alt=""
                 role="presentation"
                 width={40}
